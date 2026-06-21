@@ -1,26 +1,192 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
+@custom-variant dark (&:is(.dark *));
+
+/* ============================================================
+   BRAND PRIMITIVES — raw hex, single source of truth.
+   Do not invent colors elsewhere; reference these tokens only.
+   ============================================================ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Surface — cream/paper */
+  --cream-50: #fbf8f1;
+  --cream-100: #f7f1e6;
+  --cream-200: #efe7d6;
+  --cream-300: #e4d9c4;
+  --paper: #fcfbf7;
+
+  /* Wood / earth */
+  --wood-light: #c9a678;
+  --wood-deep: #8a5a3b;
+
+  /* Neem — signature green */
+  --neem-soft: #a9c09a;
+  --neem: #5e7c4a;
+  --neem-deep: #4a6239;
+
+  /* Ink / text */
+  --ink: #2b2620;
+  --ink-muted: #6b6258;
+  --ink-soft: #938a7e;
+
+  /* Play accents */
+  --terracotta: #e08a5f;
+  --mustard: #e8b84b;
+  --dusty-blue: #8fb0c4;
+  --blush: #e7a9a0;
+
+  /* Status */
+  --danger: #c0492b;
+  --info: #5e83a0;
+
+  --radius: 0.75rem;
+
+  /* ---- shadcn semantic map → brand primitives ---- */
+  --background: var(--cream-100);
+  --foreground: var(--ink);
+  --card: var(--cream-50);
+  --card-foreground: var(--ink);
+  --popover: var(--cream-50);
+  --popover-foreground: var(--ink);
+  --primary: var(--neem);
+  --primary-foreground: var(--paper);
+  --secondary: var(--wood-deep);
+  --secondary-foreground: var(--paper);
+  --muted: var(--cream-200);
+  --muted-foreground: var(--ink-muted);
+  --accent: var(--neem-soft);
+  --accent-foreground: var(--neem-deep);
+  --destructive: var(--danger);
+  --destructive-foreground: var(--paper);
+  --border: var(--cream-300);
+  --input: var(--cream-300);
+  --ring: var(--neem);
+
+  /* charts — warm brand spread */
+  --chart-1: var(--neem);
+  --chart-2: var(--terracotta);
+  --chart-3: var(--mustard);
+  --chart-4: var(--dusty-blue);
+  --chart-5: var(--wood-deep);
+
+  /* sidebar */
+  --sidebar: var(--cream-50);
+  --sidebar-foreground: var(--ink);
+  --sidebar-primary: var(--neem);
+  --sidebar-primary-foreground: var(--paper);
+  --sidebar-accent: var(--cream-200);
+  --sidebar-accent-foreground: var(--neem-deep);
+  --sidebar-border: var(--cream-300);
+  --sidebar-ring: var(--neem);
 }
 
+/* ============================================================
+   TAILWIND THEME — expose tokens as utilities + fonts.
+   Bangla-first: Latin glyphs fall to Inter, Bangla glyphs to
+   Noto Sans Bengali via the per-glyph font-stack fallback.
+   ============================================================ */
 @theme inline {
+  /* fonts */
+  --font-sans: var(--font-inter), var(--font-bn), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-display), var(--font-bn), ui-sans-serif, sans-serif;
+  --font-heading: var(--font-display), var(--font-bn), ui-sans-serif, sans-serif;
+  --font-bn: var(--font-bn), ui-sans-serif, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  /* radius scale */
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  /* brand color utilities (bg-neem, text-ink, border-cream-300, ...) */
+  --color-cream-50: var(--cream-50);
+  --color-cream-100: var(--cream-100);
+  --color-cream-200: var(--cream-200);
+  --color-cream-300: var(--cream-300);
+  --color-paper: var(--paper);
+  --color-wood-light: var(--wood-light);
+  --color-wood-deep: var(--wood-deep);
+  --color-neem-soft: var(--neem-soft);
+  --color-neem: var(--neem);
+  --color-neem-deep: var(--neem-deep);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-soft: var(--ink-soft);
+  --color-terracotta: var(--terracotta);
+  --color-mustard: var(--mustard);
+  --color-dusty-blue: var(--dusty-blue);
+  --color-blush: var(--blush);
+  --color-danger: var(--danger);
+  --color-info: var(--info);
+
+  /* semantic color utilities (shadcn) */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* ============================================================
+   DARK MODE — Phase 2. Structure exists so .dark{} just
+   re-points the same semantic names. Not wired into UI yet.
+   ============================================================ */
+.dark {
+  --background: var(--ink);
+  --foreground: var(--cream-100);
+  --card: #332e27;
+  --card-foreground: var(--cream-100);
+  --popover: #332e27;
+  --popover-foreground: var(--cream-100);
+  --primary: var(--neem-soft);
+  --primary-foreground: var(--ink);
+  --secondary: var(--wood-light);
+  --secondary-foreground: var(--ink);
+  --muted: #3a342c;
+  --muted-foreground: var(--ink-soft);
+  --accent: var(--neem-deep);
+  --accent-foreground: var(--cream-100);
+  --destructive: #e0735a;
+  --destructive-foreground: var(--ink);
+  --border: #3a342c;
+  --input: #3a342c;
+  --ring: var(--neem-soft);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
   }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  body {
+    @apply bg-background text-foreground;
+  }
 }
