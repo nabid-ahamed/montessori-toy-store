@@ -98,7 +98,7 @@ export function Header() {
   const close = () => setOpen(false);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-cream-300 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+    <header className="sticky top-0 z-50 bg-background">
       {/* top bar */}
       <div className="mx-auto flex h-20 max-w-6xl items-center gap-4 px-4 sm:px-6 md:h-24">
         {/* left: hamburger (mobile) + brand */}

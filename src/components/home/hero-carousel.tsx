@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Autoplay from "embla-carousel-autoplay";
 import {
@@ -31,8 +31,9 @@ export function HeroCarousel() {
   const [api, setApi] = useState<CarouselApi>();
   const [selected, setSelected] = useState(0);
   const [count, setCount] = useState(0);
-  // autoplay: advance every 3s, keep going after manual interaction
-  const autoplay = useRef(
+  // autoplay: advance every 3s, keep going after manual interaction.
+  // useState initializer creates the plugin once (stable, no ref access during render).
+  const [autoplay] = useState(() =>
     Autoplay({ delay: 3000, stopOnInteraction: false, stopOnMouseEnter: true }),
   );
 
@@ -52,7 +53,7 @@ export function HeroCarousel() {
       <Carousel
         setApi={setApi}
         opts={{ loop: true, align: "start" }}
-        plugins={[autoplay.current]}
+        plugins={[autoplay]}
       >
         <CarouselContent>
           {heroSlides.map((s) => (

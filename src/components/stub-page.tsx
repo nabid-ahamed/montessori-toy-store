@@ -10,7 +10,7 @@ export function StubPage({ title }: { title: string }) {
       </p>
       <h1 className="mt-3 font-display text-3xl font-bold text-ink">{title}</h1>
       <p className="mt-3 text-ink-muted">
-        This page isn't built yet — it's a stub for navigation checks.
+        This page isn’t built yet — it’s a stub for navigation checks.
       </p>
       <Button asChild className="mt-6">
         <Link href="/">Back to home</Link>

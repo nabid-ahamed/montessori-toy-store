@@ -17,9 +17,7 @@ export default function Home() {
       <ProductTabs />
 
       {/* tabbed browse module (age / category / bulk) */}
-      <div className="bg-cream-50">
-        <BrowseTabs />
-      </div>
+      <BrowseTabs />
 
       {/* testimonials */}
       <Testimonials />

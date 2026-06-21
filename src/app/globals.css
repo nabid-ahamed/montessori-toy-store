@@ -43,7 +43,7 @@
   --radius: 0.75rem;
 
   /* ---- shadcn semantic map → brand primitives ---- */
-  --background: var(--cream-100);
+  --background: var(--cream-50);
   --foreground: var(--ink);
   --card: var(--cream-50);
   --card-foreground: var(--ink);
