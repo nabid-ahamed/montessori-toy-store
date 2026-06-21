@@ -44,7 +44,7 @@ export function ProductCard({ product }: { product: Product }) {
   const href = `/products/${product.slug}`;
 
   return (
-    <div className="group/card flex flex-col overflow-hidden rounded-xl border border-cream-300 bg-card transition-shadow hover:shadow-md">
+    <div className="group/card flex h-full flex-col overflow-hidden rounded-xl border border-cream-300 bg-card transition-shadow hover:shadow-md">
       {/* image (hover-swap) */}
       <Link href={href} className="relative block aspect-square">
         <PlaceholderImage

@@ -159,7 +159,7 @@ export default function StyleGuidePage() {
               Body · Inter
             </p>
             <p className="mt-2 text-lg text-ink">
-              Let your child's first toy be safe — non-toxic, lab-tested, handmade.
+              Let your child’s first toy be safe — non-toxic, lab-tested, handmade.
             </p>
             <p className="mt-1 text-base text-ink-muted">
               The quick brown fox · 0123456789 · 15+ SKU · ৳850

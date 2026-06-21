@@ -35,7 +35,7 @@ export function Testimonials() {
       {/* heading */}
       <div className="text-center">
         <h2 className="font-display text-2xl font-bold tracking-tight text-ink sm:text-3xl">
-          Parents' Love & Recommendations
+          Parents’ Love & Recommendations
         </h2>
         <div className="mt-2 flex items-center justify-center gap-2 text-sm text-ink-muted">
           <span className="font-display text-lg font-bold text-ink">4.4</span>
