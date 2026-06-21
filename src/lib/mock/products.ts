@@ -123,5 +123,19 @@ export const products: Product[] = [
 
 export const bestSellers = products.filter((p) => p.badge === "Best Seller");
 export const newLaunches = products.filter((p) => p.badge === "New");
+
+// Curated tab selections for the homepage product module.
+export const giftPicks = products.filter((p) => p.price >= 1000);
+export const neemWood = products.filter((p) =>
+  [
+    "neem-rattle-set",
+    "neem-teether-ring",
+    "stacking-ring-tower",
+    "wooden-shape-sorter",
+    "building-block-set",
+    "object-permanence-box",
+  ].includes(p.slug),
+);
+
 export const productBySlug = (slug: string) =>
   products.find((p) => p.slug === slug);

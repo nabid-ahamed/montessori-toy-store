@@ -1,3 +1,4 @@
+import Link from "next/link";
 import {
   Carousel,
   CarouselContent,
@@ -10,20 +11,39 @@ import { SectionHeading } from "@/components/section-heading";
 import type { Product } from "@/lib/types";
 
 type Props = {
-  title: string;
+  /** Omit when the rail sits under tabs that already name it. */
+  title?: string;
   subtitle?: string;
   products: Product[];
   viewAllHref?: string;
+  viewAllLabel?: string;
 };
 
 /**
  * Section heading + horizontally scrollable product carousel.
  * Mobile: swipe (peek of next card). Desktop: arrows.
  */
-export function ProductRail({ title, subtitle, products, viewAllHref }: Props) {
+export function ProductRail({
+  title,
+  subtitle,
+  products,
+  viewAllHref,
+  viewAllLabel = "View all",
+}: Props) {
   return (
     <section className="py-2">
-      <SectionHeading title={title} subtitle={subtitle} viewAllHref={viewAllHref} />
+      {title ? (
+        <SectionHeading title={title} subtitle={subtitle} viewAllHref={viewAllHref} />
+      ) : viewAllHref ? (
+        <div className="mb-4 flex justify-end">
+          <Link
+            href={viewAllHref}
+            className="text-sm font-medium text-neem-deep underline-offset-4 hover:underline"
+          >
+            {viewAllLabel} →
+          </Link>
+        </div>
+      ) : null}
       <Carousel opts={{ align: "start", loop: false }} className="w-full">
         <CarouselContent className="-ml-3">
           {products.map((p) => (
