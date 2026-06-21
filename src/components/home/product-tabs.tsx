@@ -1,0 +1,46 @@
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ProductRail } from "@/components/product/product-rail";
+import {
+  products,
+  bestSellers,
+  newLaunches,
+  giftPicks,
+  neemWood,
+} from "@/lib/mock/products";
+import type { Product } from "@/lib/types";
+
+type Tab = { value: string; label: string; href: string; items: Product[] };
+
+const tabs: Tab[] = [
+  { value: "best", label: "Best Sellers", href: "/collections/best-sellers", items: bestSellers },
+  { value: "new", label: "New Launches", href: "/collections/new", items: newLaunches },
+  { value: "gift", label: "Gifts", href: "/collections/gifts", items: giftPicks },
+  { value: "all", label: "All Products", href: "/collections/all", items: products },
+  { value: "neem", label: "Neem Wood", href: "/collections/neem-wood", items: neemWood },
+];
+
+export function ProductTabs() {
+  return (
+    <section className="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
+      <h2 className="text-center font-display text-2xl font-bold tracking-tight text-ink sm:text-3xl">
+        Our Toys
+      </h2>
+
+      <Tabs defaultValue="best" className="mt-6">
+        <TabsList className="mx-auto mb-6 flex h-auto max-w-full flex-wrap justify-center gap-1">
+          {tabs.map((t) => (
+            <TabsTrigger key={t.value} value={t.value}>
+              {t.label}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+
+        {tabs.map((t) => (
+          <TabsContent key={t.value} value={t.value}>
+            <ProductRail products={t.items} viewAllHref={t.href} />
+          </TabsContent>
+        ))}
+      </Tabs>
+    </section>
+  );
+}
