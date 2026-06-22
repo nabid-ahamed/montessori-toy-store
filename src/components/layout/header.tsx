@@ -170,7 +170,7 @@ export function Header() {
               <Heart className="size-5" />
             </Link>
           </Button>
-          <Button asChild variant="ghost" size="icon" aria-label="Cart" className="relative">
+          <Button asChild variant="ghost" size="icon" aria-label="Cart" className="relative ml-2">
             <Link href="/cart">
               <ShoppingCart className="size-5" />
               <span className="absolute -right-0.5 -top-0.5 flex size-4 items-center justify-center rounded-full bg-neem text-[10px] font-semibold text-paper">
