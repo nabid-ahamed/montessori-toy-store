@@ -31,7 +31,14 @@ const LOAD_MORE_STEP = 6; // products revealed per "Load more" click
  * (toggled open on every screen size), active-filter chips, the grid and
  * Load more.
  */
-export function ProductGrid({ products }: { products: Product[] }) {
+export function ProductGrid({
+  products,
+  hideAgeFilter = false,
+}: {
+  products: Product[];
+  /** scoped pages (e.g. an age tier) hide the redundant Age facet. */
+  hideAgeFilter?: boolean;
+}) {
   const priceMax = priceCeiling(products);
   const [sort, setSort] = useState<SortKey>("featured");
   const [filters, setFilters] = useState<Filters>(() => emptyFilters(products));
@@ -115,6 +122,7 @@ export function ProductGrid({ products }: { products: Product[] }) {
               filters={filters}
               priceMax={priceMax}
               onChange={updateFilters}
+              hideAge={hideAgeFilter}
             />
           </div>
         </SheetContent>

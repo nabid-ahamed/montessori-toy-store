@@ -33,6 +33,7 @@ import {
 } from "@/components/ui/accordion";
 import { mainNav, ageNav, categoryNav, type NavLink } from "@/lib/mock/nav";
 import { BRAND_NAME } from "@/lib/config";
+import { CartBadge } from "@/components/cart/cart-badge";
 import { cn } from "@/lib/utils";
 
 function SearchBox({ className }: { className?: string }) {
@@ -265,9 +266,7 @@ export function Header() {
           >
             <Link href="/cart">
               <ShoppingCart className="size-5" />
-              <span className="absolute -right-0.5 -top-0.5 flex size-4 items-center justify-center rounded-full bg-neem text-[10px] font-semibold text-paper">
-                0
-              </span>
+              <CartBadge className="absolute -right-0.5 -top-0.5 size-4" />
             </Link>
           </Button>
         </div>

@@ -6,6 +6,7 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { MobileBottomBar } from "@/components/layout/mobile-bottom-bar";
 import { WhatsAppButton } from "@/components/layout/whatsapp-button";
+import { CartProvider } from "@/lib/cart/cart-context";
 
 // Display / headings
 const bricolage = Bricolage_Grotesque({
@@ -38,11 +39,13 @@ export default function RootLayout({
       className={`${bricolage.variable} ${inter.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-background pb-14 font-sans text-foreground md:pb-0">
-        <Header />
-        <div className="flex flex-1 flex-col">{children}</div>
-        <Footer />
-        <MobileBottomBar />
-        <WhatsAppButton />
+        <CartProvider>
+          <Header />
+          <div className="flex flex-1 flex-col">{children}</div>
+          <Footer />
+          <MobileBottomBar />
+          <WhatsAppButton />
+        </CartProvider>
       </body>
     </html>
   );

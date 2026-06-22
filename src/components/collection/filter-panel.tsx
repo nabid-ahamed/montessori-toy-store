@@ -24,11 +24,14 @@ export function FilterPanel({
   priceMax,
   onChange,
   showHeading = true,
+  hideAge = false,
 }: {
   filters: Filters;
   priceMax: number;
   onChange: (next: Filters) => void;
   showHeading?: boolean;
+  /** hide the Age facet when the page is already scoped to one age tier. */
+  hideAge?: boolean;
 }) {
   const reset = () => onChange({ ages: [], badges: [], maxPrice: priceMax });
   const hasActive =
@@ -68,7 +71,8 @@ export function FilterPanel({
         </p>
       </fieldset>
 
-      {/* Age */}
+      {/* Age — hidden on age-scoped pages where it would be redundant */}
+      {hideAge ? null : (
       <fieldset className="space-y-2">
         <legend className="mb-1 text-sm font-semibold text-ink">Age</legend>
         {ageTiers.map((t) => (
@@ -88,6 +92,7 @@ export function FilterPanel({
           </label>
         ))}
       </fieldset>
+      )}
 
       {/* Badge */}
       <fieldset className="space-y-2">

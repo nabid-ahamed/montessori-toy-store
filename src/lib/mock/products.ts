@@ -16,6 +16,7 @@ export const products: Product[] = [
     ageTierSlug: "0-6m",
     badge: "Best Seller",
     imageTones: ["mustard", "cream"],
+    categorySlug: "rattles",
     imageLabelBn: "Rattle",
     variants: neemTeak,
   },
@@ -28,6 +29,7 @@ export const products: Product[] = [
     ageTierSlug: "1-2y",
     badge: "Best Seller",
     imageTones: ["neem-soft", "cream"],
+    categorySlug: "stacking",
     imageLabelBn: "Stacking Ring",
     variants: neemTeak,
   },
@@ -39,6 +41,7 @@ export const products: Product[] = [
     reviewCount: 76,
     ageTierSlug: "1-2y",
     imageTones: ["terracotta", "cream"],
+    categorySlug: "puzzles",
     imageLabelBn: "Shape Sorter",
   },
   {
@@ -50,6 +53,7 @@ export const products: Product[] = [
     ageTierSlug: "1-2y",
     badge: "New",
     imageTones: ["mustard", "cream"],
+    categorySlug: "push-pull",
     imageLabelBn: "Pull Duck",
   },
   {
@@ -61,6 +65,7 @@ export const products: Product[] = [
     ageTierSlug: "0-6m",
     badge: "Best Seller",
     imageTones: ["blush", "cream"],
+    categorySlug: "teethers",
     imageLabelBn: "Teether Ring",
   },
   {
@@ -72,6 +77,7 @@ export const products: Product[] = [
     reviewCount: 142,
     ageTierSlug: "2-3y-plus",
     imageTones: ["dusty-blue", "cream"],
+    categorySlug: "blocks",
     imageLabelBn: "Block Set",
     variants: neemTeak,
   },
@@ -84,6 +90,7 @@ export const products: Product[] = [
     ageTierSlug: "6-12m",
     badge: "New",
     imageTones: ["neem", "cream"],
+    categorySlug: "montessori",
     imageLabelBn: "Permanence Box",
   },
   {
@@ -96,6 +103,7 @@ export const products: Product[] = [
     ageTierSlug: "2-3y-plus",
     badge: "Limited",
     imageTones: ["wood", "cream"],
+    categorySlug: "ride-on",
     imageLabelBn: "Rocker Horse",
   },
   {
@@ -107,6 +115,7 @@ export const products: Product[] = [
     ageTierSlug: "6-12m",
     badge: "New",
     imageTones: ["blush", "cream"],
+    categorySlug: "rattles",
     imageLabelBn: "Sensory Balls",
   },
   {
@@ -117,6 +126,7 @@ export const products: Product[] = [
     reviewCount: 103,
     ageTierSlug: "2-3y-plus",
     imageTones: ["terracotta", "cream"],
+    categorySlug: "puzzles",
     imageLabelBn: "Animal Puzzle",
   },
   {
@@ -128,6 +138,7 @@ export const products: Product[] = [
     ageTierSlug: "0-6m",
     badge: "New",
     imageTones: ["dusty-blue", "cream"],
+    categorySlug: "rattles",
     imageLabelBn: "Cloth Book",
   },
   {
@@ -140,6 +151,7 @@ export const products: Product[] = [
     ageTierSlug: "1-2y",
     badge: "Best Seller",
     imageTones: ["mustard", "cream"],
+    categorySlug: "montessori",
     imageLabelBn: "Xylophone",
     variants: neemTeak,
   },
@@ -151,6 +163,7 @@ export const products: Product[] = [
     reviewCount: 64,
     ageTierSlug: "2-3y-plus",
     imageTones: ["blush", "cream"],
+    categorySlug: "stacking",
     imageLabelBn: "Lacing Beads",
   },
   {
@@ -163,6 +176,7 @@ export const products: Product[] = [
     ageTierSlug: "0-6m",
     badge: "Limited",
     imageTones: ["neem", "cream"],
+    categorySlug: "rattles",
     imageLabelBn: "Baby Gym",
   },
   {
@@ -174,6 +188,7 @@ export const products: Product[] = [
     ageTierSlug: "2-3y-plus",
     badge: "New",
     imageTones: ["terracotta", "cream"],
+    categorySlug: "montessori",
     imageLabelBn: "Abacus",
     variants: neemTeak,
   },
@@ -186,6 +201,7 @@ export const products: Product[] = [
     ageTierSlug: "6-12m",
     badge: "Best Seller",
     imageTones: ["dusty-blue", "cream"],
+    categorySlug: "stacking",
     imageLabelBn: "Nesting Cups",
   },
 ];
