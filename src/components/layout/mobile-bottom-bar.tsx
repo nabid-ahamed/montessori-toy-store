@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Home, LayoutGrid, ShoppingCart, User } from "lucide-react";
 import { bottomNav } from "@/lib/mock/nav";
+import { CartBadge } from "@/components/cart/cart-badge";
 
 const icon = {
   home: Home,
@@ -22,7 +23,12 @@ export function MobileBottomBar() {
                 href={item.href}
                 className="flex flex-col items-center gap-0.5 py-2 text-ink-muted hover:text-neem-deep"
               >
-                <Icon className="size-5" />
+                <span className="relative">
+                  <Icon className="size-5" />
+                  {item.icon === "cart" ? (
+                    <CartBadge className="absolute -right-2 -top-1 size-4" />
+                  ) : null}
+                </span>
                 <span className="text-[11px]">{item.labelBn}</span>
               </Link>
             </li>

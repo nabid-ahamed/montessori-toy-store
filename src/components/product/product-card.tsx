@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { Star, ShoppingCart } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Star } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { AddToCartButton } from "@/components/cart/add-to-cart-button";
 import { PlaceholderImage } from "@/components/placeholder-image";
 import { ageTierBySlug } from "@/lib/mock/age-tiers";
 import { formatTk } from "@/lib/format";
@@ -112,10 +112,7 @@ export function ProductCard({ product }: { product: Product }) {
               </span>
             ) : null}
           </div>
-          <Button size="sm" aria-label="Add to cart">
-            <ShoppingCart className="size-4" />
-            <span className="sr-only sm:not-sr-only">Add</span>
-          </Button>
+          <AddToCartButton slug={product.slug} />
         </div>
       </div>
     </div>

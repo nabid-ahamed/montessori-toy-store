@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PlaceholderImage } from "@/components/placeholder-image";
-import { ageTiers } from "@/lib/mock/age-tiers";
 import { categories } from "@/lib/mock/categories";
 import { bulkPrograms } from "@/lib/mock/bulk";
 import { cn } from "@/lib/utils";
@@ -45,11 +44,6 @@ function TileGrid({
 }
 
 export function BrowseTabs() {
-  const ageItems = ageTiers.map((t) => ({
-    href: t.href,
-    label: t.labelBn,
-    tone: t.tone,
-  }));
   const categoryItems = categories.map((c) => ({
     href: c.href,
     label: c.nameBn,
@@ -62,16 +56,11 @@ export function BrowseTabs() {
         Browse the shop
       </h2>
 
-      <Tabs defaultValue="age" className="mt-6">
+      <Tabs defaultValue="category" className="mt-6">
         <TabsList className="mx-auto mb-6 flex h-auto flex-wrap justify-center gap-1">
-          <TabsTrigger value="age">By Age</TabsTrigger>
           <TabsTrigger value="category">By Category</TabsTrigger>
           <TabsTrigger value="bulk">Bulk</TabsTrigger>
         </TabsList>
-
-        <TabsContent value="age">
-          <TileGrid items={ageItems} />
-        </TabsContent>
 
         <TabsContent value="category">
           <TileGrid items={categoryItems} />

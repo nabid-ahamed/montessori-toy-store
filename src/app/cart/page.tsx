@@ -1,5 +1,12 @@
-import { StubPage } from "@/components/stub-page";
+import type { Metadata } from "next";
+import { CartView } from "@/components/cart/cart-view";
+import { BRAND_NAME } from "@/lib/config";
+
+export const metadata: Metadata = {
+  title: `Cart — ${BRAND_NAME}`,
+  description: "Review the handmade, non-toxic toys in your cart.",
+};
 
 export default function Page() {
-  return <StubPage title="Cart" />;
+  return <CartView />;
 }

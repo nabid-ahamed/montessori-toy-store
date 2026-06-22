@@ -17,6 +17,8 @@ export type AgeTier = {
   labelBn: string; // "0–6 months"
   href: string; // stub collection route
   tone: Tone;
+  /** developmental focus shown on the "Shop by Age" cards (optional). */
+  taglineBn?: string; // "Grasp, soothe & sense"
 };
 
 /** Product category used for "Browse by Category" and nav drawer. */
@@ -25,6 +27,8 @@ export type Category = {
   nameBn: string;
   href: string;
   tone: Tone;
+  /** short descriptor shown on the category PLP heading (optional). */
+  taglineBn?: string;
 };
 
 /** Visual-only variant swatch. */
@@ -42,6 +46,7 @@ export type Product = {
   rating: number; // 0–5
   reviewCount: number;
   ageTierSlug: string;
+  categorySlug: string; // Category.slug
   badge?: "New" | "Best Seller" | "Limited";
   /** at least two tones → hover-swap "image" */
   imageTones: [Tone, Tone];
