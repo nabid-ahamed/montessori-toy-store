@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   Menu,
@@ -25,8 +25,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Separator } from "@/components/ui/separator";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { mainNav, ageNav, categoryNav, type NavLink } from "@/lib/mock/nav";
 import { BRAND_NAME } from "@/lib/config";
+import { cn } from "@/lib/utils";
 
 function SearchBox({ className }: { className?: string }) {
   return (
@@ -47,9 +54,9 @@ function SearchBox({ className }: { className?: string }) {
 function NavDropdown({ label, links }: { label: string; links: NavLink[] }) {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="group/nav inline-flex items-center gap-1 text-[15px] font-medium text-ink outline-none transition-all duration-200 hover:-translate-y-0.5 hover:text-neem-deep data-[state=open]:text-neem-deep">
+      <DropdownMenuTrigger className="group/nav inline-flex items-center gap-1 text-[15px] font-medium text-ink outline-none transition-colors duration-200 hover:text-neem-deep data-[state=open]:text-neem-deep">
         {label}
-        <ChevronDown className="size-4 transition-transform duration-200 group-hover/nav:translate-y-0.5 group-data-[state=open]/nav:rotate-180" />
+        <ChevronDown className="size-4 transition-transform duration-200 group-data-[state=open]/nav:rotate-180" />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="min-w-44">
         {links.map((l) => (
@@ -59,6 +66,30 @@ function NavDropdown({ label, links }: { label: string; links: NavLink[] }) {
         ))}
       </DropdownMenuContent>
     </DropdownMenu>
+  );
+}
+
+function DrawerList({
+  links,
+  onNavigate,
+}: {
+  links: NavLink[];
+  onNavigate: () => void;
+}) {
+  return (
+    <ul className="space-y-0.5">
+      {links.map((l) => (
+        <li key={l.href}>
+          <Link
+            href={l.href}
+            onClick={onNavigate}
+            className="block rounded-md px-2 py-2 text-ink-muted hover:bg-cream-200 hover:text-ink"
+          >
+            {l.labelBn}
+          </Link>
+        </li>
+      ))}
+    </ul>
   );
 }
 
@@ -73,34 +104,67 @@ function DrawerSection({
 }) {
   return (
     <div className="py-2">
-      <p className="px-1 pb-1 font-display text-sm font-semibold text-wood-deep">
+      <p className="px-2 pb-1 font-display text-sm font-semibold text-wood-deep">
         {title}
       </p>
-      <ul>
-        {links.map((l) => (
-          <li key={l.href}>
-            <Link
-              href={l.href}
-              onClick={onNavigate}
-              className="block rounded-md px-1 py-1.5 text-ink-muted hover:bg-cream-200 hover:text-ink"
-            >
-              {l.labelBn}
-            </Link>
-          </li>
-        ))}
-      </ul>
+      <DrawerList links={links} onNavigate={onNavigate} />
     </div>
   );
 }
 
 export function Header() {
   const [open, setOpen] = useState(false);
+  // On scroll-down the search hides and the header shrinks; near the top it
+  // expands again.
+  //
+  // WHY THIS DOESN'T "JUMP": collapse changes the header's layout height, which
+  // reflows the page by ~48px. To stop that reflow from bouncing scrollY back
+  // across the trigger (the previous infinite-flicker bug), we use HYSTERESIS —
+  // two thresholds far apart:
+  //   collapse only when scrollY > 120
+  //   expand   only when scrollY <  40
+  // The 80px dead-zone between them is wider than the ~48px reflow, so the
+  // height change can never cross both thresholds -> no oscillation, just one
+  // smooth condense.
+  const [collapsed, setCollapsed] = useState(false);
   const close = () => setOpen(false);
 
+  useEffect(() => {
+    let ticking = false;
+    const update = () => {
+      const y = window.scrollY;
+      setCollapsed((prev) => {
+        if (!prev && y > 120) return true; // collapse
+        if (prev && y < 40) return false; // expand
+        return prev; // dead-zone: keep current state
+      });
+      ticking = false;
+    };
+    const onScroll = () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(update);
+      }
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    update();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
-    <header className="sticky top-0 z-50 bg-background">
-      {/* top bar */}
-      <div className="mx-auto flex h-20 max-w-6xl items-center gap-4 px-4 sm:px-6 md:h-24">
+    <header
+      className={cn(
+        "sticky top-0 z-50 bg-background pb-3 transition-shadow duration-300",
+        collapsed && "shadow-md",
+      )}
+    >
+      {/* top bar — brand, search, icons. Height shrinks on collapse. */}
+      <div
+        className={cn(
+          "mx-auto flex max-w-6xl items-center gap-4 px-4 transition-all duration-300 sm:px-6",
+          collapsed ? "h-16" : "h-20 md:h-24",
+        )}
+      >
         {/* left: hamburger (mobile) + brand */}
         <div className="flex items-center gap-1">
           <Sheet open={open} onOpenChange={setOpen}>
@@ -122,14 +186,29 @@ export function Header() {
               </SheetHeader>
               <div className="overflow-y-auto px-4 pb-8">
                 <SearchBox className="py-3" />
-                <DrawerSection title="By Age" links={ageNav} onNavigate={close} />
-                <Separator className="my-1" />
-                <DrawerSection
-                  title="By Category"
-                  links={categoryNav}
-                  onNavigate={close}
-                />
-                <Separator className="my-1" />
+
+                {/* Collapsible sections — only one open at a time (type=single) */}
+                <Accordion type="single" collapsible className="w-full">
+                  <AccordionItem value="age" className="border-cream-300">
+                    <AccordionTrigger className="px-2 font-display text-sm font-semibold text-wood-deep hover:no-underline">
+                      By Age
+                    </AccordionTrigger>
+                    <AccordionContent className="pb-1">
+                      <DrawerList links={ageNav} onNavigate={close} />
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="category" className="border-cream-300">
+                    <AccordionTrigger className="px-2 font-display text-sm font-semibold text-wood-deep hover:no-underline">
+                      By Category
+                    </AccordionTrigger>
+                    <AccordionContent className="pb-1">
+                      <DrawerList links={categoryNav} onNavigate={close} />
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+
+                <Separator className="my-2" />
                 <DrawerSection title="More" links={mainNav} onNavigate={close} />
               </div>
             </SheetContent>
@@ -143,11 +222,18 @@ export function Header() {
           </Link>
         </div>
 
-        {/* center: search (desktop) */}
-        <SearchBox className="mx-auto hidden w-full max-w-md md:block" />
+        {/* center: search (desktop) — width + opacity collapse on scroll-down */}
+        <div
+          className={cn(
+            "mx-auto hidden min-w-0 overflow-hidden transition-all duration-300 md:block",
+            collapsed ? "max-w-0 opacity-0" : "w-full max-w-md opacity-100",
+          )}
+        >
+          <SearchBox className="w-full" />
+        </div>
 
         {/* right: search (mobile) + wishlist (desktop) + cart */}
-        <div className="ml-auto flex items-center gap-0.5 md:ml-0">
+        <div className="ml-auto flex items-center gap-0.5">
           <Button
             asChild
             variant="ghost"
@@ -170,7 +256,13 @@ export function Header() {
               <Heart className="size-5" />
             </Link>
           </Button>
-          <Button asChild variant="ghost" size="icon" aria-label="Cart" className="relative ml-2">
+          <Button
+            asChild
+            variant="ghost"
+            size="icon"
+            aria-label="Cart"
+            className="relative ml-2"
+          >
             <Link href="/cart">
               <ShoppingCart className="size-5" />
               <span className="absolute -right-0.5 -top-0.5 flex size-4 items-center justify-center rounded-full bg-neem text-[10px] font-semibold text-paper">
@@ -181,15 +273,23 @@ export function Header() {
         </div>
       </div>
 
-      {/* desktop nav row */}
+      {/* desktop nav row — shrinks its vertical padding on collapse */}
       <nav className="hidden border-t border-cream-300 md:block">
-        <div className="mx-auto flex max-w-6xl items-center justify-center gap-7 px-6 py-4">
-          <Link href="/" className="text-[15px] font-medium text-ink transition-all duration-200 hover:-translate-y-0.5 hover:text-neem-deep">
+        <div
+          className={cn(
+            "mx-auto flex max-w-6xl items-center justify-center gap-10 px-6 transition-all duration-300 lg:gap-14",
+            collapsed ? "py-2" : "py-4",
+          )}
+        >
+          <Link
+            href="/"
+            className="text-[15px] font-medium text-ink transition-colors duration-200 hover:text-neem-deep"
+          >
             Home
           </Link>
           <Link
             href="/collections/all"
-            className="text-[15px] font-medium text-ink transition-all duration-200 hover:-translate-y-0.5 hover:text-neem-deep"
+            className="text-[15px] font-medium text-ink transition-colors duration-200 hover:text-neem-deep"
           >
             All Products
           </Link>
@@ -199,7 +299,7 @@ export function Header() {
             <Link
               key={l.href}
               href={l.href}
-              className="text-[15px] font-medium text-ink transition-all duration-200 hover:-translate-y-0.5 hover:text-neem-deep"
+              className="text-[15px] font-medium text-ink transition-colors duration-200 hover:text-neem-deep"
             >
               {l.labelBn}
             </Link>
