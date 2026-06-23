@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Star } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { AddToCartButton } from "@/components/cart/add-to-cart-button";
+import { WishlistButton } from "@/components/product/wishlist-button";
 import { PlaceholderImage } from "@/components/placeholder-image";
 import { ageTierBySlug } from "@/lib/mock/age-tiers";
 import { formatTk } from "@/lib/format";
@@ -44,7 +45,7 @@ export function ProductCard({ product }: { product: Product }) {
   const href = `/products/${product.slug}`;
 
   return (
-    <div className="group/card flex h-full flex-col overflow-hidden rounded-xl border border-cream-300 bg-card transition-shadow hover:shadow-md">
+    <div className="group/card relative flex h-full flex-col overflow-hidden rounded-xl border border-cream-300 bg-card transition-shadow hover:shadow-md">
       {/* image (hover-swap) */}
       <Link href={href} className="relative block aspect-square">
         <PlaceholderImage
@@ -58,17 +59,22 @@ export function ProductCard({ product }: { product: Product }) {
           className="absolute inset-0 size-full opacity-0 transition-opacity duration-300 group-hover/card:opacity-100"
         />
 
+        {/* badge — top-left */}
         {product.badge ? (
           <Badge className="absolute left-2.5 top-2.5 bg-neem text-paper">
             {product.badge}
           </Badge>
         ) : null}
+        {/* age pill — bottom-left (clear of the wishlist heart) */}
         {ageTier ? (
-          <span className="absolute right-2.5 top-2.5 rounded-full bg-paper/90 px-2 py-0.5 text-[11px] font-medium text-ink-muted">
+          <span className="absolute bottom-2.5 left-2.5 rounded-full bg-paper/90 px-2 py-0.5 text-[11px] font-medium text-ink-muted">
             {ageTier.labelBn}
           </span>
         ) : null}
       </Link>
+
+      {/* wishlist heart — top-right, sibling of the link to keep markup valid */}
+      <WishlistButton slug={product.slug} className="absolute right-2 top-2 z-10" />
 
       {/* body */}
       <div className="flex flex-1 flex-col p-3">
