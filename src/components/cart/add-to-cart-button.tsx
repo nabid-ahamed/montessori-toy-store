@@ -1,14 +1,16 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import { Check, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/lib/cart/cart-context";
 import { cn } from "@/lib/utils";
 
 /**
- * Adds a product to the cart and shows a brief "Added" confirmation. Kept as a
- * tiny client island so the surrounding ProductCard can stay a server component.
+ * Adds a product to the cart from a product card. State is derived from cart
+ * membership: once the product is in the cart the button locks to "Added" so it
+ * can't add duplicates or bump the quantity — quantity is only changed from the
+ * cart page's stepper. Tiny client island so ProductCard stays a server
+ * component.
  */
 export function AddToCartButton({
   slug,
@@ -17,30 +19,24 @@ export function AddToCartButton({
   slug: string;
   className?: string;
 }) {
-  const { addItem } = useCart();
-  const [added, setAdded] = useState(false);
-  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  useEffect(() => () => {
-    if (timer.current) clearTimeout(timer.current);
-  }, []);
-
-  const onClick = () => {
-    addItem(slug);
-    setAdded(true);
-    if (timer.current) clearTimeout(timer.current);
-    timer.current = setTimeout(() => setAdded(false), 1200);
-  };
+  const { items, addItem } = useCart();
+  const inCart = items.some((it) => it.product.slug === slug);
 
   return (
     <Button
       size="sm"
-      onClick={onClick}
-      aria-label="Add to cart"
-      className={cn(added && "bg-neem-deep", className)}
+      onClick={() => addItem(slug)}
+      disabled={inCart}
+      aria-label={inCart ? "Added to cart" : "Add to cart"}
+      // Keep full colour when locked (override the default disabled fade).
+      className={cn(inCart && "bg-neem-deep disabled:opacity-100", className)}
     >
-      {added ? <Check className="size-4" /> : <ShoppingCart className="size-4" />}
-      <span className="sr-only sm:not-sr-only">{added ? "Added" : "Add"}</span>
+      {inCart ? (
+        <Check className="size-4" />
+      ) : (
+        <ShoppingCart className="size-4" />
+      )}
+      <span className="sr-only sm:not-sr-only">{inCart ? "Added" : "Add"}</span>
     </Button>
   );
 }
