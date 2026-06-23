@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
   Menu,
   Search,
@@ -41,6 +42,48 @@ import { cn } from "@/lib/utils";
 const drawerItemClass =
   "px-2 py-2.5 text-sm font-medium text-ink transition-colors hover:text-neem-deep hover:no-underline";
 
+/** Is `href` the current page? Exact for "/", prefix-match for sections. */
+function isActivePath(pathname: string, href: string): boolean {
+  if (href === "/") return pathname === "/";
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
+
+// Premium desktop nav item: color shifts to neem on hover/active and an
+// accent underline grows from the centre. Shared by links and dropdowns so the
+// whole row animates identically. Layout/typography are unchanged.
+const navItemBase =
+  "group/navitem relative inline-flex items-center text-[15px] font-medium outline-none transition-colors duration-200 " +
+  "after:pointer-events-none after:absolute after:-bottom-1.5 after:left-0 after:h-0.5 after:w-full after:origin-center after:scale-x-0 after:rounded-full after:bg-neem after:transition-transform after:duration-300 after:ease-out " +
+  "hover:text-neem-deep hover:after:scale-x-100 focus-visible:text-neem-deep focus-visible:after:scale-x-100";
+
+/**
+ * Desktop top-level nav link. The active state is derived from the current
+ * route, so it always reflects the page you're on — navigating anywhere
+ * (including Home via the logo) updates it and it's never stuck on a past item.
+ */
+function NavItem({
+  href,
+  label,
+  active,
+}: {
+  href: string;
+  label: string;
+  active: boolean;
+}) {
+  return (
+    <Link
+      href={href}
+      aria-current={active ? "page" : undefined}
+      className={cn(
+        navItemBase,
+        active ? "text-neem-deep after:scale-x-100" : "text-ink",
+      )}
+    >
+      {label}
+    </Link>
+  );
+}
+
 function SearchBox({ className }: { className?: string }) {
   return (
     <form action="/search" className={className} role="search">
@@ -57,19 +100,48 @@ function SearchBox({ className }: { className?: string }) {
   );
 }
 
-function NavDropdown({ label, links }: { label: string; links: NavLink[] }) {
+function NavDropdown({
+  label,
+  links,
+  pathname,
+}: {
+  label: string;
+  links: NavLink[];
+  pathname: string;
+}) {
+  // A dropdown reads as active when the current route is one of its children.
+  const active = links.some((l) => isActivePath(pathname, l.href));
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="group/nav inline-flex items-center gap-1 text-[15px] font-medium text-ink outline-none transition-colors duration-200 hover:text-neem-deep data-[state=open]:text-neem-deep">
+      <DropdownMenuTrigger
+        className={cn(
+          navItemBase,
+          "gap-1 data-[state=open]:text-neem-deep data-[state=open]:after:scale-x-100",
+          active ? "text-neem-deep after:scale-x-100" : "text-ink",
+        )}
+        aria-current={active ? "page" : undefined}
+      >
         {label}
-        <ChevronDown className="size-4 transition-transform duration-200 group-data-[state=open]/nav:rotate-180" />
+        <ChevronDown className="size-4 transition-transform duration-200 group-data-[state=open]/navitem:rotate-180" />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="min-w-44">
-        {links.map((l) => (
-          <DropdownMenuItem key={l.href} asChild>
-            <Link href={l.href}>{l.labelBn}</Link>
-          </DropdownMenuItem>
-        ))}
+        {links.map((l) => {
+          const itemActive = isActivePath(pathname, l.href);
+          return (
+            <DropdownMenuItem key={l.href} asChild>
+              <Link
+                href={l.href}
+                aria-current={itemActive ? "page" : undefined}
+                className={cn(
+                  "cursor-pointer transition-colors",
+                  itemActive && "font-medium text-neem-deep",
+                )}
+              >
+                {l.labelBn}
+              </Link>
+            </DropdownMenuItem>
+          );
+        })}
       </DropdownMenuContent>
     </DropdownMenu>
   );
@@ -114,6 +186,9 @@ export function Header() {
   // height change can never cross both thresholds -> no oscillation, just one
   // smooth condense.
   const [collapsed, setCollapsed] = useState(false);
+  // Active nav item is derived from the current route, so it always tracks the
+  // page you're on (logo → Home included) and is never stuck on a past item.
+  const pathname = usePathname();
   const close = () => setOpen(false);
 
   useEffect(() => {
@@ -280,28 +355,29 @@ export function Header() {
             collapsed ? "py-2" : "py-4",
           )}
         >
-          <Link
+          <NavItem
             href="/"
-            className="text-[15px] font-medium text-ink transition-colors duration-200 hover:text-neem-deep"
-          >
-            Home
-          </Link>
-          <Link
+            label="Home"
+            active={isActivePath(pathname, "/")}
+          />
+          <NavItem
             href="/collections/all"
-            className="text-[15px] font-medium text-ink transition-colors duration-200 hover:text-neem-deep"
-          >
-            All Products
-          </Link>
-          <NavDropdown label="By Age" links={ageNav} />
-          <NavDropdown label="By Category" links={categoryNav} />
+            label="All Products"
+            active={isActivePath(pathname, "/collections/all")}
+          />
+          <NavDropdown label="By Age" links={ageNav} pathname={pathname} />
+          <NavDropdown
+            label="By Category"
+            links={categoryNav}
+            pathname={pathname}
+          />
           {mainNav.slice(2).map((l) => (
-            <Link
+            <NavItem
               key={l.href}
               href={l.href}
-              className="text-[15px] font-medium text-ink transition-colors duration-200 hover:text-neem-deep"
-            >
-              {l.labelBn}
-            </Link>
+              label={l.labelBn}
+              active={isActivePath(pathname, l.href)}
+            />
           ))}
         </div>
       </nav>
