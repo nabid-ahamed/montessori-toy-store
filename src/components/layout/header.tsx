@@ -231,7 +231,7 @@ export function Header() {
         </div>
 
         {/* right: search (mobile) + wishlist (desktop) + cart */}
-        <div className="ml-auto flex items-center gap-0.5">
+        <div className="ml-auto flex items-center gap-2 md:gap-4">
           <Button
             asChild
             variant="ghost"
@@ -240,7 +240,7 @@ export function Header() {
             aria-label="Search"
           >
             <Link href="/search">
-              <Search className="size-5" />
+              <Search className="size-6" />
             </Link>
           </Button>
           {/* Wishlist — visible on all sizes (mobile reaches Cart via the
@@ -252,7 +252,7 @@ export function Header() {
             aria-label="Wishlist"
           >
             <Link href="/wishlist" className="relative">
-              <Heart className="size-5" />
+              <Heart className="size-6" />
               <WishlistBadge className="absolute -right-0.5 -top-0.5 size-4" />
             </Link>
           </Button>
@@ -262,10 +262,10 @@ export function Header() {
             variant="ghost"
             size="icon"
             aria-label="Cart"
-            className="relative ml-2 hidden md:inline-flex"
+            className="relative hidden md:inline-flex"
           >
             <Link href="/cart">
-              <ShoppingCart className="size-5" />
+              <ShoppingCart className="size-6" />
               <CartBadge className="absolute -right-0.5 -top-0.5 size-4" />
             </Link>
           </Button>
