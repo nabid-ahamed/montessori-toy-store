@@ -189,3 +189,23 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Hero "Ken Burns" — slow, continuous zoom. GPU-only transform (no layout
+   work), and disabled when the user prefers reduced motion. */
+@keyframes kenburns {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.05);
+  }
+}
+.animate-kenburns {
+  animation: kenburns 18s ease-in-out infinite alternate;
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-kenburns {
+    animation: none;
+  }
+}
