@@ -90,6 +90,13 @@ export function ProductCard({ product }: { product: Product }) {
           <span className="text-xs text-ink-soft">({product.reviewCount})</span>
         </div>
 
+        {/* gift-kit "what's inside" — only rendered for products that have it */}
+        {product.kitContents?.length ? (
+          <p className="mt-1.5 line-clamp-1 text-xs text-ink-soft">
+            Includes: {product.kitContents.join(" · ")}
+          </p>
+        ) : null}
+
         {/* variant swatches */}
         {product.variants?.length ? (
           <div className="mt-2 flex items-center gap-1.5">
