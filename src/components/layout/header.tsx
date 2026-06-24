@@ -232,20 +232,69 @@ export function Header() {
           collapsed ? "h-20 md:h-16" : "h-20 md:h-24",
         )}
       >
-        {/* left: hamburger (mobile) + brand */}
-        <div className="flex items-center gap-1">
+        {/* left: brand */}
+        <div className="flex items-center">
+          <Link
+            href="/"
+            className="font-display text-2xl font-bold tracking-tight text-ink sm:text-3xl"
+          >
+            {BRAND_NAME}
+          </Link>
+        </div>
+
+        {/* center: search (desktop) — width + opacity collapse on scroll-down */}
+        <div
+          className={cn(
+            "mx-auto hidden w-full min-w-0 overflow-hidden transition-all duration-300 ease-in-out md:block",
+            collapsed ? "max-w-0 opacity-0" : "max-w-md opacity-100",
+          )}
+        >
+          <SearchBox className="w-full" />
+        </div>
+
+        {/* right: wishlist (all sizes) + cart (desktop) + hamburger (mobile).
+            On mobile the order reads Wishlist -> Hamburger; search lives in the
+            drawer, so there's no standalone search icon. */}
+        <div className="ml-auto flex items-center gap-2 md:gap-4">
+          {/* Wishlist — visible on all sizes (mobile reaches Cart via the
+              bottom bar, so the header surfaces Wishlist instead). */}
+          <Button
+            asChild
+            variant="ghost"
+            size="icon"
+            aria-label="Wishlist"
+          >
+            <Link href="/wishlist" className="relative">
+              <Heart className="size-6" />
+              <WishlistBadge className="absolute -right-0.5 -top-0.5 size-4" />
+            </Link>
+          </Button>
+          {/* Cart — desktop only (mobile uses the fixed bottom bar). */}
+          <Button
+            asChild
+            variant="ghost"
+            size="icon"
+            aria-label="Cart"
+            className="relative hidden md:inline-flex"
+          >
+            <Link href="/cart">
+              <ShoppingCart className="size-6" />
+              <CartBadge className="absolute -right-0.5 -top-0.5 size-4" />
+            </Link>
+          </Button>
+          {/* Hamburger — mobile only, sits after the wishlist on the right. */}
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
               <Button
                 variant="ghost"
                 size="icon"
-                className="-ml-2 md:hidden"
+                className="md:hidden"
                 aria-label="Open menu"
               >
-                <Menu className="size-5" />
+                <Menu className="size-6" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-[300px] p-0">
+            <SheetContent side="right" className="w-[300px] p-0">
               <SheetHeader className="border-b border-cream-300">
                 <SheetTitle className="font-display text-xl text-ink">
                   {BRAND_NAME}
@@ -291,54 +340,6 @@ export function Header() {
               </div>
             </SheetContent>
           </Sheet>
-
-          <Link
-            href="/"
-            className="font-display text-2xl font-bold tracking-tight text-ink sm:text-3xl"
-          >
-            {BRAND_NAME}
-          </Link>
-        </div>
-
-        {/* center: search (desktop) — width + opacity collapse on scroll-down */}
-        <div
-          className={cn(
-            "mx-auto hidden w-full min-w-0 overflow-hidden transition-all duration-300 ease-in-out md:block",
-            collapsed ? "max-w-0 opacity-0" : "max-w-md opacity-100",
-          )}
-        >
-          <SearchBox className="w-full" />
-        </div>
-
-        {/* right: wishlist (all sizes) + cart (desktop). Mobile search lives
-            in the hamburger drawer, so no standalone search icon here. */}
-        <div className="ml-auto flex items-center gap-2 md:gap-4">
-          {/* Wishlist — visible on all sizes (mobile reaches Cart via the
-              bottom bar, so the header surfaces Wishlist instead). */}
-          <Button
-            asChild
-            variant="ghost"
-            size="icon"
-            aria-label="Wishlist"
-          >
-            <Link href="/wishlist" className="relative">
-              <Heart className="size-6" />
-              <WishlistBadge className="absolute -right-0.5 -top-0.5 size-4" />
-            </Link>
-          </Button>
-          {/* Cart — desktop only (mobile uses the fixed bottom bar). */}
-          <Button
-            asChild
-            variant="ghost"
-            size="icon"
-            aria-label="Cart"
-            className="relative hidden md:inline-flex"
-          >
-            <Link href="/cart">
-              <ShoppingCart className="size-6" />
-              <CartBadge className="absolute -right-0.5 -top-0.5 size-4" />
-            </Link>
-          </Button>
         </div>
       </div>
 
