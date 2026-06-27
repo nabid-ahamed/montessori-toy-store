@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -9,9 +9,11 @@ import {
   ShoppingCart,
   Heart,
   ChevronDown,
+  User,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PlaceholderImage } from "@/components/placeholder-image";
 import {
   Sheet,
   SheetContent,
@@ -25,6 +27,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { formatTk } from "@/lib/format";
 import {
   Accordion,
   AccordionContent,
@@ -32,6 +35,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { mainNav, ageNav, categoryNav, type NavLink } from "@/lib/mock/nav";
+import { products } from "@/lib/mock/products";
 import { BRAND_NAME } from "@/lib/config";
 import { CartBadge } from "@/components/cart/cart-badge";
 import { WishlistBadge } from "@/components/product/wishlist-badge";
@@ -85,18 +89,85 @@ function NavItem({
 }
 
 function SearchBox({ className }: { className?: string }) {
+  const [query, setQuery] = useState("");
+  const [active, setActive] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const results = useMemo(() => {
+    const normalized = query.trim().toLowerCase();
+    if (!normalized) return [];
+    return products.filter((product) =>
+      product.titleBn.toLowerCase().includes(normalized),
+    );
+  }, [query]);
+
+  const showDropdown = active && query.trim().length > 0;
+
+  const handleBlur = (event: React.FocusEvent<HTMLDivElement>) => {
+    if (!containerRef.current?.contains(event.relatedTarget as Node)) {
+      setActive(false);
+    }
+  };
+
   return (
-    <form action="/search" className={className} role="search">
-      <div className="relative">
+    <div
+      ref={containerRef}
+      onBlur={handleBlur}
+      className={className}
+      role="search"
+    >
+      <form
+        onSubmit={(event) => event.preventDefault()}
+        className="relative"
+      >
         <Search className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-ink-soft" />
         <Input
-          name="q"
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+          onFocus={() => setActive(true)}
           placeholder="Search toys…"
           aria-label="Search"
           className="h-9 bg-cream-50 pl-8"
         />
-      </div>
-    </form>
+      </form>
+
+      {showDropdown ? (
+        <div className="absolute left-0 right-0 z-40 mt-2 max-h-80 overflow-hidden rounded-3xl border border-cream-300 bg-paper shadow-xl shadow-ink/5">
+          <div className="max-h-80 overflow-y-auto">
+            {results.length ? (
+              results.map((product) => (
+                <Link
+                  key={product.slug}
+                  href={`/products/${product.slug}`}
+                  className="group flex items-center gap-3 border-b border-cream-200 px-3 py-3 last:border-b-0 transition-colors hover:bg-cream-100"
+                  onClick={() => setActive(false)}
+                >
+                  <div className="relative h-14 w-14 overflow-hidden rounded-2xl bg-cream-100">
+                    <PlaceholderImage
+                      tone={product.imageTones[0]}
+                      label={product.imageLabelBn}
+                      className="h-full w-full"
+                    />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="line-clamp-2 text-sm font-medium text-ink">
+                      {product.titleBn}
+                    </p>
+                    <p className="mt-1 text-sm text-ink-soft">
+                      {formatTk(product.price)}
+                    </p>
+                  </div>
+                </Link>
+              ))
+            ) : (
+              <div className="px-4 py-4 text-sm text-ink-muted">
+                No products found.
+              </div>
+            )}
+          </div>
+        </div>
+      ) : null}
+    </div>
   );
 }
 
@@ -274,6 +345,17 @@ export function Header() {
             asChild
             variant="ghost"
             size="icon"
+            aria-label="Sign in"
+            className="relative hidden md:inline-flex"
+          >
+            <Link href="/signin" className="flex items-center gap-2">
+              <User className="size-6" />
+            </Link>
+          </Button>
+          <Button
+            asChild
+            variant="ghost"
+            size="icon"
             aria-label="Cart"
             className="relative hidden md:inline-flex"
           >
@@ -336,6 +418,13 @@ export function Header() {
                       {l.labelBn}
                     </Link>
                   ))}
+                  <Link
+                    href="/signin"
+                    onClick={close}
+                    className={drawerItemClass}
+                  >
+                    Sign In
+                  </Link>
                 </nav>
               </div>
             </SheetContent>
