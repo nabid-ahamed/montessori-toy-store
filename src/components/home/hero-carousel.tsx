@@ -54,7 +54,11 @@ export function HeroCarousel() {
                   no cropping or letterboxing. The image slowly zooms (Ken
                   Burns) via a GPU-only CSS transform; overflow-hidden clips the
                   zoom. */}
-              <div className="relative block aspect-video w-full overflow-hidden">
+              <motion.div
+                className="relative block aspect-video w-full overflow-hidden"
+                whileHover={{ scale: 1.02 }}
+                transition={{ duration: 0.45, ease: "easeOut" }}
+              >
                 <Image
                   src={s.image}
                   alt=""
@@ -63,7 +67,7 @@ export function HeroCarousel() {
                   sizes="100vw"
                   className="animate-kenburns object-cover"
                 />
-              </div>
+              </motion.div>
             </CarouselItem>
           ))}
         </CarouselContent>
@@ -82,13 +86,35 @@ export function HeroCarousel() {
           transition={{ duration: 0.6, ease: "easeOut", delay: 0.3 }}
           className="pointer-events-auto"
         >
-          <Link
-            href={heroSlides[selected]?.href ?? "/collections/all"}
-            className="group inline-flex items-center gap-2 rounded-full bg-neem px-6 py-3 text-xs font-semibold uppercase tracking-[0.1em] text-paper shadow-md transition-all duration-300 ease-out hover:bg-neem-deep hover:shadow-lg sm:px-7 sm:text-sm"
+          <motion.div
+            className="relative"
+            animate={{ y: [0, -4, 0], rotate: [0, 0.2, 0] }}
+            transition={{ duration: 4.2, repeat: Infinity, repeatType: "mirror", ease: "easeInOut" }}
+            whileHover={{ scale: 1.05, y: -5, boxShadow: "0 20px 45px rgba(83, 117, 57, 0.26)" }}
+            whileTap={{ scale: 0.98 }}
           >
-            Shop Now
-            <ArrowRight className="size-4 transition-transform duration-300 ease-out group-hover:translate-x-1" />
-          </Link>
+            <div className="absolute inset-x-3 -bottom-2 h-3 rounded-full bg-neem/25 blur-xl" />
+            <Link
+              href={heroSlides[selected]?.href ?? "/collections/all"}
+              className="group relative inline-flex items-center overflow-hidden rounded-full border border-white/20 bg-[linear-gradient(135deg,#8fb466_0%,#5f7e3d_100%)] px-7 py-3.5 text-xs font-semibold uppercase tracking-[0.1em] text-paper shadow-[0_14px_34px_rgba(83,117,57,0.24)] transition-all duration-300 ease-out hover:bg-[linear-gradient(135deg,#9cc56f_0%,#6d8f45_100%)] sm:px-8 sm:py-4 sm:text-sm"
+            >
+              <motion.span
+                className="absolute inset-0 rounded-full bg-[linear-gradient(110deg,transparent_0%,rgba(255,255,255,0.35)_45%,transparent_100%)]"
+                animate={{ x: ["-140%", "140%"] }}
+                transition={{ duration: 3.8, repeat: Infinity, repeatDelay: 2.4, ease: "linear" }}
+              />
+              <span className="relative z-10 inline-flex items-center gap-2">
+                Shop Now
+                <motion.span
+                  className="inline-flex"
+                  whileHover={{ x: 4 }}
+                  transition={{ duration: 0.25, ease: "easeOut" }}
+                >
+                  <ArrowRight className="size-4" />
+                </motion.span>
+              </span>
+            </Link>
+          </motion.div>
         </motion.div>
       </div>
 

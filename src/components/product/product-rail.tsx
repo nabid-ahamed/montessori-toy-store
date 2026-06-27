@@ -45,7 +45,7 @@ export function ProductRail({
         </div>
       ) : null}
       <Carousel opts={{ align: "start", loop: false }} className="w-full">
-        <CarouselContent className="-ml-3">
+        <CarouselContent className="-ml-3 overflow-visible">
           {products.map((p) => (
             <CarouselItem
               key={p.slug}
