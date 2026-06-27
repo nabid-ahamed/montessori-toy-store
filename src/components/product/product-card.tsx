@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { motion, type Transition } from "framer-motion";
 import { Star } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { AddToCartButton } from "@/components/cart/add-to-cart-button";
@@ -19,6 +22,27 @@ const swatchBg: Record<Tone, string> = {
   mustard: "bg-mustard",
   "dusty-blue": "bg-dusty-blue",
   blush: "bg-blush",
+};
+
+const cardHoverTransition: Transition = { duration: 0.32, ease: [0.22, 1, 0.36, 1] };
+const cardVariants = {
+  rest: { y: 0, scale: 1, zIndex: 0 },
+  hover: { y: -8, scale: 1.03, zIndex: 20 },
+};
+
+const imageVariants = {
+  rest: { scale: 1 },
+  hover: { scale: 1.08 },
+};
+
+const actionVariants = {
+  rest: { opacity: 0.96, y: 8 },
+  hover: { opacity: 1, y: 0 },
+};
+
+const wishlistVariants = {
+  rest: { scale: 1 },
+  hover: { scale: 1.05 },
 };
 
 function Stars({ rating }: { rating: number }) {
@@ -45,19 +69,35 @@ export function ProductCard({ product }: { product: Product }) {
   const href = `/products/${product.slug}`;
 
   return (
-    <div className="group/card relative flex h-full flex-col overflow-hidden rounded-xl border border-cream-300 bg-card transition-shadow hover:shadow-md">
+    <motion.div
+      className="group/card isolate relative z-0 flex h-full flex-col overflow-visible rounded-xl border border-cream-300 bg-card transition-all duration-300"
+      variants={cardVariants}
+      initial="rest"
+      whileHover="hover"
+      animate="rest"
+      transition={cardHoverTransition}
+      style={{ willChange: "transform" }}
+    >
       {/* image (hover-swap) */}
-      <Link href={href} className="relative block aspect-square">
-        <PlaceholderImage
-          tone={product.imageTones[0]}
-          label={product.imageLabelBn}
-          className="absolute inset-0 size-full transition-opacity duration-300 group-hover/card:opacity-0"
-        />
-        <PlaceholderImage
-          tone={product.imageTones[1]}
-          label={product.imageLabelBn}
-          className="absolute inset-0 size-full opacity-0 transition-opacity duration-300 group-hover/card:opacity-100"
-        />
+      <Link href={href} className="relative block aspect-square overflow-hidden">
+        <motion.div
+          className="absolute inset-0"
+          variants={imageVariants}
+          initial="rest"
+          whileHover="hover"
+          transition={cardHoverTransition}
+        >
+          <PlaceholderImage
+            tone={product.imageTones[0]}
+            label={product.imageLabelBn}
+            className="absolute inset-0 size-full transition-opacity duration-300 group-hover/card:opacity-0"
+          />
+          <PlaceholderImage
+            tone={product.imageTones[1]}
+            label={product.imageLabelBn}
+            className="absolute inset-0 size-full opacity-0 transition-opacity duration-300 group-hover/card:opacity-100"
+          />
+        </motion.div>
 
         {/* badge — top-left */}
         {product.badge ? (
@@ -74,13 +114,19 @@ export function ProductCard({ product }: { product: Product }) {
       </Link>
 
       {/* wishlist heart — top-right, sibling of the link to keep markup valid */}
-      <WishlistButton slug={product.slug} className="absolute right-2 top-2 z-10" />
+      <motion.div
+        className="absolute right-2 top-2 z-10"
+        variants={wishlistVariants}
+        transition={cardHoverTransition}
+      >
+        <WishlistButton slug={product.slug} className="transition-transform duration-300" />
+      </motion.div>
 
       {/* body */}
       <div className="flex flex-1 flex-col p-3">
         <Link
           href={href}
-          className="line-clamp-2 font-medium text-ink hover:text-neem-deep"
+          className="line-clamp-2 font-medium text-ink transition-colors duration-300 hover:text-neem-deep"
         >
           {product.titleBn}
         </Link>
@@ -105,7 +151,7 @@ export function ProductCard({ product }: { product: Product }) {
                 key={v.name}
                 title={v.name}
                 className={cn(
-                  "size-4 rounded-full border border-cream-300",
+                  "size-4 rounded-full border border-cream-300 transition-shadow duration-300",
                   swatchBg[v.tone],
                 )}
               />
@@ -114,7 +160,11 @@ export function ProductCard({ product }: { product: Product }) {
         ) : null}
 
         {/* price + cart */}
-        <div className="mt-auto flex items-end justify-between gap-2 pt-3">
+        <motion.div
+          className="mt-auto flex items-end justify-between gap-2 pt-3"
+          variants={actionVariants}
+          transition={cardHoverTransition}
+        >
           <div className="flex flex-col">
             <span className="font-display text-lg font-bold text-ink">
               {formatTk(product.price)}
@@ -125,9 +175,15 @@ export function ProductCard({ product }: { product: Product }) {
               </span>
             ) : null}
           </div>
-          <AddToCartButton slug={product.slug} title={product.titleBn} />
-        </div>
+          <motion.div
+            variants={actionVariants}
+            transition={cardHoverTransition}
+            className="transition-all duration-300"
+          >
+            <AddToCartButton slug={product.slug} title={product.titleBn} />
+          </motion.div>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 }
