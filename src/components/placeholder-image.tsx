@@ -30,7 +30,7 @@ export function PlaceholderImage({ tone = "cream", label, className }: Props) {
       role="img"
       aria-label={label ? `${label} (placeholder)` : "placeholder"}
       className={cn(
-        "flex select-none items-center justify-center overflow-hidden",
+        "flex select-none items-center justify-center overflow-visible",
         toneClass[tone],
         className,
       )}

@@ -70,7 +70,7 @@ export function ProductCard({ product }: { product: Product }) {
 
   return (
     <motion.div
-      className="group/card isolate relative z-0 flex h-full flex-col overflow-visible rounded-xl border border-cream-300 bg-card transition-all duration-300"
+      className="group/card isolate relative z-0 overflow-visible p-1 sm:p-1.5"
       variants={cardVariants}
       initial="rest"
       whileHover="hover"
@@ -78,26 +78,27 @@ export function ProductCard({ product }: { product: Product }) {
       transition={cardHoverTransition}
       style={{ willChange: "transform" }}
     >
-      {/* image (hover-swap) */}
-      <Link href={href} className="relative block aspect-square overflow-hidden">
-        <motion.div
-          className="absolute inset-0"
-          variants={imageVariants}
-          initial="rest"
-          whileHover="hover"
-          transition={cardHoverTransition}
-        >
-          <PlaceholderImage
-            tone={product.imageTones[0]}
-            label={product.imageLabelBn}
-            className="absolute inset-0 size-full transition-opacity duration-300 group-hover/card:opacity-0"
-          />
-          <PlaceholderImage
-            tone={product.imageTones[1]}
-            label={product.imageLabelBn}
-            className="absolute inset-0 size-full opacity-0 transition-opacity duration-300 group-hover/card:opacity-100"
-          />
-        </motion.div>
+      <div className="relative flex h-full flex-col overflow-hidden rounded-xl border border-cream-300 bg-card transition-all duration-300">
+        {/* image (hover-swap) */}
+        <Link href={href} className="relative block aspect-square overflow-hidden rounded-t-xl">
+          <motion.div
+            className="absolute inset-0"
+            variants={imageVariants}
+            initial="rest"
+            whileHover="hover"
+            transition={cardHoverTransition}
+          >
+            <PlaceholderImage
+              tone={product.imageTones[0]}
+              label={product.imageLabelBn}
+              className="absolute inset-0 size-full transition-opacity duration-300 group-hover/card:opacity-0"
+            />
+            <PlaceholderImage
+              tone={product.imageTones[1]}
+              label={product.imageLabelBn}
+              className="absolute inset-0 size-full opacity-0 transition-opacity duration-300 group-hover/card:opacity-100"
+            />
+          </motion.div>
 
         {/* badge — top-left */}
         {product.badge ? (
@@ -123,7 +124,7 @@ export function ProductCard({ product }: { product: Product }) {
       </motion.div>
 
       {/* body */}
-      <div className="flex flex-1 flex-col p-3">
+      <div className="flex flex-1 flex-col px-3 pb-4 pt-3">
         <Link
           href={href}
           className="line-clamp-2 font-medium text-ink transition-colors duration-300 hover:text-neem-deep"
@@ -161,11 +162,11 @@ export function ProductCard({ product }: { product: Product }) {
 
         {/* price + cart */}
         <motion.div
-          className="mt-auto flex items-end justify-between gap-2 pt-3"
+          className="mt-auto flex items-end justify-between gap-3 pt-4 pb-1"
           variants={actionVariants}
           transition={cardHoverTransition}
         >
-          <div className="flex flex-col">
+          <div className="flex min-w-0 flex-col">
             <span className="font-display text-lg font-bold text-ink">
               {formatTk(product.price)}
             </span>
@@ -178,12 +179,13 @@ export function ProductCard({ product }: { product: Product }) {
           <motion.div
             variants={actionVariants}
             transition={cardHoverTransition}
-            className="transition-all duration-300"
+            className="ml-auto flex-shrink-0 transition-all duration-300"
           >
             <AddToCartButton slug={product.slug} title={product.titleBn} />
           </motion.div>
         </motion.div>
       </div>
+    </div>
     </motion.div>
   );
 }

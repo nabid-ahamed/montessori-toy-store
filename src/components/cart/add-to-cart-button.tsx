@@ -35,77 +35,74 @@ function CartAddedPopup({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-[1000] flex items-center justify-center bg-slate-950/40 backdrop-blur-sm"
+        className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/55 backdrop-blur-sm"
       >
         <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
+          initial={{ opacity: 0, scale: 0.88 }}
           animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.95 }}
+          exit={{ opacity: 0, scale: 0.96 }}
           transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-          className="relative mx-4 flex max-w-md flex-col items-center gap-6 rounded-[2rem] border border-white/10 bg-[#0F1420]/95 px-8 py-10 text-center shadow-[0_32px_120px_-24px_rgba(0,0,0,0.65)]"
+          className="relative mx-4 flex max-w-md flex-col items-center gap-8 rounded-[1.75rem] border border-slate-200 bg-paper px-8 py-10 text-center shadow-[0_30px_80px_-30px_rgba(15,23,42,0.22)]"
         >
-          <div className="relative flex h-32 w-32 items-center justify-center rounded-full bg-slate-900/80 shadow-[0_0_0_8px_rgba(30,41,59,0.2)] ring-1 ring-white/10">
+          <div className="relative flex h-24 w-24 items-center justify-center rounded-full bg-neem/10 shadow-[0_18px_50px_-24px_rgba(15,23,42,0.18)]">
             <motion.div
+              initial={{ scale: 0.88, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.35, ease: "easeOut" }}
+              className="absolute inset-0 rounded-full bg-gradient-to-br from-neem/15 to-slate-200/30"
+            />
+            <motion.div
+              className="relative flex h-16 w-16 items-center justify-center rounded-full bg-neem text-paper shadow-[0_12px_40px_-18px_rgba(15,23,42,0.25)]"
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.35, ease: "easeOut" }}
-              className="absolute inset-0 rounded-full bg-gradient-to-br from-neem to-slate-800 opacity-20 blur-2xl"
-            />
-            <motion.div
-              className="absolute inset-0 rounded-full border border-white/10"
-              animate={{ scale: [1, 1.1, 1], opacity: [0.6, 0.15, 0.6] }}
-              transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
-            />
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: [0.8, 1, 0.95], opacity: [0, 1, 0.85] }}
-              transition={{ duration: 0.7, ease: "easeOut" }}
-              className="relative flex h-20 w-20 items-center justify-center rounded-full bg-neem text-paper shadow-[0_16px_80px_-36px_rgba(94,215,126,0.8)]"
             >
-              <Check className="size-10" />
+              <Check className="size-7" />
             </motion.div>
-
-            {particles.map((particle) => (
-              <motion.span
-                key={particle.id}
-                initial={{ opacity: 0, scale: 0.6, x: 0, y: 0 }}
-                animate={{
-                  opacity: [0, 1, 0],
-                  x: [0, particle.x],
-                  y: [0, particle.y],
-                  scale: [0.8, particle.scale],
-                }}
-                transition={{
-                  duration: 1.6,
-                  delay: particle.delay,
-                  ease: "easeOut",
-                  repeat: Infinity,
-                  repeatType: "mirror",
-                }}
-                className="absolute left-1/2 top-1/2 h-2 w-2 rounded-full bg-neem shadow-[0_0_18px_rgba(110,231,183,0.5)]"
-              />
-            ))}
           </div>
 
-          <div className="space-y-2 text-center">
-            <p className="text-sm uppercase tracking-[0.25em] text-neem-soft/70">
-              Added to Cart!
+          {particles.map((particle) => (
+            <motion.span
+              key={particle.id}
+              initial={{ opacity: 0, scale: 0.6, x: 0, y: 0 }}
+              animate={{
+                opacity: [0, 1, 0],
+                x: [0, particle.x],
+                y: [0, particle.y],
+                scale: [0.8, particle.scale],
+              }}
+              transition={{
+                duration: 1.6,
+                delay: particle.delay,
+                ease: "easeOut",
+                repeat: Infinity,
+                repeatType: "mirror",
+              }}
+              className="absolute left-1/2 top-1/2 h-2 w-2 rounded-full bg-neem shadow-[0_0_18px_rgba(110,231,183,0.5)]"
+            />
+          ))}
+
+          <div className="space-y-4 text-center">
+            <p className="text-xs uppercase tracking-[0.3em] text-slate-500">
+              Added to Cart
             </p>
-            <h2 className="text-3xl font-semibold text-paper">
+            <h2 className="text-3xl font-semibold text-slate-950">
               Added to Cart!
             </h2>
-            <p className="max-w-xs text-sm leading-6 text-slate-200/80">
+            <p className="mx-auto max-w-xs text-sm leading-7 text-slate-600">
               The item has been added to your cart.
             </p>
           </div>
 
           <div className="grid w-full gap-3 sm:grid-cols-2">
             <Link href="/cart" onClick={onClose} className="inline-flex">
-              <Button className="w-full">View Cart</Button>
+              <Button className="w-full bg-neem text-paper hover:bg-neem-deep focus-visible:ring-neem/40">
+                View Cart
+              </Button>
             </Link>
             <Button
               variant="outline"
-              className="w-full"
+              className="w-full border-slate-300 text-slate-700 hover:bg-slate-100 focus-visible:ring-slate-300"
               onClick={onClose}
             >
               Continue Shopping
@@ -163,14 +160,35 @@ export function AddToCartButton({
         onClick={onAdd}
         disabled={inCart}
         aria-label={inCart ? "Added to cart" : "Add to cart"}
-        className={cn(inCart && "bg-neem-deep disabled:opacity-100", className)}
-      >
-        {inCart ? (
-          <Check className="size-4" />
-        ) : (
-          <ShoppingCart className="size-4" />
+        className={cn(
+          "h-9 min-w-[118px] justify-center gap-2 px-3 text-[0.8rem] font-semibold",
+          inCart && "bg-neem-deep disabled:opacity-100",
+          className,
         )}
-        <span className="sr-only sm:not-sr-only">{inCart ? "Added" : "Add"}</span>
+      >
+        <motion.div
+          layout
+          transition={{ duration: 0.22, ease: "easeOut" }}
+          className="inline-flex items-center justify-center gap-2"
+        >
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.span
+              key={inCart ? "added" : "add"}
+              initial={{ opacity: 0, y: 4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4 }}
+              transition={{ duration: 0.18, ease: "easeOut" }}
+              className="inline-flex items-center gap-2"
+            >
+              {inCart ? (
+                <Check className="size-4" />
+              ) : (
+                <ShoppingCart className="size-4" />
+              )}
+              <span>{inCart ? "Added ✓" : "Add to Cart"}</span>
+            </motion.span>
+          </AnimatePresence>
+        </motion.div>
       </Button>
 
       {mounted && showPopup ? (
