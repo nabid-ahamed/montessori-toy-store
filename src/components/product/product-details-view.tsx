@@ -2,18 +2,46 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Check, Clock3, Heart, Minus, PackageCheck, Plus, Star, Truck } from "lucide-react";
+import {
+  Baby,
+  BadgeCheck,
+  CalendarClock,
+  Clock3,
+  FlaskConical,
+  Leaf,
+  Minus,
+  PackageCheck,
+  Plus,
+  Recycle,
+  ShieldCheck,
+  Star,
+  Truck,
+  Video,
+} from "lucide-react";
+import { Breadcrumb } from "@/components/breadcrumb";
 import { Button } from "@/components/ui/button";
-import { PlaceholderImage } from "@/components/placeholder-image";
+import { ProductGallery } from "@/components/product/product-gallery";
+import { ProductTabs } from "@/components/product/product-tabs";
+import { ProductReviews } from "@/components/product/product-reviews";
+import { ProductRail } from "@/components/product/product-rail";
 import { WishlistButton } from "@/components/product/wishlist-button";
 import { useCart } from "@/lib/cart/cart-context";
 import { formatTk } from "@/lib/format";
+import { certifications, videoCallBanner } from "@/lib/mock/trust";
 import { cn } from "@/lib/utils";
 import type { AgeTier, Category, Product, ProductDetail } from "@/lib/types";
 
+const certIcon = {
+  "shield-check": ShieldCheck,
+  leaf: Leaf,
+  baby: Baby,
+  recycle: Recycle,
+  "badge-check": BadgeCheck,
+  "flask-conical": FlaskConical,
+} as const;
+
 function Stars({ rating }: { rating: number }) {
   const rounded = Math.round(rating);
-
   return (
     <div className="flex items-center gap-1" aria-label={`Rating ${rating.toFixed(1)} out of 5`}>
       {Array.from({ length: 5 }).map((_, index) => (
@@ -29,48 +57,21 @@ function Stars({ rating }: { rating: number }) {
   );
 }
 
-function ProductImage({
-  src,
-  label,
-  tone,
-  className,
-}: {
-  src?: string;
-  label: string;
-  tone: Product["imageTones"][number];
-  className?: string;
-}) {
-  const [failed, setFailed] = useState(false);
-
-  if (!src || failed) {
-    return <PlaceholderImage tone={tone} label={label} className={className} />;
-  }
-
-  return (
-    <img
-      src={src}
-      alt={label}
-      onError={() => setFailed(true)}
-      className={cn("h-full w-full object-cover", className)}
-    />
-  );
-}
-
 export function ProductDetailsView({
   product,
   detail,
   ageTier,
   category,
+  related,
 }: {
   product: Product;
   detail: ProductDetail;
   ageTier?: AgeTier;
   category?: Category;
+  related: Product[];
 }) {
   const router = useRouter();
   const { addItem } = useCart();
-  const images = detail.imageSrcs.length ? detail.imageSrcs : [undefined, undefined];
-  const [activeImage, setActiveImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const discount = product.compareAtPrice
     ? Math.round(((product.compareAtPrice - product.price) / product.compareAtPrice) * 100)
@@ -84,41 +85,27 @@ export function ProductDetailsView({
 
   return (
     <main className="flex-1 bg-paper">
-      <section className="mx-auto grid w-full max-w-[92rem] gap-8 px-4 py-6 sm:px-6 sm:py-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(24rem,0.78fr)] lg:gap-12 lg:px-8">
-        <div className="space-y-4">
-          <div className="relative aspect-square overflow-hidden rounded-lg border border-cream-200 bg-cream-50">
-            <ProductImage
-              src={images[activeImage]}
-              label={product.imageLabelBn}
-              tone={product.imageTones[activeImage % product.imageTones.length]}
-              className="size-full"
-            />
-          </div>
+      {/* breadcrumb */}
+      <div className="mx-auto w-full max-w-[92rem] px-4 pt-5 sm:px-6 lg:px-8">
+        <Breadcrumb
+          items={[
+            { label: "Home", href: "/" },
+            { label: category?.nameBn ?? "Shop", href: category?.href },
+            { label: product.titleBn },
+          ]}
+        />
+      </div>
 
-          <div className="grid grid-cols-4 gap-3 sm:max-w-md">
-            {images.slice(0, 4).map((src, index) => (
-              <button
-                key={`${src ?? "placeholder"}-${index}`}
-                type="button"
-                onClick={() => setActiveImage(index)}
-                aria-label={`View product image ${index + 1}`}
-                className={cn(
-                  "aspect-square overflow-hidden rounded-md border bg-cream-50 transition",
-                  activeImage === index ? "border-neem ring-2 ring-neem/20" : "border-cream-200 hover:border-neem-soft",
-                )}
-              >
-                <ProductImage
-                  src={src}
-                  label={product.imageLabelBn}
-                  tone={product.imageTones[index % product.imageTones.length]}
-                  className="size-full"
-                />
-              </button>
-            ))}
-          </div>
-        </div>
+      {/* ===== top: gallery + purchase ===== */}
+      <section className="mx-auto grid w-full max-w-[92rem] gap-8 px-4 py-6 sm:px-6 sm:py-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(24rem,0.78fr)] lg:gap-12 lg:px-8">
+        <ProductGallery
+          images={detail.imageSrcs}
+          imageLabel={product.imageLabelBn}
+          imageTones={product.imageTones}
+        />
 
         <div className="flex flex-col py-1 lg:py-4">
+          {/* tags + wishlist */}
           <div className="flex items-start justify-between gap-4">
             <div className="flex flex-wrap gap-2">
               {ageTier ? (
@@ -140,6 +127,7 @@ export function ProductDetailsView({
             <WishlistButton slug={product.slug} className="border border-cream-200 bg-paper" />
           </div>
 
+          {/* rating */}
           <div className="mt-6 flex items-center gap-3">
             <Stars rating={product.rating} />
             <span className="text-base font-semibold text-ink-muted">
@@ -159,6 +147,7 @@ export function ProductDetailsView({
             300k+ babies growing with our product
           </p>
 
+          {/* price */}
           <div className="mt-5 flex flex-wrap items-end gap-3">
             {product.compareAtPrice ? (
               <span className="text-lg text-ink line-through">
@@ -176,11 +165,13 @@ export function ProductDetailsView({
           </div>
           <p className="mt-1 text-sm text-ink-muted">Taxes included.</p>
 
+          {/* offer / countdown */}
           <div className="mt-7 inline-flex w-fit items-center gap-2 rounded-full bg-mustard/65 px-5 py-3 text-sm font-extrabold uppercase text-danger shadow-[0_8px_24px_-14px_rgba(43,38,32,0.35)]">
             <Clock3 className="size-4" />
             Anniversary sale ends in: {detail.saleCountdown}
           </div>
 
+          {/* quantity + actions */}
           <div className="mt-7 grid gap-5">
             <div>
               <p className="mb-2 text-sm font-medium text-ink-muted">Quantity</p>
@@ -225,6 +216,7 @@ export function ProductDetailsView({
             </div>
           </div>
 
+          {/* delivery checker */}
           <div className="mt-7 rounded-lg border border-cream-200 bg-cream-50 p-4 shadow-sm">
             <div className="flex items-center gap-2 text-lg font-bold text-ink">
               <Truck className="size-5 text-neem" />
@@ -247,31 +239,69 @@ export function ProductDetailsView({
             </p>
           </div>
 
-          <div className="mt-7 grid gap-5 border-t border-cream-200 pt-6 sm:grid-cols-2">
-            <div>
-              <h2 className="font-display text-xl font-bold text-ink">Features</h2>
-              <ul className="mt-3 space-y-2 text-sm leading-6 text-ink-muted">
-                {detail.features.map((feature) => (
-                  <li key={feature} className="flex gap-2">
-                    <Check className="mt-0.5 size-4 flex-none text-neem" />
-                    <span>{feature}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <h2 className="font-display text-xl font-bold text-ink">Benefits</h2>
-              <ul className="mt-3 space-y-2 text-sm leading-6 text-ink-muted">
-                {detail.benefits.map((benefit) => (
-                  <li key={benefit} className="flex gap-2">
-                    <Heart className="mt-0.5 size-4 flex-none text-terracotta" />
-                    <span>{benefit}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+          {/* trust strip */}
+          <div className="mt-7 grid grid-cols-2 gap-3 border-t border-cream-200 pt-6 sm:grid-cols-3">
+            {certifications.map((cert) => {
+              const Icon = certIcon[cert.icon];
+              return (
+                <div key={cert.id} className="flex items-center gap-2.5">
+                  <span className="flex size-9 flex-none items-center justify-center rounded-full bg-neem/10 text-neem">
+                    <Icon className="size-4" />
+                  </span>
+                  <span className="text-xs font-medium leading-tight text-ink-muted">
+                    {cert.labelBn}
+                  </span>
+                </div>
+              );
+            })}
           </div>
         </div>
+      </section>
+
+      {/* ===== details tabs ===== */}
+      <section className="mx-auto w-full max-w-[92rem] border-t border-cream-200 px-4 py-10 sm:px-6 lg:px-8">
+        <ProductTabs detail={detail} />
+      </section>
+
+      {/* ===== video call banner ===== */}
+      <section className="mx-auto w-full max-w-[92rem] px-4 pb-2 sm:px-6 lg:px-8">
+        <div className="flex flex-col items-start gap-4 rounded-2xl bg-ink p-6 text-cream-200 sm:flex-row sm:items-center sm:justify-between sm:p-8">
+          <div className="flex items-start gap-4">
+            <span className="flex size-12 flex-none items-center justify-center rounded-full bg-neem/20 text-neem-soft">
+              <Video className="size-6" />
+            </span>
+            <div>
+              <h2 className="font-display text-xl font-bold text-paper sm:text-2xl">
+                {videoCallBanner.titleBn}
+              </h2>
+              <p className="mt-1 max-w-xl text-sm text-cream-300">{videoCallBanner.descBn}</p>
+            </div>
+          </div>
+          <Button
+            type="button"
+            asChild
+            className="h-12 shrink-0 gap-2 bg-blush px-6 text-ink hover:bg-blush/80"
+          >
+            <a href={videoCallBanner.href}>
+              <CalendarClock className="size-4" />
+              {videoCallBanner.ctaBn}
+            </a>
+          </Button>
+        </div>
+      </section>
+
+      {/* ===== related products ===== */}
+      <section className="mx-auto w-full max-w-[92rem] px-4 py-10 sm:px-6 lg:px-8">
+        <ProductRail title="You may also like" products={related} viewAllHref="/collections/all" />
+      </section>
+
+      {/* ===== reviews ===== */}
+      <section className="mx-auto w-full max-w-[92rem] px-4 pb-12 sm:px-6 lg:px-8">
+        <ProductReviews
+          reviews={detail.reviews ?? []}
+          rating={product.rating}
+          reviewCount={product.reviewCount}
+        />
       </section>
     </main>
   );

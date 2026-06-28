@@ -4,7 +4,7 @@ import { ProductDetailsView } from "@/components/product/product-details-view";
 import { BRAND_NAME } from "@/lib/config";
 import { ageTierBySlug } from "@/lib/mock/age-tiers";
 import { categoryBySlug } from "@/lib/mock/categories";
-import { productBySlug, productDetailBySlug, products } from "@/lib/mock/products";
+import { productBySlug, productDetailBySlug, products, relatedProducts } from "@/lib/mock/products";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -49,6 +49,7 @@ export default async function Page({
       detail={detail}
       ageTier={ageTierBySlug(product.ageTierSlug)}
       category={categoryBySlug(product.categorySlug)}
+      related={relatedProducts(product.slug)}
     />
   );
 }
