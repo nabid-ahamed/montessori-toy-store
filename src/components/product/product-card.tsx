@@ -70,7 +70,6 @@ function ProductImage({
   React.useEffect(() => {
     // Try common image extensions
     const extensions = [".png", ".jpg", ".jpeg", ".webp", ".gif"];
-    let attemptCount = 0;
 
     const tryExtension = (index: number) => {
       if (index >= extensions.length) {
@@ -111,7 +110,7 @@ function ProductImage({
     <img
       src={imagePath}
       alt={`${label} - Image ${imageNum}`}
-      className={cn("h-full w-full object-cover", className)}
+      className={cn("h-full w-full object-contain", className)}
     />
   );
 }
@@ -141,7 +140,7 @@ export function ProductCard({ product }: { product: Product }) {
 
   return (
     <motion.div
-      className="group/card isolate relative z-0 overflow-visible p-1 sm:p-1.5"
+      className="group/card isolate relative z-0 h-full overflow-visible p-0.5 sm:p-1.5"
       variants={cardVariants}
       initial="rest"
       whileHover="hover"
@@ -149,9 +148,9 @@ export function ProductCard({ product }: { product: Product }) {
       transition={cardHoverTransition}
       style={{ willChange: "transform" }}
     >
-      <div className="relative flex h-full flex-col overflow-hidden rounded-xl border border-cream-300 bg-card transition-all duration-300">
+      <div className="relative flex h-full min-w-0 flex-col overflow-hidden rounded-xl border border-cream-300 bg-card transition-all duration-300">
         {/* image (hover-swap) */}
-        <Link href={href} className="relative block aspect-square overflow-hidden rounded-t-xl">
+        <Link href={href} className="relative block aspect-[4/3] overflow-hidden rounded-t-xl bg-cream-100 sm:aspect-square">
           <motion.div
             className="absolute inset-0"
             variants={imageVariants}
@@ -165,7 +164,7 @@ export function ProductCard({ product }: { product: Product }) {
               imageNum={1}
               label={product.imageLabelBn}
               fallbackTone={product.imageTones[0]}
-              className="absolute inset-0 size-full transition-opacity duration-300 group-hover/card:opacity-0"
+              className="absolute inset-0 size-full p-2 transition-opacity duration-300 group-hover/card:opacity-0 sm:p-3"
             />
             {/* Hover image */}
             <ProductImage
@@ -173,19 +172,19 @@ export function ProductCard({ product }: { product: Product }) {
               imageNum={2}
               label={product.imageLabelBn}
               fallbackTone={product.imageTones[1]}
-              className="absolute inset-0 size-full opacity-0 transition-opacity duration-300 group-hover/card:opacity-100"
+              className="absolute inset-0 size-full p-2 opacity-0 transition-opacity duration-300 group-hover/card:opacity-100 sm:p-3"
             />
           </motion.div>
 
         {/* badge — top-left */}
         {product.badge ? (
-          <Badge className="absolute left-2.5 top-2.5 bg-neem text-paper">
+          <Badge className="absolute left-2 top-2 max-w-[calc(100%-3.5rem)] truncate bg-neem px-2 text-[10px] text-paper sm:left-2.5 sm:top-2.5 sm:text-xs">
             {product.badge}
           </Badge>
         ) : null}
         {/* age pill — bottom-left (clear of the wishlist heart) */}
         {ageTier ? (
-          <span className="absolute bottom-2.5 left-2.5 rounded-full bg-paper/90 px-2 py-0.5 text-[11px] font-medium text-ink-muted">
+          <span className="absolute bottom-2 left-2 max-w-[calc(100%-1rem)] truncate rounded-full bg-paper/90 px-2 py-0.5 text-[10px] font-medium text-ink-muted sm:bottom-2.5 sm:left-2.5 sm:text-[11px]">
             {ageTier.labelBn}
           </span>
         ) : null}
@@ -193,7 +192,7 @@ export function ProductCard({ product }: { product: Product }) {
 
       {/* wishlist heart — top-right, sibling of the link to keep markup valid */}
       <motion.div
-        className="absolute right-2 top-2 z-10"
+        className="absolute right-1.5 top-1.5 z-10 sm:right-2 sm:top-2"
         variants={wishlistVariants}
         transition={cardHoverTransition}
       >
@@ -201,15 +200,15 @@ export function ProductCard({ product }: { product: Product }) {
       </motion.div>
 
       {/* body */}
-      <div className="flex flex-1 flex-col px-3 pb-4 pt-3">
+      <div className="flex flex-1 min-w-0 flex-col px-2.5 pb-3 pt-2.5 sm:px-3 sm:pb-4 sm:pt-3">
         <Link
           href={href}
-          className="line-clamp-2 font-medium text-ink transition-colors duration-300 hover:text-neem-deep"
+          className="line-clamp-2 min-h-[2.5rem] text-sm font-medium leading-5 text-ink transition-colors duration-300 hover:text-neem-deep sm:min-h-0 sm:text-base sm:leading-6"
         >
           {product.titleBn}
         </Link>
 
-        <div className="mt-1.5 flex items-center gap-1.5">
+        <div className="mt-1.5 flex min-w-0 items-center gap-1.5">
           <Stars rating={product.rating} />
           <span className="text-xs text-ink-soft">({product.reviewCount})</span>
         </div>
@@ -223,7 +222,7 @@ export function ProductCard({ product }: { product: Product }) {
 
         {/* variant swatches */}
         {product.variants?.length ? (
-          <div className="mt-2 flex items-center gap-1.5">
+          <div className="mt-2 flex min-w-0 items-center gap-1.5">
             {product.variants.map((v) => (
               <span
                 key={v.name}
@@ -239,16 +238,16 @@ export function ProductCard({ product }: { product: Product }) {
 
         {/* price + cart */}
         <motion.div
-          className="mt-auto flex items-end justify-between gap-3 pt-4 pb-1"
+          className="mt-auto flex flex-col items-stretch gap-2 pb-0.5 pt-3 min-[420px]:flex-row min-[420px]:items-end min-[420px]:justify-between min-[420px]:gap-3 sm:pt-4"
           variants={actionVariants}
           transition={cardHoverTransition}
         >
-          <div className="flex min-w-0 flex-col">
-            <span className="font-display text-lg font-bold text-ink">
+          <div className="flex min-w-0 flex-row items-baseline gap-1.5 min-[420px]:flex-col min-[420px]:items-start min-[420px]:gap-0">
+            <span className="font-display text-base font-bold leading-none text-ink sm:text-lg">
               {formatTk(product.price)}
             </span>
             {product.compareAtPrice ? (
-              <span className="text-xs text-ink-soft line-through">
+              <span className="text-[11px] text-ink-soft line-through sm:text-xs">
                 {formatTk(product.compareAtPrice)}
               </span>
             ) : null}
@@ -256,9 +255,13 @@ export function ProductCard({ product }: { product: Product }) {
           <motion.div
             variants={actionVariants}
             transition={cardHoverTransition}
-            className="ml-auto flex-shrink-0 transition-all duration-300"
+            className="w-full flex-shrink-0 transition-all duration-300 min-[420px]:ml-auto min-[420px]:w-auto"
           >
-            <AddToCartButton slug={product.slug} title={product.titleBn} />
+            <AddToCartButton
+              slug={product.slug}
+              title={product.titleBn}
+              className="w-full min-w-0 px-2 text-[0.76rem] min-[420px]:min-w-[108px] sm:min-w-[118px] sm:px-3 sm:text-[0.8rem]"
+            />
           </motion.div>
         </motion.div>
       </div>

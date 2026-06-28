@@ -13,7 +13,7 @@ const icon = {
 /** Fixed bottom navigation — mobile only. */
 export function MobileBottomBar() {
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-cream-300 bg-background md:hidden">
+    <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-cream-300 bg-background pb-[env(safe-area-inset-bottom)] md:hidden">
       <ul className="mx-auto flex max-w-md items-stretch justify-around">
         {bottomNav.map((item) => {
           const Icon = icon[item.icon];

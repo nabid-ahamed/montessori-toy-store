@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
 import { Check, ShoppingCart } from "lucide-react";
@@ -9,6 +9,17 @@ import { Button } from "@/components/ui/button";
 import { useCart } from "@/lib/cart/cart-context";
 import { cn } from "@/lib/utils";
 
+const popupParticles = [
+  { id: 0, x: -96, y: -112, delay: 0.02, scale: 1.1 },
+  { id: 1, x: -62, y: -146, delay: 0.14, scale: 0.9 },
+  { id: 2, x: -22, y: -94, delay: 0.05, scale: 1.3 },
+  { id: 3, x: 28, y: -132, delay: 0.2, scale: 1 },
+  { id: 4, x: 74, y: -106, delay: 0.09, scale: 1.25 },
+  { id: 5, x: 108, y: -72, delay: 0.17, scale: 0.85 },
+  { id: 6, x: -112, y: -58, delay: 0.24, scale: 0.95 },
+  { id: 7, x: 46, y: -168, delay: 0.12, scale: 1.15 },
+] as const;
+
 function CartAddedPopup({
   title,
   onClose,
@@ -16,18 +27,6 @@ function CartAddedPopup({
   title?: string;
   onClose: () => void;
 }) {
-  const particles = useMemo(
-    () =>
-      Array.from({ length: 8 }, (_, index) => ({
-        id: index,
-        x: Math.random() * 220 - 110,
-        y: Math.random() * -140 - 20,
-        delay: Math.random() * 0.25,
-        scale: 0.8 + Math.random() * 0.6,
-      })),
-    [],
-  );
-
   return createPortal(
     <AnimatePresence>
       <motion.div
@@ -61,7 +60,7 @@ function CartAddedPopup({
             </motion.div>
           </div>
 
-          {particles.map((particle) => (
+          {popupParticles.map((particle) => (
             <motion.span
               key={particle.id}
               initial={{ opacity: 0, scale: 0.6, x: 0, y: 0 }}
@@ -90,7 +89,7 @@ function CartAddedPopup({
               Added to Cart!
             </h2>
             <p className="mx-auto max-w-xs text-sm leading-7 text-slate-600">
-              The item has been added to your cart.
+              {title ? `${title} has been added to your cart.` : "The item has been added to your cart."}
             </p>
           </div>
 

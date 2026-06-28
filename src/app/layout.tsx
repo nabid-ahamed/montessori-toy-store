@@ -44,7 +44,7 @@ export default function RootLayout({
     >
       <body
         suppressHydrationWarning
-        className="flex min-h-full flex-col bg-background pb-14 font-sans text-foreground md:pb-0"
+        className="flex min-h-full flex-col bg-background pb-[calc(3.5rem+env(safe-area-inset-bottom))] font-sans text-foreground md:pb-0"
       >
         <CartProvider>
           <WishlistProvider>
