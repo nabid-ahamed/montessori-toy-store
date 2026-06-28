@@ -45,11 +45,11 @@ export function ProductRail({
         </div>
       ) : null}
       <Carousel opts={{ align: "start", loop: false }} className="w-full">
-        <CarouselContent className="-ml-3 overflow-visible">
+        <CarouselContent className="-ml-2 overflow-visible sm:-ml-3">
           {products.map((p) => (
             <CarouselItem
               key={p.slug}
-              className="basis-[47%] pl-3 min-[420px]:basis-[44%] sm:basis-1/3 lg:basis-1/4"
+              className="basis-[72%] pl-2 min-[420px]:basis-[48%] sm:basis-1/3 sm:pl-3 lg:basis-1/4"
             >
               <ProductCard product={p} />
             </CarouselItem>
