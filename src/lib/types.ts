@@ -56,6 +56,29 @@ export type Product = {
   variants?: Variant[];
 };
 
+/** Technical / spec table shown in the Details tab. */
+export type ProductSpecs = {
+  materials?: string;
+  safety?: string;
+  weight?: string;
+  dimensions?: string;
+  ageRange?: string;
+};
+
+/** A single customer review. */
+export type Review = {
+  id: string;
+  nameBn: string;
+  locationBn?: string;
+  rating: number; // 1–5
+  dateBn: string; // "2 weeks ago"
+  titleBn?: string;
+  bodyBn: string;
+  verifiedPurchase?: boolean;
+  helpfulCount?: number;
+  images?: string[]; // paths under /public
+};
+
 /** Product detail content used by the product detail page. */
 export type ProductDetail = {
   slug: string;
@@ -65,6 +88,12 @@ export type ProductDetail = {
   imageSrcs: string[];
   deliveryEstimate: string;
   saleCountdown: string;
+  /** tab content */
+  whyPlay?: string[];
+  howPlay?: string[];
+  returnPolicy?: string;
+  specs?: ProductSpecs;
+  reviews?: Review[];
 };
 
 /** Hero banner slide. */
@@ -104,4 +133,20 @@ export type BulkProgram = {
   descBn: string;
   href: string;
   tone: Tone;
+};
+
+/** Safety / quality certification badge shown in the trust strip. */
+export type Certification = {
+  id: string;
+  labelBn: string;
+  /** lucide icon name handled in the component. */
+  icon: "shield-check" | "leaf" | "baby" | "recycle" | "badge-check" | "flask-conical";
+};
+
+/** Live video-call / shop-via-call banner. */
+export type VideoCallBanner = {
+  titleBn: string;
+  descBn: string;
+  ctaBn: string;
+  href: string;
 };

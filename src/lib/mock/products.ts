@@ -1,4 +1,4 @@
-import type { Product, ProductDetail } from "@/lib/types";
+import type { Product, ProductDetail, Review } from "@/lib/types";
 import { giftKits, giftCards } from "./gifts";
 
 const neemTeak = [
@@ -210,6 +210,33 @@ export const products: Product[] = [
 export const bestSellers = products.filter((p) => p.badge === "Best Seller");
 export const newLaunches = products.filter((p) => p.badge === "New");
 
+/**
+ * Related products for the PDP "You may also like" rail.
+ * Prefers same category, then same age tier; excludes the current product.
+ */
+export function relatedProducts(slug: string, limit = 10): Product[] {
+  const current = products.find((p) => p.slug === slug);
+  if (!current) return products.filter((p) => p.slug !== slug).slice(0, limit);
+
+  const sameCategory = products.filter(
+    (p) => p.slug !== slug && p.categorySlug === current.categorySlug,
+  );
+  const sameAge = products.filter(
+    (p) =>
+      p.slug !== slug &&
+      p.categorySlug !== current.categorySlug &&
+      p.ageTierSlug === current.ageTierSlug,
+  );
+  const rest = products.filter(
+    (p) =>
+      p.slug !== slug &&
+      p.categorySlug !== current.categorySlug &&
+      p.ageTierSlug !== current.ageTierSlug,
+  );
+
+  return [...sameCategory, ...sameAge, ...rest].slice(0, limit);
+}
+
 // Curated tab selections for the homepage product module.
 export const giftPicks = products.filter((p) => p.price >= 1000);
 export const neemWood = products.filter((p) =>
@@ -418,6 +445,78 @@ export const productDetailBySlug = (slug: string): ProductDetail | undefined => 
   return {
     slug,
     imageSrcs: productImageSrcs[slug] ?? [],
+    ...defaultDetail,
     ...copy,
   };
 };
+
+// Shared review pool so the reviews section is populated for every product.
+const defaultReviews: Review[] = [
+  {
+    id: "r1",
+    nameBn: "Sumaiya R.",
+    locationBn: "Dhaka",
+    rating: 5,
+    dateBn: "2 weeks ago",
+    titleBn: "Beautifully made",
+    bodyBn:
+      "The finish is so smooth and the wood feels solid. My little one loves it and I feel safe letting it be chewed on.",
+    verifiedPurchase: true,
+    helpfulCount: 14,
+  },
+  {
+    id: "r2",
+    nameBn: "Imran H.",
+    locationBn: "Chattogram",
+    rating: 4,
+    dateBn: "1 month ago",
+    titleBn: "Great quality, fast delivery",
+    bodyBn:
+      "Arrived in 2 days. Quality is genuinely good for the price. Would have liked a storage bag but otherwise happy.",
+    verifiedPurchase: true,
+    helpfulCount: 6,
+  },
+  {
+    id: "r3",
+    nameBn: "Nadia A.",
+    locationBn: "Sylhet",
+    rating: 5,
+    dateBn: "1 month ago",
+    titleBn: "Perfect gift",
+    bodyBn:
+      "Gifted this at a baby shower and the parents loved it. Feels premium and handmade.",
+    verifiedPurchase: true,
+    helpfulCount: 3,
+  },
+];
+
+// Shared fallbacks so every product renders the full tab set even without
+// bespoke copy. Per-product entries in `detailCopy` override these.
+const defaultDetail: Omit<ProductDetail, "slug" | "imageSrcs"> = {
+  description: "",
+  features: [],
+  benefits: [],
+  deliveryEstimate: "Dhaka: 1-2 days, outside Dhaka: 3-5 days",
+  saleCountdown: "1D 12H 00M 00S",
+  whyPlay: [
+    "Encourages open-ended, screen-free play",
+    "Supports fine motor and sensory development",
+    "Built to be passed down between siblings",
+  ],
+  howPlay: [
+    "Introduce on a soft mat for younger babies",
+    "Demonstrate once, then let the child lead",
+    "Rotate with other toys to keep interest high",
+  ],
+  returnPolicy:
+    "7-day exchange on unused items in original packaging. Report any defect within 48 hours of delivery with photos for a free replacement.",
+  specs: {
+    materials: "Natural neem wood with a non-toxic, food-grade finish",
+    safety: "Smooth-sanded, no small detachable parts, lab-tested for lead and heavy metals",
+    weight: "~0.4 kg",
+    dimensions: "Approx. 12 × 8 × 6 cm",
+    ageRange: "0–3 years (adult supervision recommended)",
+  },
+  reviews: defaultReviews,
+};
+
