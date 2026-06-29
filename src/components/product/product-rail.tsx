@@ -55,8 +55,12 @@ export function ProductRail({
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious className="hidden sm:flex" />
-        <CarouselNext className="hidden sm:flex" />
+        {/* Arrows sit INSIDE the carousel (left-2/right-2) instead of the
+            default -left-12/-right-12, which poked ~16px past the viewport on
+            desktop and caused horizontal scrolling. They overlap the slide
+            edges, so the desktop design is unchanged. */}
+        <CarouselPrevious className="left-2 hidden sm:flex" />
+        <CarouselNext className="right-2 hidden sm:flex" />
       </Carousel>
     </section>
   );
