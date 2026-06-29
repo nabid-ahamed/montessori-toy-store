@@ -228,8 +228,8 @@ export const relatedPosts = (post: BlogPost, limit = 3): BlogPost[] =>
   blogPosts
     .filter((p) => p.slug !== post.slug && p.category === post.category)
     .concat(
-      blogPosts.filter(
-        (p) => p.slug !== post.slug && p.category !== post.category,
-      ),
+      blogPosts
+        .filter((p) => p.slug !== post.slug && p.category !== post.category)
+        .sort((a, b) => b.dateISO.localeCompare(a.dateISO)),
     )
     .slice(0, limit);
