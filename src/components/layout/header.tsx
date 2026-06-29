@@ -37,6 +37,7 @@ import {
 import { mainNav, ageNav, categoryNav, type NavLink } from "@/lib/mock/nav";
 import { products } from "@/lib/mock/products";
 import { BRAND_NAME } from "@/lib/config";
+import { isBareRoute } from "@/lib/routes";
 import { CartBadge } from "@/components/cart/cart-badge";
 import { WishlistBadge } from "@/components/product/wishlist-badge";
 import { cn } from "@/lib/utils";
@@ -283,6 +284,10 @@ export function Header() {
     update();
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  // Auth routes go bare — render nothing so there's no header/nav chrome.
+  // (Placed AFTER all hooks so the Rules of Hooks hold across navigations.)
+  if (isBareRoute(pathname)) return null;
 
   return (
     <header
