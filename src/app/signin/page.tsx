@@ -3,11 +3,9 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Eye, EyeOff, Mail, Lock } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { BRAND_NAME, BRAND_TAGLINE } from "@/lib/config";
+import { BRAND_NAME } from "@/lib/config";
 import { cn } from "@/lib/utils";
 
 // Brand glyphs for the social sign-in buttons. lucide dropped brand icons, so
@@ -44,15 +42,17 @@ function FacebookIcon({ className }: { className?: string }) {
 }
 
 // Accessible custom checkbox styled to match the brand (neem check on cream).
-function RememberMe({
+function Checkbox({
   checked,
   onChange,
+  label,
 }: {
   checked: boolean;
   onChange: (v: boolean) => void;
+  label: string;
 }) {
   return (
-    <label className="group inline-flex cursor-pointer select-none items-center gap-2">
+    <label className="group inline-flex cursor-pointer select-none items-center gap-2.5">
       <span className="relative inline-flex">
         <input
           type="checkbox"
@@ -62,10 +62,10 @@ function RememberMe({
         />
         <span
           className={cn(
-            "flex size-[18px] items-center justify-center rounded-[6px] border transition-colors",
+            "flex size-5 items-center justify-center rounded-[6px] border transition-colors",
             checked
               ? "border-neem bg-neem"
-              : "border-cream-300 bg-cream-50 group-hover:border-neem-soft",
+              : "border-cream-300 bg-paper group-hover:border-neem-soft",
           )}
         >
           {checked ? (
@@ -86,7 +86,7 @@ function RememberMe({
           ) : null}
         </span>
       </span>
-      <span className="text-sm text-ink-muted">Remember me</span>
+      <span className="text-[15px] text-ink">{label}</span>
     </label>
   );
 }
@@ -94,16 +94,14 @@ function RememberMe({
 export default function SignInPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [remember, setRemember] = useState(false);
+  const [news, setNews] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (!email || !password) {
-      toast.error("Please enter your email and password.");
+    if (!email) {
+      toast.error("Please enter your email.");
       return;
     }
 
@@ -113,182 +111,130 @@ export default function SignInPage() {
     // user home. Swap this for a real auth call when backend is ready.
     window.setTimeout(() => {
       setLoading(false);
-      toast.success("Signed in. Welcome back!");
+      toast.success("Check your email for a login link.");
       router.push("/");
     }, 900);
   };
 
   return (
-    <main className="relative flex min-h-[calc(100vh-7rem)] items-center justify-center overflow-hidden px-4 py-16 sm:px-6">
-      {/* soft brand backdrop — large blurred neem + terracotta blobs, low-opacity
-          so the card stays the focus. Purely decorative. */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
-      >
-        <div className="absolute -left-24 top-1/4 size-80 rounded-full bg-neem-soft/25 blur-3xl" />
-        <div className="absolute -right-24 bottom-1/4 size-80 rounded-full bg-blush/25 blur-3xl" />
-      </div>
-
-      <div className="w-full max-w-md">
-        {/* brand wordmark */}
+    <main className="flex min-h-screen flex-col bg-paper px-4">
+      {/* brand wordmark — name only, centered at top */}
+      <div className="flex justify-center pt-8 pb-4">
         <Link
           href="/"
-          className="mb-8 flex flex-col items-center text-center"
+          className="font-display text-2xl font-bold tracking-tight text-ink"
         >
-          <span className="font-display text-2xl font-bold tracking-tight text-ink sm:text-3xl">
-            {BRAND_NAME}
-          </span>
-          <span className="mt-1 font-mono text-[11px] uppercase tracking-[0.16em] text-neem-deep">
-            {BRAND_TAGLINE}
-          </span>
+          {BRAND_NAME}
         </Link>
+      </div>
 
-        <div className="rounded-3xl border border-cream-300 bg-paper/90 p-7 shadow-xl shadow-ink/5 backdrop-blur-sm sm:p-9">
-          {/* heading */}
-          <div className="text-center">
-            <h1 className="font-display text-2xl font-bold tracking-tight text-ink sm:text-3xl">
-              Welcome back
-            </h1>
-            <p className="mt-2 text-sm text-ink-muted">
-              Sign in to track orders, save your wishlist, and check out faster.
-            </p>
+      {/* centered content column */}
+      <div className="flex flex-1 items-start justify-center pt-24">
+        <div className="w-full max-w-sm">
+          <h1 className="font-sans text-2xl font-normal leading-[28.8px] tracking-normal text-black">
+            Sign in
+          </h1>
+          <p className="mt-2 font-sans text-sm font-normal leading-[21px] tracking-normal text-[#0000008f]">
+            Sign in to track orders, save your wishlist, and check out faster
+          </p>
+
+          {/* Continue with Shop */}
+          <button
+            type="button"
+            onClick={() => toast.info("Shop sign-in isn’t wired up yet.")}
+            className="mt-5 flex h-12 w-full items-center justify-center rounded-lg bg-[#5a31f4] text-base font-semibold text-white transition hover:bg-[#4a27d4]"
+          >
+            Continue with
+          </button>
+
+          {/* social sign-in */}
+          <div className="mt-3 grid grid-cols-2 gap-3">
+            <button
+              type="button"
+              onClick={() => toast.info("Social sign-in isn’t wired up yet.")}
+              className="flex h-12 items-center justify-center gap-2.5 rounded-lg border border-cream-300 bg-paper text-[15px] font-medium text-ink transition hover:bg-cream-100"
+            >
+              <GoogleIcon className="size-5" />
+              Google
+            </button>
+            <button
+              type="button"
+              onClick={() => toast.info("Social sign-in isn’t wired up yet.")}
+              className="flex h-12 items-center justify-center gap-2.5 rounded-lg border border-cream-300 bg-paper text-[15px] font-medium text-ink transition hover:bg-cream-100"
+            >
+              <FacebookIcon className="size-5 text-[#1877F2]" />
+              Facebook
+            </button>
           </div>
 
-          {/* form */}
-          <form onSubmit={handleSubmit} className="mt-7 space-y-4" noValidate>
-            {/* email */}
-            <div className="space-y-1.5">
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-ink"
-              >
-                Email address
-              </label>
-              <div className="relative">
-                <Mail className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-ink-soft" />
-                <Input
+          {/* divider */}
+          <div className="my-4 flex items-center gap-4">
+            <span className="h-px flex-1 bg-cream-300" />
+            <span className="text-sm text-ink-muted">or</span>
+            <span className="h-px flex-1 bg-cream-300" />
+          </div>
+
+          {/* email + arrow submit */}
+          <form onSubmit={handleSubmit} noValidate>
+            <div className="flex items-stretch rounded-lg border border-cream-300 bg-paper transition-colors focus-within:border-neem">
+              <div className="flex flex-1 flex-col justify-center px-4 py-1.5">
+                <label
+                  htmlFor="email"
+                  className="text-xs font-medium text-ink-soft"
+                >
+                  Email
+                </label>
+                <input
                   id="email"
                   type="email"
                   autoComplete="email"
                   inputMode="email"
-                  placeholder="you@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="h-11 rounded-xl bg-cream-50 pl-10"
+                  className="w-full bg-transparent text-[15px] text-ink outline-none placeholder:text-ink-soft"
                 />
               </div>
-            </div>
-
-            {/* password */}
-            <div className="space-y-1.5">
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-ink"
+              <button
+                type="submit"
+                disabled={loading}
+                aria-label="Continue"
+                className="m-1.5 flex w-10 items-center justify-center rounded-md bg-neem text-paper transition hover:bg-neem-deep disabled:opacity-60"
               >
-                Password
-              </label>
-              <div className="relative">
-                <Lock className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-ink-soft" />
-                <Input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  autoComplete="current-password"
-                  placeholder="Your password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="h-11 rounded-xl bg-cream-50 pl-10 pr-10"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword((v) => !v)}
-                  aria-label={showPassword ? "Hide password" : "Show password"}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-soft transition-colors hover:text-ink"
-                >
-                  {showPassword ? (
-                    <EyeOff className="size-4" />
-                  ) : (
-                    <Eye className="size-4" />
-                  )}
-                </button>
-              </div>
+                <ArrowRight className="size-5" />
+              </button>
             </div>
 
-            {/* remember me + forgot password */}
-            <div className="flex items-center justify-between pt-1">
-              <RememberMe checked={remember} onChange={setRemember} />
+            {/* news checkbox */}
+            <div className="mt-4">
+              <Checkbox
+                checked={news}
+                onChange={setNews}
+                label="Email me with news and offers"
+              />
+            </div>
+
+            {/* terms */}
+            <p className="mt-4 text-center text-sm text-ink-muted">
+              By continuing, you agree to our{" "}
               <Link
-                href="/signin"
-                className="text-sm font-medium text-neem-deep underline-offset-4 hover:underline"
-                onClick={(e) => {
-                  e.preventDefault();
-                  toast.info("Password reset isn’t available yet.");
-                }}
+                href="/policy/terms"
+                className="underline underline-offset-2 hover:text-ink"
               >
-                Forgot password?
+                Terms of service
               </Link>
-            </div>
-
-            {/* primary action */}
-            <Button
-              type="submit"
-              disabled={loading}
-              className="mt-2 h-11 w-full rounded-full bg-neem text-sm font-semibold uppercase tracking-[0.1em] text-paper shadow-md transition hover:bg-neem-deep disabled:opacity-70"
-            >
-              {loading ? "Signing in…" : "Sign In"}
-            </Button>
+            </p>
           </form>
-
-          {/* divider */}
-          <div className="my-6 flex items-center gap-3">
-            <span className="h-px flex-1 bg-cream-300" />
-            <span className="text-xs uppercase tracking-[0.12em] text-ink-soft">
-              or
-            </span>
-            <span className="h-px flex-1 bg-cream-300" />
-          </div>
-
-          {/* social sign-in */}
-          <div className="grid grid-cols-2 gap-3">
-            <Button
-              type="button"
-              variant="outline"
-              className="h-11 rounded-xl border-cream-300 bg-paper text-sm font-medium text-ink hover:bg-cream-100"
-              onClick={() =>
-                toast.info("Social sign-in isn’t wired up yet.")
-              }
-            >
-              <GoogleIcon className="size-4" />
-              Google
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              className="h-11 rounded-xl border-cream-300 bg-paper text-sm font-medium text-ink hover:bg-cream-100"
-              onClick={() =>
-                toast.info("Social sign-in isn’t wired up yet.")
-              }
-            >
-              <FacebookIcon className="size-4 text-[#1877F2]" />
-              Facebook
-            </Button>
-          </div>
         </div>
+      </div>
 
-        {/* create account */}
-        <p className="mt-6 text-center text-sm text-ink-muted">
-          New here?{" "}
-          <Link
-            href="/signin"
-            className="font-semibold text-neem-deep underline-offset-4 hover:underline"
-            onClick={(e) => {
-              e.preventDefault();
-              toast.info("Account creation isn’t available yet.");
-            }}
-          >
-            Create an account
-          </Link>
-        </p>
+      {/* privacy policy — pinned at bottom */}
+      <div className="flex justify-center py-5">
+        <Link
+          href="/policy/privacy"
+          className="text-[15px] text-wood-deep underline-offset-2 hover:underline"
+        >
+          Privacy policy
+        </Link>
       </div>
     </main>
   );
