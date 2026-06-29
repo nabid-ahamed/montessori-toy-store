@@ -183,9 +183,48 @@ function NavDropdown({
 }) {
   // A dropdown reads as active when the current route is one of its children.
   const active = links.some((l) => isActivePath(pathname, l.href));
+
+  // Hover-to-open on desktop; click stays the default for touch / coarse
+  // pointers. We detect hover capability so touch devices are unaffected.
+  const [open, setOpen] = useState(false);
+  const [hoverable, setHoverable] = useState(false);
+  const closeTimer = useRef<number | null>(null);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(hover: hover) and (pointer: fine)");
+    setHoverable(mq.matches);
+    const onChange = (e: MediaQueryListEvent) => setHoverable(e.matches);
+    mq.addEventListener("change", onChange);
+    return () => {
+      mq.removeEventListener("change", onChange);
+      if (closeTimer.current) clearTimeout(closeTimer.current);
+    };
+  }, []);
+
+  const cancelClose = () => {
+    if (closeTimer.current) {
+      clearTimeout(closeTimer.current);
+      closeTimer.current = null;
+    }
+  };
+  const hoverOpen = () => {
+    if (!hoverable) return;
+    cancelClose();
+    setOpen(true);
+  };
+  // A short delay bridges the gap between the trigger and the menu so the
+  // cursor can cross it without the menu flickering shut.
+  const hoverClose = () => {
+    if (!hoverable) return;
+    cancelClose();
+    closeTimer.current = window.setTimeout(() => setOpen(false), 150);
+  };
+
   return (
-    <DropdownMenu>
+    <DropdownMenu open={open} onOpenChange={setOpen} modal={false}>
       <DropdownMenuTrigger
+        onMouseEnter={hoverOpen}
+        onMouseLeave={hoverClose}
         className={cn(
           navItemBase,
           "gap-1 data-[state=open]:text-neem-deep data-[state=open]:after:scale-x-100",
@@ -196,7 +235,12 @@ function NavDropdown({
         {label}
         <ChevronDown className="size-4 transition-transform duration-200 group-data-[state=open]/navitem:rotate-180" />
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" className="min-w-44">
+      <DropdownMenuContent
+        align="start"
+        className="min-w-44 duration-200"
+        onMouseEnter={hoverOpen}
+        onMouseLeave={hoverClose}
+      >
         {links.map((l) => {
           const itemActive = isActivePath(pathname, l.href);
           return (
