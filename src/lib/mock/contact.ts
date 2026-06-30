@@ -4,12 +4,7 @@
  * lucide components (keeps JSX out of the data file).
  */
 
-export type ContactDetail = {
-  id: string;
-  icon: "map-pin" | "phone" | "mail" | "clock";
-  label: string;
-  lines: string[];
-};
+import type { ContactDetail, ContactFeature } from "@/lib/types";
 
 export const contactInfo: ContactDetail[] = [
   {
@@ -37,13 +32,6 @@ export const contactInfo: ContactDetail[] = [
     lines: ["Saturday – Thursday", "10:00 AM – 6:00 PM"],
   },
 ];
-
-export type ContactFeature = {
-  id: string;
-  icon: "baby" | "leaf" | "badge-check" | "heart";
-  label: string;
-  desc: string;
-};
 
 export const contactTrust: ContactFeature[] = [
   {

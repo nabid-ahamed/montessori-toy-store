@@ -151,6 +151,22 @@ export type VideoCallBanner = {
   href: string;
 };
 
+/** Contact detail row (address / phone / email / hours). */
+export type ContactDetail = {
+  id: string;
+  icon: "map-pin" | "phone" | "mail" | "clock";
+  label: string;
+  lines: string[];
+};
+
+/** Trust/feature callout shown on the Contact page. */
+export type ContactFeature = {
+  id: string;
+  icon: "baby" | "leaf" | "badge-check" | "heart";
+  label: string;
+  desc: string;
+};
+
 /** A content block inside a blog post body. */
 export type BlogBlock =
   | { type: "h2"; text: string }
