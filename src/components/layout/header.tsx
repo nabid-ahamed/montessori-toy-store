@@ -57,7 +57,7 @@ function isActivePath(pathname: string, href: string): boolean {
 // accent underline grows from the centre. Shared by links and dropdowns so the
 // whole row animates identically. Layout/typography are unchanged.
 const navItemBase =
-  "group/navitem relative inline-flex items-center text-[15px] font-medium outline-none transition-colors duration-200 " +
+  "group/navitem relative inline-flex items-center [font-family:Helvetica,Arial,sans-serif] text-[14px] font-bold leading-[23.1px] tracking-[0.7px] outline-none transition-colors duration-200 " +
   "after:pointer-events-none after:absolute after:-bottom-1.5 after:left-0 after:h-0.5 after:w-full after:origin-center after:scale-x-0 after:rounded-full after:bg-neem after:transition-transform after:duration-300 after:ease-out " +
   "hover:text-neem-deep hover:after:scale-x-100 focus-visible:text-neem-deep focus-visible:after:scale-x-100";
 
