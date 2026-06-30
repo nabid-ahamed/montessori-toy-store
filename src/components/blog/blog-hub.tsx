@@ -36,7 +36,11 @@ export function BlogHub() {
       </header>
 
       {/* category chips */}
-      <div className="mt-6 flex flex-wrap gap-2">
+      <div
+        role="group"
+        aria-label="Filter posts by category"
+        className="mt-6 flex flex-wrap gap-2"
+      >
         {chips.map((c) => {
           const isActive = active === c.slug;
           return (
@@ -46,7 +50,7 @@ export function BlogHub() {
               onClick={() => setActive(c.slug)}
               aria-pressed={isActive}
               className={cn(
-                "rounded-full border px-4 py-1.5 text-sm font-medium transition-colors",
+                "rounded-full border px-4 py-1.5 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neem",
                 isActive
                   ? "border-neem bg-neem text-paper"
                   : "border-cream-300 text-ink hover:border-neem",
