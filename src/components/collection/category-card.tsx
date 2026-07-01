@@ -97,7 +97,7 @@ export function CategoryCard({
             </p>
           </div>
           <span className="flex size-9 flex-none items-center justify-center rounded-full bg-paper/80 text-neem-deep shadow-sm transition-transform duration-300 group-hover:translate-x-1">
-            <ArrowRight className="size-4" />
+            <ArrowRight className="size-4" aria-hidden />
           </span>
         </div>
       </Link>
