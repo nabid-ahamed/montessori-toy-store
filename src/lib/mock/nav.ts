@@ -53,7 +53,7 @@ export const footerCustomerCare: NavLink[] = [
   { labelBn: "Wishlist", href: "/wishlist" },
   { labelBn: "Cart", href: "/cart" },
   { labelBn: "Shipping", href: "/policy/shipping" },
-  { labelBn: "FAQ", href: "/faqs" },
+  { labelBn: "FAQs", href: "/faqs" },
   { labelBn: "Contact Us", href: "/contact" },
 ];
 

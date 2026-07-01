@@ -57,8 +57,8 @@ function isActivePath(pathname: string, href: string): boolean {
 // accent underline grows from the centre. Shared by links and dropdowns so the
 // whole row animates identically. Layout/typography are unchanged.
 const navItemBase =
-  "group/navitem relative inline-flex items-center [font-family:Helvetica,Arial,sans-serif] text-[14px] font-bold leading-[23.1px] tracking-[0.7px] outline-none transition-colors duration-200 " +
-  "after:pointer-events-none after:absolute after:-bottom-1.5 after:left-0 after:h-0.5 after:w-full after:origin-center after:scale-x-0 after:rounded-full after:bg-neem after:transition-transform after:duration-300 after:ease-out " +
+  "group/navitem relative inline-flex items-center px-2 [font-family:Helvetica,Arial,sans-serif] text-[14px] font-bold leading-[23.1px] tracking-[0.7px] outline-none transition-colors duration-200 " +
+  "after:pointer-events-none after:absolute after:-bottom-1.5 after:inset-x-2 after:h-0.5 after:origin-center after:scale-x-0 after:rounded-full after:bg-neem after:transition-transform after:duration-300 after:ease-out " +
   "hover:text-neem-deep hover:after:scale-x-100 focus-visible:text-neem-deep focus-visible:after:scale-x-100";
 
 /**
@@ -482,7 +482,7 @@ export function Header() {
       <nav className="hidden md:block">
         <div
           className={cn(
-            "mx-auto flex max-w-6xl items-center justify-center gap-10 px-6 transition-all duration-300 lg:gap-14",
+            "mx-auto flex max-w-6xl items-center justify-center gap-2 px-6 transition-all duration-300 md:gap-3 lg:gap-4",
             collapsed ? "py-2" : "py-4",
           )}
         >
