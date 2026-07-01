@@ -53,7 +53,6 @@ export const footerCustomerCare: NavLink[] = [
   { labelBn: "Wishlist", href: "/wishlist" },
   { labelBn: "Cart", href: "/cart" },
   { labelBn: "Shipping", href: "/policy/shipping" },
-  { labelBn: "Returns", href: "/policy/returns" },
   { labelBn: "FAQ", href: "/faqs" },
   { labelBn: "Contact Us", href: "/contact" },
 ];
@@ -68,7 +67,7 @@ export const footerAbout: NavLink[] = [
 export const footerSupport: NavLink[] = [
   { labelBn: "Privacy Policy", href: "/policy/privacy" },
   { labelBn: "Terms & Conditions", href: "/policy/terms" },
-  { labelBn: "Refund Policy", href: "/policy/refund" },
+  { labelBn: "Returns & Refund Policy", href: "/policy/returns" },
   { labelBn: "Contact Information", href: "/contact" },
 ];
 
