@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { ArrowRight, Leaf } from "lucide-react";
-import { AboutImage } from "@/components/about/about-image";
 import { Reveal } from "@/components/policy/reveal";
 
 /**
@@ -25,26 +24,13 @@ export function AboutTeaser() {
           <h2 className="font-display text-3xl font-bold tracking-tight text-ink sm:text-4xl">
             About Us
           </h2>
-          <p className="mx-auto mt-3 max-w-2xl font-display text-lg font-semibold text-neem-deep sm:text-xl">
+          <p className="mx-auto mt-3 max-w-2xl font-display text-lg font-semibold text-ink sm:text-xl">
             Learning Through Play, Inspired by Montessori.
           </p>
         </Reveal>
 
-        {/* hero image */}
-        <Reveal className="mt-10 lg:mt-12">
-          <AboutImage
-            src="/images/about/teaser.png"
-            alt="Handmade Montessori wooden toys"
-            tone="neem-soft"
-            label="Handmade Montessori toys"
-            width={1600}
-            height={900}
-            className="mx-auto aspect-[16/9] w-full max-w-4xl rounded-3xl border border-cream-200 shadow-sm"
-          />
-        </Reveal>
-
-        {/* description + buttons — under the hero */}
-        <Reveal className="mt-8 text-center">
+        {/* description + buttons */}
+        <Reveal className="mt-6 text-center">
           <p className="mx-auto max-w-2xl text-[15px] leading-relaxed text-ink-muted">
             We craft natural, non-toxic wooden toys designed the Montessori way — to nurture
             creativity, independence, and a lifelong love of learning. Every piece is made by
