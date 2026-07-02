@@ -359,12 +359,10 @@ export function Header() {
                   {BRAND_NAME}
                 </SheetTitle>
               </SheetHeader>
-              <div className="overflow-y-auto px-4 pb-8">
-                <SmartSearch className="py-3" />
-
+              <div className="overflow-y-auto px-4 pb-8 pt-3">
                 {/* One uniform list. By Age / By Category expand in place; the
                     rest are direct links — all share the same top-level style. */}
-                <nav className="flex flex-col pt-1">
+                <nav className="flex flex-col">
                   <Accordion type="single" collapsible className="w-full">
                     <AccordionItem value="age" className="border-none">
                       <AccordionTrigger className={drawerItemClass}>
