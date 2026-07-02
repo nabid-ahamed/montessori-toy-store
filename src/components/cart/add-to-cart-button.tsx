@@ -184,7 +184,7 @@ export function AddToCartButton({
               ) : (
                 <ShoppingCart className="size-4" />
               )}
-              <span>{inCart ? "Added ✓" : "Add to Cart"}</span>
+              <span>{inCart ? "Added" : "Add to Cart"}</span>
             </motion.span>
           </AnimatePresence>
         </motion.div>
