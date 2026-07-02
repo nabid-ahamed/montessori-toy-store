@@ -3,6 +3,7 @@ import { TrustStrip } from "@/components/home/trust-strip";
 import { ShopByAge } from "@/components/home/shop-by-age";
 import { ProductTabs } from "@/components/home/product-tabs";
 import { Testimonials } from "@/components/home/testimonials";
+import { RecentlyViewed } from "@/components/product/recently-viewed";
 import { AboutTeaser } from "@/components/home/about-teaser";
 
 export default function Home() {
@@ -22,6 +23,9 @@ export default function Home() {
 
       {/* testimonials */}
       <Testimonials />
+
+      {/* recently viewed — mock rail (no real browsing history) */}
+      <RecentlyViewed />
 
       {/* about teaser — sits just above the footer */}
       <AboutTeaser />

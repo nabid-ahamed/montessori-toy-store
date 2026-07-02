@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { CartView } from "@/components/cart/cart-view";
+import { RecentlyViewed } from "@/components/product/recently-viewed";
 import { BRAND_NAME } from "@/lib/config";
 
 export const metadata: Metadata = {
@@ -8,5 +9,10 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
-  return <CartView />;
+  return (
+    <>
+      <CartView />
+      <RecentlyViewed title="Recently Viewed" subtitle="Add one more before you check out." />
+    </>
+  );
 }

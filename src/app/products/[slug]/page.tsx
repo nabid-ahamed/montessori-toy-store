@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ProductDetailsView } from "@/components/product/product-details-view";
+import { RecentlyViewed } from "@/components/product/recently-viewed";
+import { RecentlyViewedTracker } from "@/components/product/recently-viewed-tracker";
 import { BRAND_NAME } from "@/lib/config";
 import { ageTierBySlug } from "@/lib/mock/age-tiers";
 import { categoryBySlug } from "@/lib/mock/categories";
@@ -44,12 +46,19 @@ export default async function Page({
   }
 
   return (
-    <ProductDetailsView
-      product={product}
-      detail={detail}
-      ageTier={ageTierBySlug(product.ageTierSlug)}
-      category={categoryBySlug(product.categorySlug)}
-      related={relatedProducts(product.slug)}
-    />
+    <>
+      {/* record this product in the browser's recently-viewed history */}
+      <RecentlyViewedTracker slug={product.slug} />
+      <ProductDetailsView
+        product={product}
+        detail={detail}
+        ageTier={ageTierBySlug(product.ageTierSlug)}
+        category={categoryBySlug(product.categorySlug)}
+        related={relatedProducts(product.slug)}
+      />
+      <div className="bg-paper">
+        <RecentlyViewed excludeSlug={product.slug} />
+      </div>
+    </>
   );
 }
