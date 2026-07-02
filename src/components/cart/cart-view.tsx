@@ -199,12 +199,14 @@ export function CartView() {
               </span>
             </div>
 
-            <Button className="mt-5 w-full" size="lg">
-              Checkout
-              <ArrowRight className="size-4" />
+            <Button asChild className="mt-5 w-full" size="lg">
+              <Link href="/checkout">
+                Checkout
+                <ArrowRight className="size-4" />
+              </Link>
             </Button>
             <p className="mt-2 text-center text-xs text-ink-soft">
-              Secure checkout coming soon.
+              You&apos;ll review your order on the next step.
             </p>
           </div>
         </aside>
