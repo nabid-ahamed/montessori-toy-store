@@ -6,6 +6,7 @@ import { StubPage } from "@/components/stub-page";
 import { AgeHubView } from "@/components/collection/age-hub-view";
 import { CategoryHubView } from "@/components/collection/category-hub-view";
 import { NewArrivalsView } from "@/components/collection/new-arrivals-view";
+import { BestSellersView } from "@/components/collection/best-sellers/best-sellers-view";
 import { ageTierBySlug } from "@/lib/mock/age-tiers";
 import { categoryBySlug } from "@/lib/mock/categories";
 import { BRAND_NAME } from "@/lib/config";
@@ -41,6 +42,13 @@ export async function generateMetadata({
       title: `New Arrivals — ${BRAND_NAME}`,
       description:
         "The latest handmade, non-toxic wooden Montessori toys — freshly added to the store.",
+    };
+  }
+  if (slug === "best-sellers") {
+    return {
+      title: `Best Sellers — ${BRAND_NAME}`,
+      description:
+        "Our most-loved Montessori toys, chosen by thousands of families to inspire learning through play.",
     };
   }
   const tier = ageTierBySlug(slug);
@@ -85,6 +93,10 @@ export default async function Page({
 
   if (slug === "new-arrivals") {
     return <NewArrivalsView />;
+  }
+
+  if (slug === "best-sellers") {
+    return <BestSellersView />;
   }
 
   const tier = ageTierBySlug(slug);
