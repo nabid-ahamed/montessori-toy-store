@@ -7,6 +7,7 @@ import { AgeHubView } from "@/components/collection/age-hub-view";
 import { CategoryHubView } from "@/components/collection/category-hub-view";
 import { NewArrivalsView } from "@/components/collection/new-arrivals-view";
 import { BestSellersView } from "@/components/collection/best-sellers/best-sellers-view";
+import { NeemWoodView } from "@/components/collection/neem-wood-view";
 import { ageTierBySlug } from "@/lib/mock/age-tiers";
 import { categoryBySlug } from "@/lib/mock/categories";
 import { BRAND_NAME } from "@/lib/config";
@@ -49,6 +50,13 @@ export async function generateMetadata({
       title: `Best Sellers — ${BRAND_NAME}`,
       description:
         "Our most-loved Montessori toys, chosen by thousands of families to inspire learning through play.",
+    };
+  }
+  if (slug === "neem-wood") {
+    return {
+      title: `Neem Wood Collection — ${BRAND_NAME}`,
+      description:
+        "Toys carved from naturally durable, antibacterial neem wood — safe for little hands and gentle on the planet.",
     };
   }
   const tier = ageTierBySlug(slug);
@@ -97,6 +105,10 @@ export default async function Page({
 
   if (slug === "best-sellers") {
     return <BestSellersView />;
+  }
+
+  if (slug === "neem-wood") {
+    return <NeemWoodView />;
   }
 
   const tier = ageTierBySlug(slug);

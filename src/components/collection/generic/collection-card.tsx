@@ -5,8 +5,9 @@ import { Eye, Star } from "lucide-react";
 import { AddToCartButton } from "@/components/cart/add-to-cart-button";
 import { ProductImage } from "@/components/product/product-image";
 import { WishlistButton } from "@/components/product/wishlist-button";
-import { shortDescription } from "@/lib/mock/best-sellers";
+import { shortDescription, isInStock } from "@/lib/collection-helpers";
 import { ageTierBySlug } from "@/lib/mock/age-tiers";
+import { categoryBySlug } from "@/lib/mock/categories";
 import { formatTk } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import type { Product } from "@/lib/types";
@@ -14,7 +15,7 @@ import type { Product } from "@/lib/types";
 function Stars({ rating, count }: { rating: number; count: number }) {
   const rounded = Math.round(rating);
   return (
-    <div className="flex items-center gap-1" aria-label={`Rating ${rating.toFixed(1)}`}>
+    <div className="flex items-center gap-1" aria-label={`Rated ${rating.toFixed(1)} of 5`}>
       <div className="flex items-center gap-0.5">
         {Array.from({ length: 5 }).map((_, i) => (
           <Star
@@ -32,23 +33,33 @@ function Stars({ rating, count }: { rating: number; count: number }) {
 }
 
 /**
- * Premium Best Seller card: hover image-zoom (two-image swap), wishlist, a
- * "Best Seller" badge, name, short description, age recommendation, rating,
- * price, Add to Cart, and a Quick View trigger. Hover lift via CSS.
+ * Reusable premium product card for collection pages. Image with hover zoom
+ * (two-image swap), wishlist, a collection badge (+ discount), category, name,
+ * short description, age, rating + review count, price + previous price, stock
+ * status, Quick View, and Add to Cart. Hover lift via CSS.
  */
-export function BestSellerCard({
+export function CollectionCard({
   product,
   onQuickView,
+  badgeLabel,
 }: {
   product: Product;
   onQuickView: (product: Product) => void;
+  /** Collection-level badge (e.g. "Best Seller"); falls back to the product's
+   *  own badge when omitted. */
+  badgeLabel?: string;
 }) {
   const href = `/products/${product.slug}`;
   const ageTier = ageTierBySlug(product.ageTierSlug);
+  const category = categoryBySlug(product.categorySlug);
+  const inStock = isInStock(product.slug);
+  const shownBadge = badgeLabel ?? product.badge;
+  const discount = product.compareAtPrice
+    ? Math.round(((product.compareAtPrice - product.price) / product.compareAtPrice) * 100)
+    : 0;
 
   return (
     <div className="group flex h-full flex-col overflow-hidden rounded-2xl border border-cream-200 bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
-      {/* image */}
       <div className="relative aspect-square overflow-hidden bg-cream-100">
         <Link href={href} className="absolute inset-0 block">
           <ProductImage
@@ -67,15 +78,24 @@ export function BestSellerCard({
           />
         </Link>
 
-        <span className="absolute left-3 top-3 rounded-full bg-neem px-2.5 py-1 text-[11px] font-bold text-paper shadow-sm">
-          Best Seller
-        </span>
+        <div className="absolute left-2.5 top-2.5 flex flex-col items-start gap-1.5">
+          {shownBadge ? (
+            <span className="rounded-full bg-neem px-2.5 py-1 text-[11px] font-bold text-paper shadow-sm">
+              {shownBadge}
+            </span>
+          ) : null}
+          {discount > 0 ? (
+            <span className="rounded-full bg-danger px-2 py-0.5 text-[11px] font-bold text-paper shadow-sm">
+              -{discount}%
+            </span>
+          ) : null}
+        </div>
+
         <WishlistButton
           slug={product.slug}
           className="absolute right-2.5 top-2.5 border border-cream-200 bg-paper/90"
         />
 
-        {/* quick view — slides up on hover */}
         <button
           type="button"
           onClick={() => onQuickView(product)}
@@ -86,13 +106,22 @@ export function BestSellerCard({
         </button>
       </div>
 
-      {/* body */}
       <div className="flex flex-1 flex-col p-4">
-        {ageTier ? (
-          <span className="text-xs font-medium uppercase tracking-wide text-neem-deep">
-            {ageTier.labelBn}
-          </span>
-        ) : null}
+        <div className="flex items-center justify-between gap-2">
+          {category ? (
+            <span className="truncate text-xs font-medium uppercase tracking-wide text-neem-deep">
+              {category.nameBn}
+            </span>
+          ) : (
+            <span />
+          )}
+          {ageTier ? (
+            <span className="flex-none text-xs font-medium text-ink-soft">
+              {ageTier.labelBn}
+            </span>
+          ) : null}
+        </div>
+
         <Link
           href={href}
           className="mt-1 line-clamp-1 font-display text-base font-bold text-ink transition-colors hover:text-neem-deep"
@@ -103,13 +132,25 @@ export function BestSellerCard({
           {shortDescription(product.slug)}
         </p>
 
-        <div className="mt-2">
+        <div className="mt-2 flex items-center justify-between gap-2">
           <Stars rating={product.rating} count={product.reviewCount} />
+          <span
+            className={cn(
+              "inline-flex items-center gap-1 text-xs font-medium",
+              inStock ? "text-neem-deep" : "text-danger",
+            )}
+          >
+            <span
+              className={cn("size-1.5 rounded-full", inStock ? "bg-neem" : "bg-danger")}
+              aria-hidden
+            />
+            {inStock ? "In Stock" : "Out of Stock"}
+          </span>
         </div>
 
-        {/* Price on its own line, then a full-width Add to Cart button. The
-            cards are narrow even in the desktop 4-column grid, so a full-width
-            button never overflows/clips the way a side-by-side one does. */}
+        {/* Price on its own line, then a full-width Add to Cart button — cards
+            stay narrow even in the desktop 4-column grid, so a full-width button
+            never overflows the way a side-by-side one does. */}
         <div className="mt-auto pt-4">
           <div className="flex items-baseline gap-1.5">
             <span className="font-display text-lg font-bold text-ink">
