@@ -205,6 +205,19 @@ export const products: Product[] = [
     categorySlug: "stacking",
     imageLabelBn: "Nesting Cups",
   },
+  {
+    slug: "traditional-push-wagon",
+    titleBn: "Traditional Push Wagon",
+    price: 2850,
+    compareAtPrice: 3200,
+    rating: 4.8,
+    reviewCount: 61,
+    ageTierSlug: "1-2y",
+    badge: "New",
+    imageTones: ["wood", "cream"],
+    categorySlug: "toddler-walking",
+    imageLabelBn: "Push Wagon",
+  },
 ];
 
 export const bestSellers = products.filter((p) => p.badge === "Best Seller");
@@ -304,6 +317,11 @@ const productImageSrcs: Record<string, string[]> = {
   "wooden-xylophone": [
     "/images/products/wooden-xylophone/1.jpg",
     "/images/products/wooden-xylophone/2.jpg",
+  ],
+  "traditional-push-wagon": [
+    "/images/products/traditional-push-wagon/1.png",
+    "/images/products/traditional-push-wagon/2.png",
+    "/images/products/traditional-push-wagon/3.png",
   ],
 };
 
@@ -435,6 +453,31 @@ const detailCopy: Record<string, Omit<ProductDetail, "slug" | "imageSrcs">> = {
     benefits: ["Teaches size comparison", "Encourages repeated practice", "Supports problem-solving play"],
     deliveryEstimate: "Dhaka: 1-2 days, outside Dhaka: 3-5 days",
     saleCountdown: "19H 27M 43S",
+  },
+  "traditional-push-wagon": {
+    description:
+      "A hand-crafted wooden push wagon built to steady first steps. Little ones grip the handle and push — the sturdy beech-wood frame and controlled, smooth-rolling wheels give the balance and confidence that lead to independent walking.",
+    features: [
+      "Sturdy beech-wood build with rubber-rimmed wheels",
+      "Controlled, smooth-rolling wheels for steady first steps",
+      "Hand-crafted and finished with child-safe, water-based polish",
+      "Holds up to 25 kg — roomy cart for toys and blocks",
+    ],
+    benefits: [
+      "Aids independent walking and confidence",
+      "Strengthens gross-motor skills and balance",
+      "Encourages active, imaginative play",
+    ],
+    deliveryEstimate: "Dhaka: 1-2 days, outside Dhaka: 3-5 days",
+    saleCountdown: "2D 06H 30M 00S",
+    specs: {
+      materials: "Sturdy rubber and beech wood",
+      safety:
+        "Hand-crafted with a child-safe, water-based polish; smooth-sanded edges and a stable, tip-resistant base",
+      weight: "2.2 kg (supports up to 25 kg)",
+      dimensions: "52 × 47 × 43 cm (L × W × H)",
+      ageRange: "1–2 years (adult supervision recommended)",
+    },
   },
 };
 

@@ -16,7 +16,6 @@ import {
   ShieldCheck,
   Star,
 } from "lucide-react";
-import { Breadcrumb } from "@/components/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { AgeInsight } from "@/components/product/age-insight";
 import { CartAddedPopup } from "@/components/cart/cart-added-popup";
@@ -96,7 +95,6 @@ export function ProductDetailsView({
   product,
   detail,
   ageTier,
-  category,
   related,
 }: {
   product: Product;
@@ -180,26 +178,15 @@ export function ProductDetailsView({
 
   return (
     <main className="flex-1 bg-paper">
-      {/* breadcrumb */}
-      <div className="mx-auto w-full max-w-[92rem] px-4 pt-5 sm:px-6 lg:px-8">
-        <Breadcrumb
-          items={[
-            { label: "Home", href: "/" },
-            { label: category?.nameBn ?? "Shop", href: category?.href },
-            { label: product.titleBn },
-          ]}
-        />
-      </div>
-
       {/* ===== top: gallery + purchase (balanced 50/50) ===== */}
-      <section className="mx-auto grid w-full max-w-6xl gap-8 px-4 py-6 sm:px-6 sm:py-10 lg:grid-cols-2 lg:gap-10 lg:px-8">
+      <section className="mx-auto grid w-full max-w-6xl gap-8 px-4 pb-8 pt-3 sm:px-6 sm:pb-10 sm:pt-4 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-10 lg:px-8">
         <ProductGallery
           images={detail.imageSrcs}
           imageLabel={product.imageLabelBn}
           imageTones={product.imageTones}
         />
 
-        <div className="flex flex-col">
+        <div className="flex flex-col lg:pl-6">
           {/* tags + wishlist */}
           <div className="flex items-start justify-between gap-4">
             <div className="flex flex-wrap items-center gap-2">
@@ -218,7 +205,11 @@ export function ProductDetailsView({
                 />
               ) : null}
             </div>
-            <WishlistButton slug={product.slug} className="border border-cream-200 bg-paper" />
+            {/* wishlist — mobile/tablet keeps it up here; desktop moves it
+                beside the product name below (see the title row). */}
+            <div className="lg:hidden">
+              <WishlistButton slug={product.slug} className="border border-cream-200 bg-paper" />
+            </div>
           </div>
 
           {/* rating */}
@@ -229,11 +220,20 @@ export function ProductDetailsView({
             </span>
           </div>
 
-          <h1 className="mt-2.5 font-display text-3xl font-bold leading-tight text-ink sm:text-4xl">
-            {product.titleBn}
-          </h1>
+          <div className="mt-2.5 flex items-start justify-between gap-4">
+            <h1 className="font-display text-2xl font-bold leading-tight text-ink sm:text-3xl">
+              {product.titleBn}
+            </h1>
+            {/* wishlist — desktop only; sits right beside the product name. */}
+            <div className="hidden shrink-0 lg:block">
+              <WishlistButton
+                slug={product.slug}
+                className="border border-cream-200 bg-paper"
+              />
+            </div>
+          </div>
 
-          <p className="mt-2.5 max-w-2xl text-[15px] leading-7 text-ink-muted">
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-ink-muted">
             {detail.description}
           </p>
 

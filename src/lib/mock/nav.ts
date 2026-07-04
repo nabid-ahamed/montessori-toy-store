@@ -52,7 +52,7 @@ export const categoryGroups: NavGroup[] = [
   },
   {
     heading: "Developmental Aids",
-    links: [catLink("push-pull"), catLink("ride-on")],
+    links: [catLink("toddler-walking"), catLink("push-pull"), catLink("ride-on")],
   },
   {
     heading: "Montessori & Learning",

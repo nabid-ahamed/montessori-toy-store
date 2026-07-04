@@ -99,7 +99,7 @@ export function ProductGallery({
               src={activeItem.src}
               alt={activeItem.label}
               className={cn(
-                "size-full object-cover transition-transform duration-200",
+                "size-full object-contain transition-transform duration-200",
                 zoom && "scale-[1.8]",
               )}
               style={zoom ? { transformOrigin: `${lens.x}% ${lens.y}%` } : undefined}
