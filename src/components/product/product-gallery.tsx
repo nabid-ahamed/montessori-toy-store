@@ -88,7 +88,7 @@ export function ProductGallery({
       {/* main image */}
       <div className="relative">
         <div
-          className="group relative aspect-square overflow-hidden rounded-xl border border-cream-200 bg-cream-50"
+          className="group relative aspect-square overflow-hidden rounded-xl border border-cream-200 bg-frame shadow-frame"
           onMouseEnter={() => setZoom(true)}
           onMouseLeave={() => setZoom(false)}
           onMouseMove={onMove}
@@ -98,8 +98,9 @@ export function ProductGallery({
             <img
               src={activeItem.src}
               alt={activeItem.label}
+              decoding="async"
               className={cn(
-                "size-full object-contain transition-transform duration-200",
+                "size-full object-contain p-[10%] transition-transform duration-200",
                 zoom && "scale-[1.8]",
               )}
               style={zoom ? { transformOrigin: `${lens.x}% ${lens.y}%` } : undefined}
@@ -171,14 +172,20 @@ export function ProductGallery({
               aria-label={`View product image ${index + 1}`}
               aria-current={active === index}
               className={cn(
-                "aspect-square overflow-hidden rounded-md border bg-cream-50 transition",
+                "aspect-square overflow-hidden rounded-md border bg-frame transition",
                 active === index
                   ? "border-neem ring-2 ring-neem/20"
                   : "border-cream-200 hover:border-neem-soft",
               )}
             >
               {item.src ? (
-                <img src={item.src} alt={item.label} className="size-full object-cover" />
+                <img
+                  src={item.src}
+                  alt={item.label}
+                  loading="lazy"
+                  decoding="async"
+                  className="size-full object-contain p-[10%]"
+                />
               ) : (
                 <PlaceholderImage tone={item.tone} label={item.label} className="size-full" />
               )}
@@ -225,6 +232,7 @@ export function ProductGallery({
                       <img
                         src={activeItem.src}
                         alt={activeItem.label}
+                        decoding="async"
                         className="max-h-[85vh] w-auto rounded-lg object-contain"
                       />
                     ) : (

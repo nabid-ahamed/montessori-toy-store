@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { motion } from "motion/react";
 import { ArrowRight } from "lucide-react";
 import Autoplay from "embla-carousel-autoplay";
@@ -15,6 +14,7 @@ import {
   type CarouselApi,
 } from "@/components/ui/carousel";
 import { heroSlides } from "@/lib/mock/hero";
+import { HeroImage } from "@/components/home/hero-image";
 import { cn } from "@/lib/utils";
 
 export function HeroCarousel() {
@@ -84,13 +84,11 @@ export function HeroCarousel() {
                 whileHover={{ scale: 1.02 }}
                 transition={{ duration: 0.45, ease: "easeOut" }}
               >
-                <Image
+                <HeroImage
                   src={s.image}
                   alt=""
-                  fill
                   priority={i === 0}
-                  sizes="100vw"
-                  className="animate-kenburns object-cover"
+                  imageClassName="animate-kenburns"
                 />
               </motion.div>
             </CarouselItem>

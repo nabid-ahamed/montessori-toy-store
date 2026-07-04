@@ -43,13 +43,13 @@ function RecentlyViewedCard({ product }: { product: Product }) {
   const href = `/products/${product.slug}`;
   return (
     <div className="group flex h-full flex-col overflow-hidden rounded-2xl border border-cream-200 bg-card transition-shadow duration-300 hover:shadow-md">
-      <Link href={href} className="relative block aspect-square overflow-hidden bg-cream-100">
+      <Link href={href} className="relative block aspect-square overflow-hidden bg-frame">
         <ProductImage
           slug={product.slug}
           imageNum={1}
           label={product.imageLabelBn}
           fallbackTone={product.imageTones[0]}
-          className="size-full p-3 transition-transform duration-500 ease-out group-hover:scale-105"
+          className="size-full transition-transform duration-500 ease-out group-hover:scale-105"
         />
       </Link>
 

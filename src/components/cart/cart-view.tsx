@@ -182,13 +182,13 @@ export function CartView() {
                 className="mt-1 size-4 shrink-0 self-start accent-neem"
               />
               <Link href={`/products/${product.slug}`} className="shrink-0">
-                <div className="size-24 overflow-hidden rounded-lg border border-cream-300 bg-cream-100 sm:size-28">
+                <div className="size-24 overflow-hidden rounded-lg border border-cream-300 bg-frame sm:size-28">
                   <ProductImage
                     slug={product.slug}
                     imageNum={1}
                     label={product.imageLabelBn}
                     fallbackTone={product.imageTones[0]}
-                    className="size-full p-1.5 text-xs"
+                    className="size-full text-xs"
                   />
                 </div>
               </Link>

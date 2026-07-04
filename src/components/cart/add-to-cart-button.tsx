@@ -54,15 +54,23 @@ export function AddToCartButton({
         disabled={inCart}
         aria-label={inCart ? "Added to cart" : "Add to cart"}
         className={cn(
-          "h-9 min-w-[118px] justify-center gap-2 px-3 text-[0.8rem] font-semibold",
+          "group relative h-9 min-w-[118px] justify-center gap-2 overflow-hidden px-3 text-[0.8rem] font-semibold transition-colors duration-300",
+          !inCart && "hover:text-ink",
           inCart && "bg-neem-deep disabled:opacity-100",
           className,
         )}
       >
+        {/* wood-light fill — wipes in from the left on hover (only before added) */}
+        {!inCart ? (
+          <span
+            aria-hidden
+            className="absolute inset-0 origin-left scale-x-0 bg-wood-light transition-transform duration-300 ease-out group-hover:scale-x-100 motion-reduce:transition-none"
+          />
+        ) : null}
         <motion.div
           layout
           transition={{ duration: 0.22, ease: "easeOut" }}
-          className="inline-flex items-center justify-center gap-2"
+          className="relative z-10 inline-flex items-center justify-center gap-2"
         >
           <AnimatePresence mode="wait" initial={false}>
             <motion.span

@@ -79,8 +79,8 @@ export function ProductCard({ product }: { product: Product }) {
       style={{ willChange: "transform" }}
     >
       <div className="relative flex h-full min-w-0 flex-col overflow-hidden rounded-xl border border-cream-300 bg-card transition-all duration-300">
-        {/* image (hover-swap) */}
-        <Link href={href} className="relative block aspect-[4/3] overflow-hidden rounded-t-xl bg-cream-100 sm:aspect-square">
+        {/* image (hover-swap) — uniform 1:1 frame surface */}
+        <Link href={href} className="relative block aspect-square overflow-hidden rounded-t-xl bg-frame">
           <motion.div
             className="absolute inset-0"
             variants={imageVariants}
@@ -94,7 +94,7 @@ export function ProductCard({ product }: { product: Product }) {
               imageNum={1}
               label={product.imageLabelBn}
               fallbackTone={product.imageTones[0]}
-              className="absolute inset-0 size-full p-2 transition-opacity duration-300 group-hover/card:opacity-0 sm:p-3"
+              className="absolute inset-0 transition-opacity duration-300 group-hover/card:opacity-0"
             />
             {/* Hover image */}
             <ProductImage
@@ -102,7 +102,7 @@ export function ProductCard({ product }: { product: Product }) {
               imageNum={2}
               label={product.imageLabelBn}
               fallbackTone={product.imageTones[1]}
-              className="absolute inset-0 size-full p-2 opacity-0 transition-opacity duration-300 group-hover/card:opacity-100 sm:p-3"
+              className="absolute inset-0 opacity-0 transition-opacity duration-300 group-hover/card:opacity-100"
             />
           </motion.div>
 

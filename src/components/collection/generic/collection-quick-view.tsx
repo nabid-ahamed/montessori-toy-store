@@ -6,6 +6,7 @@ import { ArrowRight, Star, X } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { AddToCartButton } from "@/components/cart/add-to-cart-button";
 import { ProductImage } from "@/components/product/product-image";
+import { ProductFrame } from "@/components/product/product-frame";
 import { WishlistButton } from "@/components/product/wishlist-button";
 import { shortDescription } from "@/lib/collection-helpers";
 import { ageTierBySlug } from "@/lib/mock/age-tiers";
@@ -82,20 +83,21 @@ export function CollectionQuickView({
               <X className="size-4" />
             </button>
 
-            <div className="relative aspect-square overflow-hidden rounded-2xl bg-cream-100">
+            <ProductFrame interactive={false} className="rounded-2xl">
               <ProductImage
                 slug={product.slug}
                 imageNum={1}
                 label={product.imageLabelBn}
                 fallbackTone={product.imageTones[0]}
-                className="size-full p-3"
+                priority
+                className="size-full"
               />
               {badge ? (
                 <span className="absolute left-3 top-3 rounded-full bg-neem px-2.5 py-1 text-[11px] font-bold text-paper">
                   {badge}
                 </span>
               ) : null}
-            </div>
+            </ProductFrame>
 
             <div className="flex flex-col">
               <span className="text-xs font-medium uppercase tracking-wide text-neem-deep">

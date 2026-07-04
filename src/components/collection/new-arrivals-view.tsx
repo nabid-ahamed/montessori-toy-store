@@ -2,15 +2,16 @@ import Link from "next/link";
 import { Breadcrumb } from "@/components/breadcrumb";
 import { ProductCard } from "@/components/product/product-card";
 import { Button } from "@/components/ui/button";
-import { products } from "@/lib/mock/products";
+import { newLaunches } from "@/lib/mock/products";
 
 /**
  * "New Arrivals" listing: a hero plus a clean grid of the store's newest
- * products (those flagged `badge: "New"`). Server component — filters the static
- * product list; ProductCard supplies all card interactivity.
+ * products (those flagged `badge: "New"`). Server component — reuses the shared
+ * `newLaunches` list so ordering matches the home page; ProductCard supplies all
+ * card interactivity.
  */
 export function NewArrivalsView() {
-  const newProducts = products.filter((p) => p.badge === "New");
+  const newProducts = newLaunches;
 
   return (
     <main className="flex-1 bg-paper">

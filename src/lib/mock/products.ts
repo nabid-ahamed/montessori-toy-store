@@ -221,7 +221,15 @@ export const products: Product[] = [
 ];
 
 export const bestSellers = products.filter((p) => p.badge === "Best Seller");
-export const newLaunches = products.filter((p) => p.badge === "New");
+
+// The Traditional Push Wagon is our latest launch — lead New Arrivals with it so
+// it's visible up-front, then the rest keep their catalogue order.
+const FEATURED_NEW_SLUG = "traditional-push-wagon";
+export const newLaunches = products
+  .filter((p) => p.badge === "New")
+  .sort((a, b) =>
+    a.slug === FEATURED_NEW_SLUG ? -1 : b.slug === FEATURED_NEW_SLUG ? 1 : 0,
+  );
 
 /**
  * Related products for the PDP "You may also like" rail.

@@ -60,21 +60,21 @@ export function CollectionCard({
 
   return (
     <div className="group flex h-full flex-col overflow-hidden rounded-2xl border border-cream-200 bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
-      <div className="relative aspect-square overflow-hidden bg-cream-100">
+      <div className="relative aspect-square overflow-hidden bg-frame">
         <Link href={href} className="absolute inset-0 block">
           <ProductImage
             slug={product.slug}
             imageNum={1}
             label={product.imageLabelBn}
             fallbackTone={product.imageTones[0]}
-            className="absolute inset-0 size-full p-3 transition-all duration-500 ease-out group-hover:scale-110 group-hover:opacity-0"
+            className="absolute inset-0 transition-all duration-500 ease-out group-hover:scale-105 group-hover:opacity-0"
           />
           <ProductImage
             slug={product.slug}
             imageNum={2}
             label={product.imageLabelBn}
             fallbackTone={product.imageTones[1]}
-            className="absolute inset-0 size-full p-3 opacity-0 transition-all duration-500 ease-out group-hover:scale-110 group-hover:opacity-100"
+            className="absolute inset-0 opacity-0 transition-all duration-500 ease-out group-hover:scale-105 group-hover:opacity-100"
           />
         </Link>
 

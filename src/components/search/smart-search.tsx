@@ -550,13 +550,13 @@ export function SmartSearch({
                                   optionCls(index),
                                 )}
                               >
-                                <div className="relative size-12 flex-none overflow-hidden rounded-xl bg-cream-100">
+                                <div className="relative size-12 flex-none overflow-hidden rounded-xl bg-frame">
                                   <ProductImage
                                     slug={p.slug}
                                     imageNum={1}
                                     label={p.imageLabelBn}
                                     fallbackTone={p.imageTones[0]}
-                                    className="size-full p-1"
+                                    className="size-full"
                                   />
                                 </div>
                                 <div className="min-w-0 flex-1">

@@ -28,7 +28,7 @@ export function FeaturedProductHero() {
           <Link
             href={href}
             aria-label={product.titleBn}
-            className="group relative block aspect-square overflow-hidden rounded-2xl bg-cream-100"
+            className="group relative block aspect-square overflow-hidden rounded-2xl bg-frame shadow-frame"
           >
             {product.badge ? (
               <span className="absolute left-3 top-3 z-10 rounded-full bg-neem px-3 py-1 text-xs font-bold text-paper shadow-sm">
@@ -40,7 +40,8 @@ export function FeaturedProductHero() {
               imageNum={1}
               label={product.imageLabelBn}
               fallbackTone={product.imageTones[0]}
-              className="size-full p-4 transition-transform duration-500 ease-out group-hover:scale-105"
+              priority
+              className="size-full transition-transform duration-500 ease-out group-hover:scale-105"
             />
           </Link>
 
@@ -79,10 +80,15 @@ export function FeaturedProductHero() {
             <div className="mt-7">
               <Link
                 href={href}
-                className="group inline-flex h-12 items-center justify-center gap-2 rounded-full bg-neem px-7 text-sm font-bold text-paper shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:bg-neem-deep hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neem"
+                className="group relative inline-flex h-[3.25rem] items-center justify-center gap-2.5 overflow-hidden rounded-full bg-gradient-to-b from-neem to-neem-deep px-8 text-sm font-bold tracking-wide text-paper shadow-lg shadow-neem/30 ring-1 ring-inset ring-paper/15 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-xl hover:shadow-neem/40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neem"
               >
-                Discover the Push Wagon
-                <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" />
+                {/* diagonal shine sweep on hover */}
+                <span
+                  aria-hidden
+                  className="pointer-events-none absolute inset-y-0 -left-1/3 w-1/3 -skew-x-12 bg-gradient-to-r from-transparent via-paper/35 to-transparent opacity-0 transition-all duration-700 ease-out group-hover:left-[130%] group-hover:opacity-100"
+                />
+                <span className="relative z-10">Discover the Push Wagon</span>
+                <ArrowRight className="relative z-10 size-4 transition-transform duration-300 group-hover:translate-x-1" />
               </Link>
             </div>
           </div>
