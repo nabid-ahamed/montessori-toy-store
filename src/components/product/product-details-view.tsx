@@ -361,7 +361,7 @@ export function ProductDetailsView({
       <section className="mx-auto w-full max-w-[92rem] px-4 pb-2 pt-6 sm:px-6 lg:-mt-20 lg:px-8 lg:pt-0">
         <div className="flex justify-center">
           <Image
-            src="/images/certified%20Logo/certlogo.png"
+            src="/images/certified%20Logo/certlogo.webp"
             alt="Product certifications"
             width={1885}
             height={834}

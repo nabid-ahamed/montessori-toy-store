@@ -25,7 +25,7 @@ export function ContactImage() {
 
   return (
     <Image
-      src="/images/contact/contact-hero.png"
+      src="/images/contact/contact-hero.webp"
       alt="Handmade wooden Montessori toys"
       width={2172}
       height={724}

@@ -271,8 +271,8 @@ export const productBySlug = (slug: string) =>
 
 const productImageSrcs: Record<string, string[]> = {
   "neem-rattle-set": [
-    "/images/products/neem-rattle-set/1.png",
-    "/images/products/neem-rattle-set/2.png",
+    "/images/products/neem-rattle-set/1.webp",
+    "/images/products/neem-rattle-set/2.webp",
   ],
   "stacking-ring-tower": [
     "/images/products/stacking-ring-tower/1.jpg",
@@ -291,7 +291,7 @@ const productImageSrcs: Record<string, string[]> = {
     "/images/products/neem-teether-ring/2.jpg",
   ],
   "building-block-set": [
-    "/images/products/building-block-set/1.jpg",
+    "/images/products/building-block-set/1.webp",
     "/images/products/building-block-set/2.jpg",
   ],
   "object-permanence-box": [
@@ -300,15 +300,15 @@ const productImageSrcs: Record<string, string[]> = {
   ],
   "rocker-ride-horse": [
     "/images/products/rocker-ride-horse/1.jpg",
-    "/images/products/rocker-ride-horse/2.jpg",
+    "/images/products/rocker-ride-horse/2.webp",
   ],
   "sensory-ball-set": [
     "/images/products/sensory-ball-set/1.webp",
     "/images/products/sensory-ball-set/2.jpg",
   ],
   "animal-puzzle": [
-    "/images/products/animal-puzzle/1.png",
-    "/images/products/animal-puzzle/2.jpg",
+    "/images/products/animal-puzzle/1.webp",
+    "/images/products/animal-puzzle/2.webp",
   ],
   "soft-cloth-book": [
     "/images/products/soft-cloth-book/1.jpg",
@@ -319,9 +319,9 @@ const productImageSrcs: Record<string, string[]> = {
     "/images/products/wooden-xylophone/2.jpg",
   ],
   "traditional-push-wagon": [
-    "/images/products/traditional-push-wagon/1.png",
-    "/images/products/traditional-push-wagon/2.png",
-    "/images/products/traditional-push-wagon/3.png",
+    "/images/products/traditional-push-wagon/1.webp",
+    "/images/products/traditional-push-wagon/2.webp",
+    "/images/products/traditional-push-wagon/3.webp",
   ],
 };
 
