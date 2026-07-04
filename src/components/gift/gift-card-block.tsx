@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { toast } from "sonner";
+import { useEffect, useState } from "react";
 import { Check, Gift } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { CartAddedPopup } from "@/components/cart/cart-added-popup";
 import { useCart } from "@/lib/cart/cart-context";
 import { giftCardAmounts } from "@/lib/mock/gifts";
 import { formatTk } from "@/lib/format";
@@ -17,12 +17,21 @@ import { cn } from "@/lib/utils";
 export function GiftCardBlock() {
   const { items, addItem } = useCart();
   const [selected, setSelected] = useState<number>(1000);
+  const [showAdded, setShowAdded] = useState(false);
   const slug = `gift-card-${selected}`;
   const inCart = items.some((it) => it.product.slug === slug);
 
+  // Auto-dismiss the "Added to Cart" confirmation, matching the product cards.
+  useEffect(() => {
+    if (!showAdded) return;
+    const timeout = window.setTimeout(() => setShowAdded(false), 2600);
+    return () => window.clearTimeout(timeout);
+  }, [showAdded]);
+
   const onAdd = () => {
+    if (inCart) return; // locked once this denomination is in the cart
     addItem(slug);
-    toast.success("Gift Card added", { description: formatTk(selected) });
+    setShowAdded(true);
   };
 
   return (
@@ -75,6 +84,13 @@ export function GiftCardBlock() {
           </Button>
         </div>
       </div>
+
+      {showAdded ? (
+        <CartAddedPopup
+          title={`Gift Card — ${formatTk(selected)}`}
+          onClose={() => setShowAdded(false)}
+        />
+      ) : null}
     </section>
   );
 }
