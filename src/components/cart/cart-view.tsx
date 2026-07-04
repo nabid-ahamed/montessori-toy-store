@@ -1,10 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { Minus, Plus, Trash2, ShoppingBag, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ProductImage } from "@/components/product/product-image";
+import { OrderOptions } from "@/components/cart/order-options";
 import { useCart } from "@/lib/cart/cart-context";
 import { formatTk } from "@/lib/format";
 
@@ -46,7 +48,12 @@ function QtyStepper({
 }
 
 export function CartView() {
-  const { items, subtotal, hydrated, setQty, removeItem, clear } = useCart();
+  const { items, hydrated, setQty, removeItem, clear } = useCart();
+  // Terms agreement lives here so it can gate the Checkout button below.
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
+  // Track DESELECTED slugs (default: everything selected). This model auto-keeps
+  // new items selected and quietly drops removed ones — no syncing needed.
+  const [deselected, setDeselected] = useState<Set<string>>(new Set());
 
   // Avoid rendering the empty state during the pre-hydration flash.
   if (!hydrated) {
@@ -77,10 +84,42 @@ export function CartView() {
     );
   }
 
+  // Selection state derived from the deselected set.
+  const isItemSelected = (slug: string) => !deselected.has(slug);
+  const selectedItems = items.filter((it) => isItemSelected(it.product.slug));
+  const selectedCount = selectedItems.length;
+  const allSelected = items.length > 0 && selectedCount === items.length;
+  const selectedSubtotal = selectedItems.reduce((sum, it) => sum + it.lineTotal, 0);
+
+  const toggleItem = (slug: string) =>
+    setDeselected((prev) => {
+      const next = new Set(prev);
+      if (next.has(slug)) next.delete(slug);
+      else next.add(slug);
+      return next;
+    });
+  const toggleAll = () =>
+    setDeselected(
+      allSelected ? new Set(items.map((it) => it.product.slug)) : new Set(),
+    );
+  const removeSelected = () =>
+    selectedItems.forEach((it) => removeItem(it.product.slug));
+
+  // Totals reflect ONLY the selected items — that's what gets checked out.
   const shipping =
-    subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : FLAT_SHIPPING;
-  const total = subtotal + shipping;
-  const remaining = FREE_SHIPPING_THRESHOLD - subtotal;
+    selectedSubtotal === 0
+      ? 0
+      : selectedSubtotal >= FREE_SHIPPING_THRESHOLD
+        ? 0
+        : FLAT_SHIPPING;
+  const total = selectedSubtotal + shipping;
+  const remaining = FREE_SHIPPING_THRESHOLD - selectedSubtotal;
+
+  const canCheckout = agreedToTerms && selectedCount > 0;
+
+  // Mock auth for the reward-points block (no real auth on the cart yet).
+  const isLoggedIn = false;
+  const rewardPoints = 320;
 
   return (
     <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6 sm:py-10 lg:max-w-[90rem] lg:px-8">
@@ -98,13 +137,50 @@ export function CartView() {
       </header>
 
       <div className="mt-8 grid gap-8 lg:grid-cols-3">
-        {/* line items */}
-        <ul className="lg:col-span-2">
+        {/* line items + order options */}
+        <div className="space-y-8 lg:col-span-2">
+          <div>
+            {/* selection bar */}
+            <div className="flex items-center justify-between border-b border-cream-300 pb-3">
+              <label className="flex cursor-pointer items-center gap-2.5">
+                <input
+                  type="checkbox"
+                  checked={allSelected}
+                  onChange={toggleAll}
+                  aria-label="Select all items"
+                  className="size-4 accent-neem"
+                />
+                <span className="text-sm font-medium text-ink">
+                  Select all{" "}
+                  <span className="text-ink-soft">
+                    ({selectedCount}/{items.length})
+                  </span>
+                </span>
+              </label>
+              <button
+                type="button"
+                onClick={removeSelected}
+                disabled={selectedCount === 0}
+                className="inline-flex items-center gap-1.5 text-sm font-medium text-ink-soft transition-colors hover:text-danger disabled:pointer-events-none disabled:opacity-40"
+              >
+                <Trash2 className="size-4" />
+                Remove selected
+              </button>
+            </div>
+
+          <ul>
           {items.map(({ product, qty, lineTotal }) => (
             <li
               key={product.slug}
               className="flex gap-4 border-b border-cream-300 py-4 first:pt-0"
             >
+              <input
+                type="checkbox"
+                checked={isItemSelected(product.slug)}
+                onChange={() => toggleItem(product.slug)}
+                aria-label={`Select ${product.titleBn}`}
+                className="mt-1 size-4 shrink-0 self-start accent-neem"
+              />
               <Link href={`/products/${product.slug}`} className="shrink-0">
                 <div className="size-24 overflow-hidden rounded-lg border border-cream-300 bg-cream-100 sm:size-28">
                   <ProductImage
@@ -118,21 +194,13 @@ export function CartView() {
               </Link>
 
               <div className="flex flex-1 flex-col">
-                <div className="flex items-start justify-between gap-3">
+                <div className="flex items-start gap-3">
                   <Link
                     href={`/products/${product.slug}`}
                     className="font-medium text-ink hover:text-neem-deep"
                   >
                     {product.titleBn}
                   </Link>
-                  <button
-                    type="button"
-                    onClick={() => removeItem(product.slug)}
-                    aria-label={`Remove ${product.titleBn}`}
-                    className="shrink-0 text-ink-soft hover:text-danger"
-                  >
-                    <Trash2 className="size-4" />
-                  </button>
                 </div>
 
                 <span className="mt-0.5 text-sm text-ink-muted">
@@ -161,7 +229,16 @@ export function CartView() {
               ← Continue shopping
             </Link>
           </div>
-        </ul>
+          </ul>
+          </div>
+
+          <OrderOptions
+            isLoggedIn={isLoggedIn}
+            rewardPoints={rewardPoints}
+            agreedToTerms={agreedToTerms}
+            onAgreedToTermsChange={setAgreedToTerms}
+          />
+        </div>
 
         {/* order summary */}
         <aside className="lg:col-span-1">
@@ -170,10 +247,14 @@ export function CartView() {
               Order Summary
             </h2>
 
+            <p className="mt-1 text-xs text-ink-soft">
+              {selectedCount} of {items.length} item{items.length === 1 ? "" : "s"} selected
+            </p>
+
             <dl className="mt-4 space-y-3 text-sm">
               <div className="flex justify-between">
                 <dt className="text-ink-muted">Subtotal</dt>
-                <dd className="font-medium text-ink">{formatTk(subtotal)}</dd>
+                <dd className="font-medium text-ink">{formatTk(selectedSubtotal)}</dd>
               </div>
               <div className="flex justify-between">
                 <dt className="text-ink-muted">Shipping</dt>
@@ -183,7 +264,7 @@ export function CartView() {
               </div>
             </dl>
 
-            {remaining > 0 ? (
+            {remaining > 0 && selectedSubtotal > 0 ? (
               <p className="mt-3 rounded-md bg-cream-200 px-3 py-2 text-xs text-ink-muted">
                 Add <span className="font-semibold text-ink">{formatTk(remaining)}</span>{" "}
                 more for free shipping.
@@ -199,14 +280,25 @@ export function CartView() {
               </span>
             </div>
 
-            <Button asChild className="mt-5 w-full" size="lg">
-              <Link href="/checkout">
+            {canCheckout ? (
+              <Button asChild className="mt-5 w-full" size="lg">
+                <Link href="/checkout">
+                  Checkout ({selectedCount})
+                  <ArrowRight className="size-4" />
+                </Link>
+              </Button>
+            ) : (
+              <Button type="button" className="mt-5 w-full" size="lg" disabled>
                 Checkout
                 <ArrowRight className="size-4" />
-              </Link>
-            </Button>
+              </Button>
+            )}
             <p className="mt-2 text-center text-xs text-ink-soft">
-              You&apos;ll review your order on the next step.
+              {selectedCount === 0
+                ? "Select at least one item to check out."
+                : !agreedToTerms
+                  ? "Agree to the Terms & Conditions to continue."
+                  : "You'll review your order on the next step."}
             </p>
           </div>
         </aside>

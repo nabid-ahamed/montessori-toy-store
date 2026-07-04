@@ -20,7 +20,7 @@ export type CartItem = { product: Product; qty: number; lineTotal: number };
 
 type CartContextValue = {
   items: CartItem[];
-  count: number; // total quantity across lines
+  count: number; // number of distinct products (a product counts once, any qty)
   subtotal: number; // BDT
   hydrated: boolean; // false until localStorage is read (avoids SSR mismatch)
   addItem: (slug: string, qty?: number) => void;
@@ -106,10 +106,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     });
   }, [lines]);
 
-  const count = useMemo(
-    () => items.reduce((n, it) => n + it.qty, 0),
-    [items],
-  );
+  // Distinct products in the cart — the same product counts once no matter its
+  // quantity (drives the header cart badge).
+  const count = items.length;
   const subtotal = useMemo(
     () => items.reduce((s, it) => s + it.lineTotal, 0),
     [items],
