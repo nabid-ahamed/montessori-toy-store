@@ -6,6 +6,7 @@ import Image from "next/image";
 import {
   Baby,
   BadgeCheck,
+  Check,
   FlaskConical,
   Leaf,
   Mail,
@@ -18,6 +19,7 @@ import {
 import { Breadcrumb } from "@/components/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { AgeInsight } from "@/components/product/age-insight";
+import { CartAddedPopup } from "@/components/cart/cart-added-popup";
 import { ProductGallery } from "@/components/product/product-gallery";
 import { ProductTabs } from "@/components/product/product-tabs";
 import { ProductReviews } from "@/components/product/product-reviews";
@@ -104,8 +106,13 @@ export function ProductDetailsView({
   related: Product[];
 }) {
   const router = useRouter();
-  const { addItem } = useCart();
+  const { addItem, items } = useCart();
   const [quantity, setQuantity] = useState(1);
+  const [showAdded, setShowAdded] = useState(false);
+
+  // Once the product is in the cart, the Add button locks to "Added" — the
+  // quantity is only changed from the cart page, so it can't be added twice.
+  const inCart = items.some((it) => it.product.slug === product.slug);
 
   // Current page URL for the social-share links (client-only; empty during SSR).
   const [shareUrl, setShareUrl] = useState("");
@@ -113,13 +120,24 @@ export function ProductDetailsView({
     setShareUrl(window.location.href);
   }, []);
 
+  // Auto-dismiss the "Added to Cart" confirmation, matching the product cards.
+  useEffect(() => {
+    if (!showAdded) return;
+    const timeout = window.setTimeout(() => setShowAdded(false), 2600);
+    return () => window.clearTimeout(timeout);
+  }, [showAdded]);
+
   const discount = product.compareAtPrice
     ? Math.round(((product.compareAtPrice - product.price) / product.compareAtPrice) * 100)
     : 0;
 
-  const addSelectedToCart = () => addItem(product.slug, quantity);
+  const handleAddToCart = () => {
+    if (inCart) return; // already added — no duplicate lines / silent increments
+    addItem(product.slug, quantity);
+    setShowAdded(true);
+  };
   const buyNow = () => {
-    addSelectedToCart();
+    if (!inCart) addItem(product.slug, quantity);
     router.push("/cart");
   };
 
@@ -271,10 +289,22 @@ export function ProductDetailsView({
             <div className="grid gap-3 sm:max-w-md sm:grid-cols-2">
               <Button
                 type="button"
-                onClick={addSelectedToCart}
-                className="h-11 rounded-lg bg-neem px-4 text-[13px] font-bold text-paper hover:bg-neem-deep"
+                onClick={handleAddToCart}
+                disabled={inCart}
+                aria-label={inCart ? "Added to cart" : "Add to cart"}
+                className={cn(
+                  "h-11 gap-2 rounded-lg bg-neem px-4 text-[13px] font-bold text-paper hover:bg-neem-deep",
+                  inCart && "bg-neem-deep disabled:opacity-100",
+                )}
               >
-                Add to Cart
+                {inCart ? (
+                  <>
+                    <Check className="size-4" />
+                    Added
+                  </>
+                ) : (
+                  "Add to Cart"
+                )}
               </Button>
               <Button
                 type="button"
@@ -283,28 +313,6 @@ export function ProductDetailsView({
               >
                 Buy Now
               </Button>
-            </div>
-          </div>
-
-          {/* social share */}
-          <div className="mt-4 flex flex-wrap items-center gap-3">
-            <span className="text-sm font-semibold text-ink-muted">
-              9K shares
-            </span>
-            <div className="flex flex-wrap items-center gap-2">
-              {shareLinks.map((s) => (
-                <a
-                  key={s.label}
-                  href={s.href}
-                  target={s.external ? "_blank" : undefined}
-                  rel={s.external ? "noopener noreferrer" : undefined}
-                  aria-label={`Share on ${s.label}`}
-                  title={`Share on ${s.label}`}
-                  className="inline-flex size-9 items-center justify-center rounded-md border border-cream-300 bg-paper text-ink-muted transition-colors hover:border-neem hover:bg-cream-100 hover:text-neem-deep focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neem"
-                >
-                  {s.icon}
-                </a>
-              ))}
             </div>
           </div>
 
@@ -323,6 +331,28 @@ export function ProductDetailsView({
                 </div>
               );
             })}
+          </div>
+
+          {/* social share — below the trust features */}
+          <div className="mt-5 flex flex-wrap items-center gap-3">
+            <span className="text-sm font-semibold text-ink-muted">
+              9K shares
+            </span>
+            <div className="flex flex-wrap items-center gap-3">
+              {shareLinks.map((s) => (
+                <a
+                  key={s.label}
+                  href={s.href}
+                  target={s.external ? "_blank" : undefined}
+                  rel={s.external ? "noopener noreferrer" : undefined}
+                  aria-label={`Share on ${s.label}`}
+                  title={`Share on ${s.label}`}
+                  className="inline-flex items-center justify-center rounded-full p-1 text-ink-muted transition duration-200 hover:scale-110 hover:text-neem-deep focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neem"
+                >
+                  {s.icon}
+                </a>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -358,6 +388,10 @@ export function ProductDetailsView({
           reviewCount={product.reviewCount}
         />
       </section>
+
+      {showAdded ? (
+        <CartAddedPopup title={product.titleBn} onClose={() => setShowAdded(false)} />
+      ) : null}
     </main>
   );
 }
