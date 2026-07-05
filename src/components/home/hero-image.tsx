@@ -47,8 +47,12 @@ export function HeroImage({
           src={src}
           alt={alt}
           fill
+          // `priority` handles eager-load + fetchpriority=high for the LCP slide;
+          // non-priority slides fall back to next/image's default lazy loading.
+          // (Passing an explicit `loading` alongside `priority` suppresses the
+          // high fetch priority, which is what was delaying LCP.)
           priority={priority}
-          loading={priority ? undefined : "lazy"}
+          fetchPriority={priority ? "high" : undefined}
           sizes="100vw"
           onError={() => setFailed(true)}
           className={cn("object-cover", imageClassName)}

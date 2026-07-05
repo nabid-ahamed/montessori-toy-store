@@ -26,12 +26,15 @@ const inter = Inter({
   display: "swap",
 });
 
-// Accent — used selectively (e.g. footer "Follow us")
+// Accent — used selectively (e.g. footer "Follow us"). It only appears below the
+// fold, so skip preloading it: that frees Slow-4G bandwidth for the LCP hero
+// image (Poppins still loads on demand and swaps in via `display: swap`).
 const poppins = Poppins({
   variable: "--font-poppins",
   weight: ["400", "600", "700"],
   subsets: ["latin"],
   display: "swap",
+  preload: false,
 });
 
 export const metadata: Metadata = {

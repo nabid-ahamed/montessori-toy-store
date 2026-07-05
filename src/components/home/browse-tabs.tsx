@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { categories } from "@/lib/mock/categories";
 import { bulkPrograms } from "@/lib/mock/bulk";
@@ -22,12 +23,12 @@ function Tile({ href, label, slug }: { href: string; label: string; slug: string
       href={href}
       className="group relative block aspect-square overflow-hidden rounded-xl border border-cream-300 bg-card transition-all hover:-translate-y-0.5 hover:shadow-md"
     >
-      <img
+      <Image
         src={`/images/category/${slug}/1.webp`}
         alt={label}
-        loading="lazy"
-        decoding="async"
-        className="size-full object-cover transition-transform duration-300 group-hover:scale-105"
+        fill
+        sizes="(max-width: 640px) 45vw, 30vw"
+        className="object-cover transition-transform duration-300 group-hover:scale-105"
       />
       <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/70 to-transparent px-4 pb-4 pt-12 text-center font-display text-sm font-bold text-paper sm:text-base">
         {label}
