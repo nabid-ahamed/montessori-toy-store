@@ -51,6 +51,9 @@ import { cn } from "@/lib/utils";
 const drawerItemClass =
   "px-2 py-2.5 text-sm font-medium text-ink transition-colors hover:text-neem-deep hover:no-underline";
 
+const headerContainerClass =
+  "mx-auto w-full max-w-6xl px-4 sm:px-6 lg:max-w-[90rem] lg:px-8";
+
 /** Is `href` the current page? Exact for "/", prefix-match for sections. */
 function isActivePath(pathname: string, href: string): boolean {
   if (href === "/") return pathname === "/";
@@ -397,7 +400,8 @@ export function Header() {
           shrink makes the bar appear to jump/clip while scrolling. */}
       <div
         className={cn(
-          "mx-auto flex max-w-6xl items-center gap-4 px-4 transition-[height] duration-300 sm:px-6",
+          headerContainerClass,
+          "flex items-center gap-4 transition-[height] duration-300",
           // Mobile height is constant (h-20) so the sticky bar never shrinks /
           // clips while scrolling; only md+ condenses (where search/nav shrink).
           collapsed ? "h-20 md:h-16" : "h-20 md:h-24",
@@ -546,7 +550,7 @@ export function Header() {
 
       {/* mobile: full-width search bar, revealed by the header search icon */}
       {mobileSearch ? (
-        <div className="mx-auto max-w-6xl px-4 pb-2 sm:px-6 md:hidden">
+        <div className={cn(headerContainerClass, "pb-2 md:hidden")}>
           <SmartSearch className="w-full" autoFocus />
         </div>
       ) : null}
@@ -555,7 +559,8 @@ export function Header() {
       <nav className="hidden md:block">
         <div
           className={cn(
-            "mx-auto flex max-w-6xl items-center justify-center gap-2 px-6 transition-all duration-300 md:gap-3 lg:gap-4",
+            headerContainerClass,
+            "flex items-center justify-center gap-2 transition-all duration-300 md:gap-3 lg:gap-4",
             collapsed ? "py-2" : "py-4",
           )}
         >

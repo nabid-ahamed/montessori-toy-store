@@ -1,17 +1,115 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
-import { Minus, Plus, Trash2, ShoppingBag, ArrowRight } from "lucide-react";
+import { Dialog } from "radix-ui";
+import { Minus, Plus, Trash2, ShoppingBag, ArrowRight, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ProductImage } from "@/components/product/product-image";
 import { OrderOptions } from "@/components/cart/order-options";
 import { useCart } from "@/lib/cart/cart-context";
 import { formatTk } from "@/lib/format";
+import { cn } from "@/lib/utils";
 
 const FREE_SHIPPING_THRESHOLD = 2000;
 const FLAT_SHIPPING = 60;
+const ACTION_TOAST_DURATION = 8000;
+const CART_ACTION_DELAY_MS = 180;
+
+type ConfirmAction = "remove-selected" | "clear-cart";
+type RemovedLine = { slug: string; qty: number };
+
+const confirmCopy: Record<
+  ConfirmAction,
+  { description: string; confirmLabel: string }
+> = {
+  "remove-selected": {
+    description:
+      "Are you sure you want to remove the selected item(s) from your cart?",
+    confirmLabel: "Remove",
+  },
+  "clear-cart": {
+    description:
+      "Are you sure you want to clear your cart? This action cannot be undone.",
+    confirmLabel: "Clear Cart",
+  },
+};
+
+function CartActionConfirmDialog({
+  action,
+  itemCount,
+  processing,
+  onOpenChange,
+  onConfirm,
+}: {
+  action: ConfirmAction | null;
+  itemCount: number;
+  processing: boolean;
+  onOpenChange: (open: boolean) => void;
+  onConfirm: () => void;
+}) {
+  const cancelRef = useRef<HTMLButtonElement>(null);
+  const confirmRef = useRef<HTMLButtonElement>(null);
+  const copy = action ? confirmCopy[action] : null;
+  const countLabel =
+    itemCount === 1 ? "1 item selected" : `${itemCount} items selected`;
+
+  return (
+    <Dialog.Root
+      open={Boolean(action)}
+      onOpenChange={(open) => {
+        if (processing) return;
+        onOpenChange(open);
+      }}
+    >
+      <Dialog.Portal>
+        <Dialog.Overlay className="fixed inset-0 z-50 bg-black/10 duration-100 supports-backdrop-filter:backdrop-blur-xs data-open:animate-in data-open:fade-in-0 data-closed:animate-out data-closed:fade-out-0" />
+        <Dialog.Content
+          className="fixed left-1/2 top-1/2 z-50 w-[calc(100%-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-xl border border-cream-300 bg-paper p-5 text-sm text-ink shadow-lg duration-200 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95"
+          onOpenAutoFocus={(event) => {
+            event.preventDefault();
+            cancelRef.current?.focus();
+          }}
+        >
+          <Dialog.Title className="font-display text-lg font-bold text-ink">
+            Confirm Action
+          </Dialog.Title>
+          <Dialog.Description className="mt-2 leading-6 text-ink-muted">
+            {copy?.description}
+          </Dialog.Description>
+          <p className="mt-2 text-xs font-medium text-ink-soft">
+            {countLabel}
+          </p>
+
+          <div className="mt-5 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+            <Dialog.Close asChild>
+              <Button
+                ref={cancelRef}
+                type="button"
+                variant="outline"
+                disabled={processing}
+              >
+                Cancel
+              </Button>
+            </Dialog.Close>
+            <Button
+              ref={confirmRef}
+              type="button"
+              variant="destructive"
+              disabled={processing}
+              onClick={onConfirm}
+            >
+              {processing ? <Loader2 className="size-4 animate-spin" /> : null}
+              {copy?.confirmLabel}
+            </Button>
+          </div>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
+  );
+}
 
 function QtyStepper({
   qty,
@@ -48,12 +146,14 @@ function QtyStepper({
 }
 
 export function CartView() {
-  const { items, hydrated, setQty, removeItem, clear } = useCart();
+  const { items, hydrated, addItem, setQty, removeItem, clear } = useCart();
   // Terms agreement lives here so it can gate the Checkout button below.
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   // Track DESELECTED slugs (default: everything selected). This model auto-keeps
   // new items selected and quietly drops removed ones — no syncing needed.
   const [deselected, setDeselected] = useState<Set<string>>(new Set());
+  const [confirmAction, setConfirmAction] = useState<ConfirmAction | null>(null);
+  const [processingAction, setProcessingAction] = useState(false);
 
   // Avoid rendering the empty state during the pre-hydration flash.
   if (!hydrated) {
@@ -104,6 +204,70 @@ export function CartView() {
     );
   const removeSelected = () =>
     selectedItems.forEach((it) => removeItem(it.product.slug));
+  const restoreLines = (removedLines: RemovedLine[]) => {
+    removedLines.forEach((line) => addItem(line.slug, line.qty));
+  };
+  const showCartActionToast = (
+    action: ConfirmAction,
+    removedLines: RemovedLine[],
+  ) => {
+    const removedCount = removedLines.length;
+    const title =
+      action === "clear-cart" ? "Cart cleared" : "Selected item(s) removed";
+    const description =
+      removedCount === 1
+        ? "1 item was removed from your cart."
+        : `${removedCount} items were removed from your cart.`;
+
+    toast.success(title, {
+      description,
+      duration: ACTION_TOAST_DURATION,
+      action: {
+        label: "Undo",
+        onClick: () => {
+          restoreLines(removedLines);
+          toast.success("Cart restored", {
+            description:
+              removedCount === 1
+                ? "1 item was added back to your cart."
+                : `${removedCount} items were added back to your cart.`,
+          });
+        },
+      },
+    });
+  };
+  const confirmDestructiveAction = () => {
+    if (!confirmAction || processingAction) return;
+
+    const action = confirmAction;
+    const removedLines =
+      action === "remove-selected"
+        ? selectedItems.map((it) => ({ slug: it.product.slug, qty: it.qty }))
+        : items.map((it) => ({ slug: it.product.slug, qty: it.qty }));
+
+    if (removedLines.length === 0) return;
+
+    setProcessingAction(true);
+    window.setTimeout(() => {
+      if (action === "remove-selected") {
+        removeSelected();
+      }
+      if (action === "clear-cart") {
+        clear();
+      }
+
+      showCartActionToast(action, removedLines);
+      setConfirmAction(null);
+      setProcessingAction(false);
+    }, CART_ACTION_DELAY_MS);
+  };
+  const openConfirmAction = (action: ConfirmAction) => {
+    if (processingAction) return;
+    if (action === "remove-selected" && selectedCount === 0) return;
+    if (action === "clear-cart" && items.length === 0) return;
+
+    setConfirmAction(action);
+  };
 
   // Totals reflect ONLY the selected items — that's what gets checked out.
   const shipping =
@@ -116,6 +280,8 @@ export function CartView() {
   const remaining = FREE_SHIPPING_THRESHOLD - selectedSubtotal;
 
   const canCheckout = agreedToTerms && selectedCount > 0;
+  const confirmItemCount =
+    confirmAction === "clear-cart" ? items.length : selectedCount;
 
   // Mock auth for the reward-points block (no real auth on the cart yet).
   const isLoggedIn = false;
@@ -129,9 +295,13 @@ export function CartView() {
         </h1>
         <button
           type="button"
-          onClick={clear}
-          className="text-sm font-medium text-ink-soft underline-offset-4 hover:text-danger hover:underline"
+          onClick={() => openConfirmAction("clear-cart")}
+          disabled={items.length === 0 || processingAction}
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-ink-soft underline-offset-4 transition-colors hover:text-danger hover:underline disabled:pointer-events-none disabled:opacity-40"
         >
+          {processingAction && confirmAction === "clear-cart" ? (
+            <Loader2 className="size-3.5 animate-spin" />
+          ) : null}
           Clear cart
         </button>
       </header>
@@ -159,11 +329,15 @@ export function CartView() {
               </label>
               <button
                 type="button"
-                onClick={removeSelected}
-                disabled={selectedCount === 0}
+                onClick={() => openConfirmAction("remove-selected")}
+                disabled={selectedCount === 0 || processingAction}
                 className="inline-flex items-center gap-1.5 text-sm font-medium text-ink-soft transition-colors hover:text-danger disabled:pointer-events-none disabled:opacity-40"
               >
-                <Trash2 className="size-4" />
+                {processingAction && confirmAction === "remove-selected" ? (
+                  <Loader2 className="size-4 animate-spin" />
+                ) : (
+                  <Trash2 className="size-4" />
+                )}
                 Remove selected
               </button>
             </div>
@@ -172,7 +346,13 @@ export function CartView() {
           {items.map(({ product, qty, lineTotal }) => (
             <li
               key={product.slug}
-              className="flex gap-4 border-b border-cream-300 py-4 first:pt-0"
+              className={cn(
+                "flex gap-4 border-b border-cream-300 py-4 opacity-100 transition-opacity duration-200 first:pt-0",
+                processingAction &&
+                  confirmAction === "remove-selected" &&
+                  isItemSelected(product.slug) &&
+                  "opacity-45",
+              )}
             >
               <input
                 type="checkbox"
@@ -303,6 +483,16 @@ export function CartView() {
           </div>
         </aside>
       </div>
+
+      <CartActionConfirmDialog
+        action={confirmAction}
+        itemCount={confirmItemCount}
+        processing={processingAction}
+        onOpenChange={(open) => {
+          if (!open) setConfirmAction(null);
+        }}
+        onConfirm={confirmDestructiveAction}
+      />
     </main>
   );
 }
