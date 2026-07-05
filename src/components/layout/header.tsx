@@ -63,8 +63,11 @@ function isActivePath(pathname: string, href: string): boolean {
 // Premium desktop nav item: color shifts to neem on hover/active and an
 // accent underline grows from the centre. Shared by links and dropdowns so the
 // whole row animates identically. Layout/typography are unchanged.
+// Weight is normal by default and turns bold only once the nav condenses onto
+// the brand row — driven by the `group/navrow` data-attribute on the nav row,
+// so it hits just these top-level items (not the dropdown/mega-menu contents).
 const navItemBase =
-  "group/navitem relative inline-flex items-center px-2 [font-family:Helvetica,Arial,sans-serif] text-[14px] font-bold leading-[23.1px] tracking-[0.7px] outline-none transition-colors duration-200 " +
+  "group/navitem relative inline-flex items-center px-2 [font-family:Helvetica,Arial,sans-serif] text-[14px] font-normal leading-[23.1px] tracking-[0.7px] outline-none transition-colors duration-200 group-data-[collapsed=true]/navrow:font-bold " +
   "after:pointer-events-none after:absolute after:-bottom-1.5 after:inset-x-2 after:h-0.5 after:origin-center after:scale-x-0 after:rounded-full after:bg-neem after:transition-transform after:duration-300 after:ease-out " +
   "hover:text-neem-deep hover:after:scale-x-100 focus-visible:text-neem-deep focus-visible:after:scale-x-100";
 
@@ -346,19 +349,29 @@ export function Header() {
   const [open, setOpen] = useState(false);
   // Mobile-only: the header search icon reveals a full-width search bar.
   const [mobileSearch, setMobileSearch] = useState(false);
-  // On scroll-down the search hides and the header shrinks; near the top it
-  // expands again.
+  // On scroll-down the search, wishlist, sign-in and cart hide and the header
+  // shrinks — leaving just the brand and nav; near the top it expands again.
   //
   // WHY THIS DOESN'T "JUMP": collapse changes the header's layout height, which
-  // reflows the page by ~48px. To stop that reflow from bouncing scrollY back
-  // across the trigger (the previous infinite-flicker bug), we use HYSTERESIS —
-  // two thresholds far apart:
-  //   collapse only when scrollY > 120
+  // reflows the page. Now that the nav rises onto the brand row the header drops
+  // from ~163px to ~76px, so the reflow is ~87px (up from ~48px before). Scroll
+  // anchoring nudges scrollY by that amount; to stop it bouncing back across a
+  // trigger (the previous infinite-flicker bug) we use HYSTERESIS — two
+  // thresholds far apart:
+  //   collapse only when scrollY > 170
   //   expand   only when scrollY <  40
-  // The 80px dead-zone between them is wider than the ~48px reflow, so the
+  // The 130px dead-zone between them is wider than the ~87px reflow, so the
   // height change can never cross both thresholds -> no oscillation, just one
   // smooth condense.
   const [collapsed, setCollapsed] = useState(false);
+  // The nav only rises beside the brand AFTER the search + icons have finished
+  // fading — `navUp` lags `collapsed` by the fade duration on scroll-DOWN. This
+  // is what keeps the fade smooth: while the search/icons are still visible the
+  // brand row stays full width (basis-full), so they shrink + fade IN PLACE
+  // instead of snapping inward the instant the row collapses to its content
+  // width. On scroll-UP we drop navUp immediately — that snap is invisible
+  // because the icons are already faded out.
+  const [navUp, setNavUp] = useState(false);
   // Active nav item is derived from the current route, so it always tracks the
   // page you're on (logo → Home included) and is never stuck on a past item.
   const pathname = usePathname();
@@ -369,7 +382,7 @@ export function Header() {
     const update = () => {
       const y = window.scrollY;
       setCollapsed((prev) => {
-        if (!prev && y > 120) return true; // collapse
+        if (!prev && y > 170) return true; // collapse
         if (prev && y < 40) return false; // expand
         return prev; // dead-zone: keep current state
       });
@@ -386,6 +399,17 @@ export function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Lift the nav up only once the search + icons have faded (300ms, matching
+  // their transition); drop it back instantly when expanding.
+  useEffect(() => {
+    if (!collapsed) {
+      setNavUp(false);
+      return;
+    }
+    const t = window.setTimeout(() => setNavUp(true), 300);
+    return () => clearTimeout(t);
+  }, [collapsed]);
+
   // Auth routes go bare — render nothing so there's no header/nav chrome.
   // (Placed AFTER all hooks so the Rules of Hooks hold across navigations.)
   if (isBareRoute(pathname)) return null;
@@ -394,17 +418,33 @@ export function Header() {
     <header
       className="sticky top-0 z-50 bg-paper pb-3"
     >
-      {/* top bar — brand, search, icons. Height condenses on scroll only on
-          md+ (where the search/nav actually collapse). On mobile there's
-          nothing to condense, so the height stays constant — otherwise the
-          shrink makes the bar appear to jump/clip while scrolling. */}
+      {/* Desktop (md+): the brand row and the nav share ONE wrapping flex band.
+          While expanded the nav wraps onto its own second line (as before); on
+          scroll-down the search + icons collapse to zero width and the brand row
+          stops filling the line (basis-full -> auto), so the nav flows UP onto
+          the brand's line — landing right beside the brand. Mobile stays a plain
+          stacked block: every md: flex/wrap/basis class below is inert < md, so
+          the constant-height mobile bar is untouched. */}
       <div
         className={cn(
           headerContainerClass,
+          // gap-x sets the space between the brand and the nav once they share
+          // the collapsed row (no effect while expanded — separate wrapped lines).
+          "md:flex md:flex-wrap md:items-center md:gap-x-16",
+        )}
+      >
+      {/* brand row — line 1 (brand, search, icons). Height condenses on md+. */}
+      <div
+        className={cn(
           "flex items-center gap-4 transition-[height] duration-300",
           // Mobile height is constant (h-20) so the sticky bar never shrinks /
           // clips while scrolling; only md+ condenses (where search/nav shrink).
           collapsed ? "h-20 md:h-16" : "h-20 md:h-24",
+          // Width collapse is deferred to navUp (see state comment): the row
+          // stays full width while the search + icons fade IN PLACE, then
+          // shrinks to its content so the nav can rise beside the brand. md:gap-0
+          // drops the gaps the now zero-width search/icons would leave behind.
+          navUp ? "md:basis-auto md:gap-0" : "md:basis-full",
         )}
       >
         {/* left: brand */}
@@ -445,43 +485,60 @@ export function Header() {
           >
             {mobileSearch ? <X className="size-6" /> : <Search className="size-6" />}
           </Button>
-          {/* Wishlist — visible on all sizes (mobile reaches Cart via the
-              bottom bar, so the header surfaces Wishlist instead). */}
-          <Button
-            asChild
-            variant="ghost"
-            size="icon"
-            aria-label="Wishlist"
+          {/* Wishlist + Sign in + Cart. On scroll-down these condense away on
+              md+ (width + opacity collapse, mirroring the search) leaving just
+              the brand and nav; near the top they restore. Mobile is untouched
+              — the md-scoped collapse classes are inert below md, so the
+              constant-height mobile bar keeps its Wishlist as before.
+              Clip only while collapsing (width animates to 0); when expanded we
+              must NOT clip, or the absolute wishlist/cart badges get hidden. */}
+          <div
+            className={cn(
+              "flex items-center gap-2 transition-all duration-300 ease-in-out md:gap-4",
+              collapsed
+                ? "md:pointer-events-none md:max-w-0 md:overflow-hidden md:opacity-0"
+                : "md:max-w-40 md:opacity-100",
+            )}
           >
-            <Link href="/wishlist" className="relative">
-              <Heart className="size-6" />
-              <WishlistBadge className="absolute -right-0.5 -top-0.5 size-4" />
-            </Link>
-          </Button>
-          {/* Cart — desktop only (mobile uses the fixed bottom bar). */}
-          <Button
-            asChild
-            variant="ghost"
-            size="icon"
-            aria-label="Sign in"
-            className="relative hidden md:inline-flex"
-          >
-            <Link href="/signin" className="flex items-center gap-2">
-              <User className="size-6" />
-            </Link>
-          </Button>
-          <Button
-            asChild
-            variant="ghost"
-            size="icon"
-            aria-label="Cart"
-            className="relative hidden md:inline-flex"
-          >
-            <Link href="/cart">
-              <ShoppingCart className="size-6" />
-              <CartBadge className="absolute -right-0.5 -top-0.5 size-4" />
-            </Link>
-          </Button>
+            {/* Wishlist — visible on all sizes (mobile reaches Cart via the
+                bottom bar, so the header surfaces Wishlist instead). */}
+            <Button
+              asChild
+              variant="ghost"
+              size="icon"
+              aria-label="Wishlist"
+            >
+              <Link href="/wishlist" className="relative">
+                <Heart className="size-6" />
+                <WishlistBadge className="absolute -right-0.5 -top-0.5 size-4" />
+              </Link>
+            </Button>
+            {/* Sign in — desktop only. */}
+            <Button
+              asChild
+              variant="ghost"
+              size="icon"
+              aria-label="Sign in"
+              className="relative hidden md:inline-flex"
+            >
+              <Link href="/signin" className="flex items-center gap-2">
+                <User className="size-6" />
+              </Link>
+            </Button>
+            {/* Cart — desktop only (mobile uses the fixed bottom bar). */}
+            <Button
+              asChild
+              variant="ghost"
+              size="icon"
+              aria-label="Cart"
+              className="relative hidden md:inline-flex"
+            >
+              <Link href="/cart">
+                <ShoppingCart className="size-6" />
+                <CartBadge className="absolute -right-0.5 -top-0.5 size-4" />
+              </Link>
+            </Button>
+          </div>
           {/* Hamburger — mobile only, sits after the wishlist on the right. */}
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
@@ -555,13 +612,30 @@ export function Header() {
         </div>
       ) : null}
 
-      {/* desktop nav row — shrinks its vertical padding on collapse */}
-      <nav className="hidden md:block">
+      {/* desktop nav — line 2 while expanded (basis-full pushes it below the
+          brand row); on collapse it becomes flex-1 and rises onto the brand row,
+          filling the space the search + icons vacated. Also trims its vertical
+          padding. It no longer needs its own container padding — the shared band
+          above supplies the max-width + horizontal padding. */}
+      {/* No transition on the <nav> itself: the line-2 -> line-1 rise is a flex
+          wrap change (not smoothly animatable), so we let it switch crisply
+          once navUp flips rather than smear a half-wrapped frame. */}
+      <nav
+        className={cn(
+          "hidden md:block",
+          navUp ? "md:flex-1 md:basis-auto" : "md:basis-full",
+        )}
+      >
         <div
+          data-collapsed={navUp ? "true" : "false"}
           className={cn(
-            headerContainerClass,
-            "flex items-center justify-center gap-2 transition-all duration-300 md:gap-3 lg:gap-4",
-            collapsed ? "py-2" : "py-4",
+            "group/navrow flex items-center justify-center transition-all duration-300",
+            // Expanded: centered on its own row with roomy gaps. Collapsed:
+            // left-aligned beside the brand with tighter gaps so the condensed
+            // row reads as one compact group.
+            navUp
+              ? "gap-0.5 py-2 md:justify-start md:gap-0.5 lg:gap-1"
+              : "gap-2 py-4 md:gap-3 lg:gap-4",
           )}
         >
           <NavItem
@@ -586,6 +660,7 @@ export function Header() {
           ))}
         </div>
       </nav>
+      </div>
     </header>
   );
 }
