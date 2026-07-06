@@ -303,7 +303,9 @@ function CategoryMega({ pathname }: { pathname: string }) {
                         onClick={() => setOpen(false)}
                         aria-current={itemActive ? "page" : undefined}
                         className={cn(
-                          "text-sm text-ink-muted transition-colors hover:text-neem-deep",
+                          // Same green highlight as the By Age dropdown items
+                          // (bg-accent / text-accent-foreground) on hover + focus.
+                          "block -mx-2 rounded-md px-2 py-1.5 text-sm text-ink-muted transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:bg-accent focus-visible:text-accent-foreground focus-visible:outline-none",
                           itemActive && "font-medium text-neem-deep",
                         )}
                       >
