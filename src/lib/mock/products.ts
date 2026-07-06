@@ -393,6 +393,7 @@ const detailCopy: Record<string, Omit<ProductDetail, "slug" | "imageSrcs">> = {
     benefits: ["Strengthens shape recognition", "Improves pincer grip", "Supports cause-and-effect learning"],
     deliveryEstimate: "Dhaka: 1-2 days, outside Dhaka: 3-5 days",
     saleCountdown: "2D 04H 11M 05S",
+    videoUrl: "https://www.youtube.com/shorts/AR6pE__KYmM",
   },
   "pull-along-duck": {
     description:
@@ -417,6 +418,7 @@ const detailCopy: Record<string, Omit<ProductDetail, "slug" | "imageSrcs">> = {
     benefits: ["Develops spatial thinking", "Encourages creativity", "Supports collaborative play"],
     deliveryEstimate: "Dhaka: 1-2 days, outside Dhaka: 3-5 days",
     saleCountdown: "2D 01H 33M 28S",
+    videoUrl: "https://www.youtube.com/watch?v=A30kL1DGxxo",
   },
   "object-permanence-box": {
     description:
@@ -514,6 +516,7 @@ const detailCopy: Record<string, Omit<ProductDetail, "slug" | "imageSrcs">> = {
     ],
     deliveryEstimate: "Dhaka: 1-2 days, outside Dhaka: 3-5 days",
     saleCountdown: "2D 06H 30M 00S",
+    videoUrl: "https://www.youtube.com/watch?v=sIqrEWO1TmY",
     specs: {
       materials: "Sturdy rubber and beech wood",
       safety:
