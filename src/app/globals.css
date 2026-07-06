@@ -196,6 +196,10 @@
   }
   body {
     @apply bg-background text-foreground;
+    /* Stop the browser from nudging scrollY to "anchor" content when the sticky
+       header resizes on scroll — that compensation is what makes the header
+       collapse jitter. Without it the content simply slides with the header. */
+    overflow-anchor: none;
   }
 }
 

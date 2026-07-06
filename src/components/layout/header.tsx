@@ -364,14 +364,6 @@ export function Header() {
   // height change can never cross both thresholds -> no oscillation, just one
   // smooth condense.
   const [collapsed, setCollapsed] = useState(false);
-  // The nav only rises beside the brand AFTER the search + icons have finished
-  // fading — `navUp` lags `collapsed` by the fade duration on scroll-DOWN. This
-  // is what keeps the fade smooth: while the search/icons are still visible the
-  // brand row stays full width (basis-full), so they shrink + fade IN PLACE
-  // instead of snapping inward the instant the row collapses to its content
-  // width. On scroll-UP we drop navUp immediately — that snap is invisible
-  // because the icons are already faded out.
-  const [navUp, setNavUp] = useState(false);
   // Active nav item is derived from the current route, so it always tracks the
   // page you're on (logo → Home included) and is never stuck on a past item.
   const pathname = usePathname();
@@ -399,17 +391,6 @@ export function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Lift the nav up only once the search + icons have faded (300ms, matching
-  // their transition); drop it back instantly when expanding.
-  useEffect(() => {
-    if (!collapsed) {
-      setNavUp(false);
-      return;
-    }
-    const t = window.setTimeout(() => setNavUp(true), 300);
-    return () => clearTimeout(t);
-  }, [collapsed]);
-
   // Auth routes go bare — render nothing so there's no header/nav chrome.
   // (Placed AFTER all hooks so the Rules of Hooks hold across navigations.)
   if (isBareRoute(pathname)) return null;
@@ -418,33 +399,22 @@ export function Header() {
     <header
       className="sticky top-0 z-50 bg-paper pb-3"
     >
-      {/* Desktop (md+): the brand row and the nav share ONE wrapping flex band.
-          While expanded the nav wraps onto its own second line (as before); on
-          scroll-down the search + icons collapse to zero width and the brand row
-          stops filling the line (basis-full -> auto), so the nav flows UP onto
-          the brand's line — landing right beside the brand. Mobile stays a plain
-          stacked block: every md: flex/wrap/basis class below is inert < md, so
-          the constant-height mobile bar is untouched. */}
+      {/* Header content is a plain vertical stack: brand row, then the nav
+          below it. On scroll-down the nav does NOT re-flow to a new row (a flex
+          wrap change can't be animated) — instead it RISES via an animating
+          negative margin-top while the brand row's height animates down, so the
+          whole condense is one smooth, continuous motion. */}
+      <div className={headerContainerClass}>
+      {/* brand row — brand, search, icons. Full-width block in both states. */}
       <div
         className={cn(
-          headerContainerClass,
-          // gap-x sets the space between the brand and the nav once they share
-          // the collapsed row (no effect while expanded — separate wrapped lines).
-          "md:flex md:flex-wrap md:items-center md:gap-x-16",
-        )}
-      >
-      {/* brand row — line 1 (brand, search, icons). Height condenses on md+. */}
-      <div
-        className={cn(
-          "flex items-center gap-4 transition-[height] duration-300",
-          // Mobile height is constant (h-20) so the sticky bar never shrinks /
-          // clips while scrolling; only md+ condenses (where search/nav shrink).
+          "flex items-center gap-4 transition-[height] duration-200 ease-out",
+          // Mobile height is constant (h-20); md+ condenses in one continuous
+          // motion together with the nav rise and the search/icons fade — all
+          // driven off `collapsed`, all the same 200ms ease-out. The row is a
+          // full-width block throughout, so the search (mx-auto) and icons
+          // (ml-auto) fade IN PLACE and never snap sideways.
           collapsed ? "h-20 md:h-16" : "h-20 md:h-24",
-          // Width collapse is deferred to navUp (see state comment): the row
-          // stays full width while the search + icons fade IN PLACE, then
-          // shrinks to its content so the nav can rise beside the brand. md:gap-0
-          // drops the gaps the now zero-width search/icons would leave behind.
-          navUp ? "md:basis-auto md:gap-0" : "md:basis-full",
         )}
       >
         {/* left: brand */}
@@ -460,7 +430,7 @@ export function Header() {
         {/* center: search (desktop) — width + opacity collapse on scroll-down */}
         <div
           className={cn(
-            "mx-auto hidden w-full min-w-0 transition-all duration-300 ease-in-out md:block",
+            "mx-auto hidden w-full min-w-0 transition-all duration-200 ease-out md:block",
             // Clip only while collapsing (width animates to 0); when expanded we
             // must NOT clip, or the absolute suggestions dropdown gets hidden.
             collapsed ? "max-w-0 overflow-hidden opacity-0" : "max-w-md opacity-100",
@@ -494,7 +464,7 @@ export function Header() {
               must NOT clip, or the absolute wishlist/cart badges get hidden. */}
           <div
             className={cn(
-              "flex items-center gap-2 transition-all duration-300 ease-in-out md:gap-4",
+              "flex items-center gap-2 transition-all duration-200 ease-out md:gap-4",
               collapsed
                 ? "md:pointer-events-none md:max-w-0 md:overflow-hidden md:opacity-0"
                 : "md:max-w-40 md:opacity-100",
@@ -612,32 +582,29 @@ export function Header() {
         </div>
       ) : null}
 
-      {/* desktop nav — line 2 while expanded (basis-full pushes it below the
-          brand row); on collapse it becomes flex-1 and rises onto the brand row,
-          filling the space the search + icons vacated. Also trims its vertical
-          padding. It no longer needs its own container padding — the shared band
-          above supplies the max-width + horizontal padding. */}
-      {/* No transition on the <nav> itself: the line-2 -> line-1 rise is a flex
-          wrap change (not smoothly animatable), so we let it switch crisply
-          once navUp flips rather than smear a half-wrapped frame. */}
+      {/* desktop nav — sits below the brand row while expanded. On collapse it
+          RISES with an animating negative margin-top until it's vertically
+          centred inside the condensed brand row, so the menu glides up smoothly
+          instead of snapping between rows. It also shrinks to its content width
+          (md:w-fit md:mx-auto) so its box spans only the centred items and never
+          overlaps / blocks the brand link on the left. The items stay centred on
+          the header either way, so that width swap is visually silent. */}
       <nav
         className={cn(
-          "hidden md:block",
-          // md:mr-* trims the right edge of the flex-1 box, shifting the nav's
-          // centre (and so the whole menu) left by half the margin — while the
-          // justify-center contraction stays symmetric. Smaller on md so it
-          // can't crowd the brand on narrower desktops.
-          navUp ? "md:mr-16 md:flex-1 md:basis-auto lg:mr-32" : "md:basis-full",
+          "hidden transition-[margin-top] duration-200 ease-out md:block",
+          // -mt lifts the nav up into the brand row's band as the search + icons
+          // fade (~3.25rem ≈ vertically centred against the brand).
+          collapsed ? "md:-mt-[3.25rem] md:w-fit md:mx-auto" : "md:mt-0",
         )}
       >
         <div
-          data-collapsed={navUp ? "true" : "false"}
+          data-collapsed={collapsed ? "true" : "false"}
           className={cn(
-            "group/navrow flex items-center justify-center transition-all duration-300",
+            "group/navrow flex items-center justify-center transition-all duration-200 ease-out",
             // Stays centered in both states (no justify-start), so when the gaps
             // tighten on collapse the row contracts toward its own centre —
             // pulling in evenly from BOTH sides rather than only the right.
-            navUp
+            collapsed
               ? "gap-0.5 py-2 md:gap-0.5 lg:gap-1"
               : "gap-2 py-4 md:gap-3 lg:gap-4",
           )}
