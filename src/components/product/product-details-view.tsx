@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type MouseEvent, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import {
@@ -142,42 +142,57 @@ export function ProductDetailsView({
     router.push("/cart");
   };
 
-  // Social share targets, built from the live page URL. Network links open in a
-  // new tab; Email uses a mailto. (Counter is a static placeholder for now.)
-  const shareUrl_ = encodeURIComponent(shareUrl);
+  // Social share targets. Each builds its share URL from a given page URL. The
+  // click handler reads the live window.location at click time, so the link is
+  // always valid regardless of SSR/hydration timing. Networks open a small
+  // popup; Email opens the mail client. (Counter is a static placeholder.)
   const shareText_ = encodeURIComponent(`${product.titleBn} — handmade neem-wood toy`);
-  const shareLinks = [
+  const shareTargets: {
+    label: string;
+    icon: ReactNode;
+    email?: boolean;
+    build: (url: string) => string;
+  }[] = [
     {
       label: "Facebook",
       icon: <FacebookIcon className="size-4" />,
-      href: `https://www.facebook.com/sharer/sharer.php?u=${shareUrl_}`,
-      external: true,
+      build: (u) => `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(u)}`,
     },
     {
       label: "LinkedIn",
       icon: <LinkedInIcon className="size-4" />,
-      href: `https://www.linkedin.com/sharing/share-offsite/?url=${shareUrl_}`,
-      external: true,
+      build: (u) => `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(u)}`,
     },
     {
       label: "WhatsApp",
       icon: <WhatsAppIcon className="size-4" />,
-      href: `https://wa.me/?text=${shareText_}%20${shareUrl_}`,
-      external: true,
+      build: (u) => `https://wa.me/?text=${shareText_}%20${encodeURIComponent(u)}`,
     },
     {
       label: "X",
       icon: <XIcon className="size-4" />,
-      href: `https://twitter.com/intent/tweet?url=${shareUrl_}&text=${shareText_}`,
-      external: true,
+      build: (u) => `https://twitter.com/intent/tweet?url=${encodeURIComponent(u)}&text=${shareText_}`,
     },
     {
       label: "Email",
       icon: <Mail className="size-4" />,
-      href: `mailto:?subject=${encodeURIComponent(product.titleBn)}&body=${shareText_}%20${shareUrl_}`,
-      external: false,
+      email: true,
+      build: (u) =>
+        `mailto:?subject=${encodeURIComponent(product.titleBn)}&body=${shareText_}%20${encodeURIComponent(u)}`,
     },
   ];
+
+  const handleShare = (
+    e: MouseEvent<HTMLAnchorElement>,
+    target: (typeof shareTargets)[number],
+  ) => {
+    // Rewrite the href to the live page URL right before the browser follows
+    // it, so the share always carries the correct URL regardless of hydration
+    // timing. No preventDefault / window.open — native target="_blank" (and
+    // mailto:) navigation is never blocked by popup blockers.
+    const url = typeof window !== "undefined" ? window.location.href : shareUrl;
+    e.currentTarget.href = target.build(url);
+  };
 
   return (
     <main className="flex-1 bg-paper">
@@ -363,15 +378,16 @@ export function ProductDetailsView({
               9K shares
             </span>
             <div className="flex flex-wrap items-center gap-3">
-              {shareLinks.map((s) => (
+              {shareTargets.map((s) => (
                 <a
                   key={s.label}
-                  href={s.href}
-                  target={s.external ? "_blank" : undefined}
-                  rel={s.external ? "noopener noreferrer" : undefined}
+                  href={s.build(shareUrl)}
+                  onClick={(e) => handleShare(e, s)}
+                  target={s.email ? undefined : "_blank"}
+                  rel={s.email ? undefined : "noopener noreferrer"}
                   aria-label={`Share on ${s.label}`}
                   title={`Share on ${s.label}`}
-                  className="inline-flex items-center justify-center rounded-full p-1 text-ink-muted transition duration-200 hover:scale-110 hover:text-neem-deep focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neem"
+                  className="flex size-9 items-center justify-center rounded-full bg-ink/5 text-ink-muted transition-all duration-500 ease-out hover:-translate-y-1 hover:scale-110 hover:bg-neem hover:text-paper hover:shadow-md hover:shadow-neem/25 active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neem"
                 >
                   {s.icon}
                 </a>
@@ -382,7 +398,10 @@ export function ProductDetailsView({
       </section>
 
       {/* ===== certified logo ===== */}
-      <section className="mx-auto w-full max-w-[92rem] px-4 pb-2 pt-6 sm:px-6 lg:-mt-20 lg:px-8 lg:pt-0">
+      {/* pointer-events-none: this section is pulled up (lg:-mt-20) and would
+          otherwise overlap — and swallow clicks on — the share row above it.
+          It's a purely decorative image, so nothing here needs to be clickable. */}
+      <section className="pointer-events-none mx-auto w-full max-w-[92rem] px-4 pb-2 pt-6 sm:px-6 lg:-mt-20 lg:px-8 lg:pt-0">
         <div className="flex justify-center">
           <Image
             src="/images/certified%20Logo/certlogo.webp"

@@ -1,6 +1,5 @@
-import Link from "next/link";
 import { Breadcrumb } from "@/components/breadcrumb";
-import { ProductRail } from "@/components/product/product-rail";
+import { AgeHubBrowser } from "@/components/collection/age-hub-browser";
 import { ageTiers } from "@/lib/mock/age-tiers";
 import { products } from "@/lib/mock/products";
 import { cn } from "@/lib/utils";
@@ -53,45 +52,16 @@ export function AgeHubView() {
         </div>
       </section>
 
-      {/* per-tier blocks */}
-      <div className="mx-auto w-full max-w-[92rem] space-y-12 px-4 pb-16 sm:px-6 lg:px-8">
-        {ageTiers.map((tier) => {
-          const scoped = products
-            .filter((p) => p.ageTierSlug === tier.slug)
-            .slice(0, MAX_PER_TIER);
-          return (
-            <section key={tier.slug} className="border-t border-cream-200 pt-8">
-              <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  <span
-                    className={cn("size-3 flex-none rounded-full", toneDot[tier.tone])}
-                    aria-hidden
-                  />
-                  <div>
-                    <h2 className="font-display text-xl font-bold text-ink sm:text-2xl">
-                      {tier.labelBn}
-                    </h2>
-                    {tier.taglineBn ? (
-                      <p className="text-sm text-ink-muted">{tier.taglineBn}</p>
-                    ) : null}
-                  </div>
-                </div>
-                <Link
-                  href={tier.href}
-                  aria-label={`View all ${tier.labelBn}`}
-                  className="text-sm font-medium text-neem-deep underline-offset-4 hover:underline"
-                >
-                  View all →
-                </Link>
-              </div>
-              {scoped.length > 0 ? (
-                <ProductRail products={scoped} />
-              ) : (
-                <p className="text-sm text-ink-muted">New toys coming soon.</p>
-              )}
-            </section>
-          );
-        })}
+      {/* filter bar + per-tier blocks */}
+      <div className="mx-auto w-full max-w-[92rem] px-4 pb-16 sm:px-6 lg:px-8">
+        <AgeHubBrowser
+          blocks={ageTiers.map((tier) => ({
+            tier,
+            products: products
+              .filter((p) => p.ageTierSlug === tier.slug)
+              .slice(0, MAX_PER_TIER),
+          }))}
+        />
       </div>
     </main>
   );
