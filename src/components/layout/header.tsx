@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type MouseEvent as ReactMouseEvent } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -60,6 +60,27 @@ function isActivePath(pathname: string, href: string): boolean {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
+/**
+ * Same-route navigation UX. Going to a *different* page uses normal Next.js
+ * client-side navigation (let the <Link> proceed). Clicking the item for the
+ * page you're already on does NOT reload — it smoothly scrolls to the top
+ * instead (honouring reduced-motion). Any open mobile menu is closed first, and
+ * the active item is never disabled. Used by every nav link and the logo.
+ */
+function navClick(
+  e: ReactMouseEvent<HTMLElement>,
+  href: string,
+  pathname: string,
+  closeMenu?: () => void,
+) {
+  closeMenu?.(); // close the mobile menu before navigating or scrolling
+  if (href === pathname) {
+    e.preventDefault();
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" });
+  }
+}
+
 // Premium desktop nav item: color shifts to neem on hover/active and an
 // accent underline grows from the centre. Shared by links and dropdowns so the
 // whole row animates identically. Layout/typography are unchanged.
@@ -80,14 +101,17 @@ function NavItem({
   href,
   label,
   active,
+  pathname,
 }: {
   href: string;
   label: string;
   active: boolean;
+  pathname: string;
 }) {
   return (
     <Link
       href={href}
+      onClick={(e) => navClick(e, href, pathname)}
       aria-current={active ? "page" : undefined}
       className={cn(
         navItemBase,
@@ -174,6 +198,7 @@ function NavDropdown({
             <DropdownMenuItem key={l.href} asChild>
               <Link
                 href={l.href}
+                onClick={(e) => navClick(e, l.href, pathname)}
                 aria-current={itemActive ? "page" : undefined}
                 className={cn(
                   "cursor-pointer transition-colors",
@@ -300,7 +325,7 @@ function CategoryMega({ pathname }: { pathname: string }) {
                     <li key={l.href}>
                       <Link
                         href={l.href}
-                        onClick={() => setOpen(false)}
+                        onClick={(e) => navClick(e, l.href, pathname, () => setOpen(false))}
                         aria-current={itemActive ? "page" : undefined}
                         className={cn(
                           // Same green highlight as the By Age dropdown items
@@ -326,9 +351,11 @@ function CategoryMega({ pathname }: { pathname: string }) {
 function DrawerList({
   links,
   onNavigate,
+  pathname,
 }: {
   links: NavLink[];
   onNavigate: () => void;
+  pathname: string;
 }) {
   return (
     <ul className="space-y-0.5">
@@ -336,7 +363,7 @@ function DrawerList({
         <li key={l.href}>
           <Link
             href={l.href}
-            onClick={onNavigate}
+            onClick={(e) => navClick(e, l.href, pathname, onNavigate)}
             className="block rounded-md py-2 pl-4 pr-2 text-sm text-ink-muted hover:bg-cream-200 hover:text-ink"
           >
             {l.labelBn}
@@ -431,10 +458,12 @@ export function Header() {
           collapsed ? "h-20 md:h-16" : "h-20 md:h-24",
         )}
       >
-        {/* left: brand */}
+        {/* left: brand — always goes Home; if already Home it scrolls to top
+            (never disabled / no pointer-events:none). */}
         <div className="flex items-center">
           <Link
             href="/"
+            onClick={(e) => navClick(e, "/", pathname, close)}
             className="font-display text-2xl font-bold tracking-tight text-ink sm:text-3xl"
           >
             {BRAND_NAME}
@@ -553,7 +582,7 @@ export function Header() {
                         By Age
                       </AccordionTrigger>
                       <AccordionContent className="pb-1 [&_a]:no-underline">
-                        <DrawerList links={ageNav} onNavigate={close} />
+                        <DrawerList links={ageNav} onNavigate={close} pathname={pathname} />
                       </AccordionContent>
                     </AccordionItem>
 
@@ -562,7 +591,7 @@ export function Header() {
                         By Category
                       </AccordionTrigger>
                       <AccordionContent className="pb-1 [&_a]:no-underline">
-                        <DrawerList links={categoryNav} onNavigate={close} />
+                        <DrawerList links={categoryNav} onNavigate={close} pathname={pathname} />
                       </AccordionContent>
                     </AccordionItem>
                   </Accordion>
@@ -571,7 +600,7 @@ export function Header() {
                     <Link
                       key={l.href}
                       href={l.href}
-                      onClick={close}
+                      onClick={(e) => navClick(e, l.href, pathname, close)}
                       className={drawerItemClass}
                     >
                       {l.labelBn}
@@ -579,7 +608,7 @@ export function Header() {
                   ))}
                   <Link
                     href="/signin"
-                    onClick={close}
+                    onClick={(e) => navClick(e, "/signin", pathname, close)}
                     className={drawerItemClass}
                   >
                     Sign In
@@ -629,11 +658,13 @@ export function Header() {
             href="/"
             label="Home"
             active={isActivePath(pathname, "/")}
+            pathname={pathname}
           />
           <NavItem
             href="/collections/all"
             label="All Products"
             active={isActivePath(pathname, "/collections/all")}
+            pathname={pathname}
           />
           <NavDropdown label="By Age" links={ageNav} pathname={pathname} />
           <CategoryMega pathname={pathname} />
@@ -643,6 +674,7 @@ export function Header() {
               href={l.href}
               label={l.labelBn}
               active={isActivePath(pathname, l.href)}
+              pathname={pathname}
             />
           ))}
         </div>

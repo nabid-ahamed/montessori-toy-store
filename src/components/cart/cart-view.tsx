@@ -369,7 +369,7 @@ export function CartView() {
             <li
               key={product.slug}
               className={cn(
-                "flex gap-4 border-b border-cream-300 py-4 opacity-100 transition-opacity duration-200 first:pt-0",
+                "flex gap-4 border-b border-cream-300 py-4 opacity-100 transition-opacity duration-200",
                 processingAction &&
                   confirmAction === "remove-selected" &&
                   isItemSelected(product.slug) &&
