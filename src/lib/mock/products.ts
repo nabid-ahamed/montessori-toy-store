@@ -402,6 +402,7 @@ const detailCopy: Record<string, Omit<ProductDetail, "slug" | "imageSrcs">> = {
     benefits: ["Encourages walking practice", "Builds coordination", "Adds motion-led imaginative play"],
     deliveryEstimate: "Dhaka: 1-2 days, outside Dhaka: 3-5 days",
     saleCountdown: "1D 18H 06M 39S",
+    videoUrl: "https://www.youtube.com/watch?v=SwdxTjSNfVw",
   },
   "neem-teether-ring": {
     description:
