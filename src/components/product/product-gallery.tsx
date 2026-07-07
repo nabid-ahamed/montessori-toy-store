@@ -44,6 +44,12 @@ export function ProductGallery({
   const [lens, setLens] = useState({ x: 50, y: 50 });
   const [lightbox, setLightbox] = useState(false);
   const [mounted, setMounted] = useState(false);
+  // Images that failed to load (e.g. a mapped file not uploaded yet) fall back
+  // to the branded placeholder instead of showing a broken-image icon.
+  const [failed, setFailed] = useState<Set<string>>(() => new Set());
+  const ok = (src?: string): src is string => !!src && !failed.has(src);
+  const markFailed = (src?: string) =>
+    setFailed((f) => (!src || f.has(src) ? f : new Set(f).add(src)));
 
   useEffect(() => setMounted(true), []);
 
@@ -94,11 +100,12 @@ export function ProductGallery({
           onMouseMove={onMove}
           onClick={onImageClick}
         >
-          {activeItem.src ? (
+          {ok(activeItem.src) ? (
             <img
               src={activeItem.src}
               alt={activeItem.label}
               decoding="async"
+              onError={() => markFailed(activeItem.src)}
               className={cn(
                 "size-full object-contain p-[10%] transition-transform duration-200",
                 zoom && "scale-[1.8]",
@@ -178,12 +185,13 @@ export function ProductGallery({
                   : "border-cream-200 hover:border-neem-soft",
               )}
             >
-              {item.src ? (
+              {ok(item.src) ? (
                 <img
                   src={item.src}
                   alt={item.label}
                   loading="lazy"
                   decoding="async"
+                  onError={() => markFailed(item.src)}
                   className="size-full object-contain p-[10%]"
                 />
               ) : (
@@ -228,11 +236,12 @@ export function ProductGallery({
                     onClick={(e) => e.stopPropagation()}
                     className="relative flex w-full max-w-4xl items-center justify-center"
                   >
-                    {activeItem.src ? (
+                    {ok(activeItem.src) ? (
                       <img
                         src={activeItem.src}
                         alt={activeItem.label}
                         decoding="async"
+                        onError={() => markFailed(activeItem.src)}
                         className="max-h-[85vh] w-auto rounded-lg object-contain"
                       />
                     ) : (

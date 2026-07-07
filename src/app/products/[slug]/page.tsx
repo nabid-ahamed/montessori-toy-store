@@ -7,13 +7,14 @@ import { BRAND_NAME } from "@/lib/config";
 import { ageTierBySlug } from "@/lib/mock/age-tiers";
 import { categoryBySlug } from "@/lib/mock/categories";
 import { productBySlug, productDetailBySlug, products, relatedProducts } from "@/lib/mock/products";
+import { giftKits } from "@/lib/mock/gifts";
 
 type Props = {
   params: Promise<{ slug: string }>;
 };
 
 export async function generateStaticParams() {
-  return products.map((product) => ({
+  return [...products, ...giftKits].map((product) => ({
     slug: product.slug,
   }));
 }

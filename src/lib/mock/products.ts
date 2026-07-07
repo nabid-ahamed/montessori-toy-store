@@ -381,6 +381,25 @@ const productImageSrcs: Record<string, string[]> = {
     "/images/products/nesting-cups/1.jpg",
     "/images/products/nesting-cups/2.jpg",
   ],
+  // Gift kits.
+  "newborn-welcome-box": [
+    "/images/products/newborn-welcome-box/1.png",
+    "/images/products/newborn-welcome-box/2.png",
+  ],
+  "neem-teether-duo-gift": [
+    "/images/products/neem-teether-duo-gift/1.png",
+    "/images/products/neem-teether-duo-gift/2.png",
+  ],
+  "sensory-play-bundle": [
+    "/images/products/sensory-play-bundle/1.png",
+    "/images/products/sensory-play-bundle/2.png",
+  ],
+  "montessori-starter-set": [
+    "/images/products/montessori-starter-set/1.png",
+    "/images/products/montessori-starter-set/2.png",
+  ],
+  "first-birthday-kit": ["/images/products/first-birthday-kit/1.png"],
+  "big-kid-builder-box": ["/images/products/big-kid-builder-box/1.png"],
 };
 
 const detailCopy: Record<string, Omit<ProductDetail, "slug" | "imageSrcs">> = {
@@ -547,14 +566,28 @@ const detailCopy: Record<string, Omit<ProductDetail, "slug" | "imageSrcs">> = {
 
 export const productDetailBySlug = (slug: string): ProductDetail | undefined => {
   const copy = detailCopy[slug];
-  if (!copy) return undefined;
+  if (copy) {
+    return {
+      slug,
+      imageSrcs: productImageSrcs[slug] ?? [],
+      ...defaultDetail,
+      ...copy,
+    };
+  }
 
-  return {
-    slug,
-    imageSrcs: productImageSrcs[slug] ?? [],
-    ...defaultDetail,
-    ...copy,
-  };
+  // Gift kits/bundles live only in `giftKits` and have no hand-written copy, so
+  // build a sensible detail from the kit's own data — this is what makes the
+  // /products/<gift-kit> pages render instead of 404-ing.
+  const kit = giftKits.find((k) => k.slug === slug);
+  if (kit) {
+    return {
+      slug,
+      imageSrcs: productImageSrcs[slug] ?? [],
+      ...giftKitDetail(kit),
+    };
+  }
+
+  return undefined;
 };
 
 // Shared review pool so the reviews section is populated for every product.
@@ -626,4 +659,43 @@ const defaultDetail: Omit<ProductDetail, "slug" | "imageSrcs"> = {
   },
   reviews: defaultReviews,
 };
+
+/** Join a list into readable prose: "a, b and c". */
+function listSentence(items: string[]): string {
+  if (items.length === 0) return "a curated selection of our handmade toys";
+  if (items.length === 1) return items[0];
+  return `${items.slice(0, -1).join(", ")} and ${items[items.length - 1]}`;
+}
+
+/**
+ * Generate a full product detail for a gift kit from its own data (contents,
+ * price, age tier) so its PDP renders the same tab set as any other product —
+ * without hand-authoring copy for every bundle.
+ */
+function giftKitDetail(kit: Product): Omit<ProductDetail, "slug" | "imageSrcs"> {
+  const contents = kit.kitContents ?? [];
+  return {
+    ...defaultDetail,
+    description: `${kit.titleBn} is a ready-to-gift bundle of handmade, non-toxic wooden toys — curated for this stage and packaged to delight. Inside: ${listSentence(contents)}.`,
+    features: contents.length
+      ? contents.map((c) => `Includes: ${c}`)
+      : defaultDetail.features,
+    benefits: [
+      "Curated bundle — everything is chosen to work together",
+      "Arrives gift-ready in premium, giftable packaging",
+      "Natural, non-toxic materials that are safe for little hands",
+    ],
+    whyPlay: [
+      "A thoughtful, screen-free gift for babies and toddlers",
+      "Covers several kinds of play in one box",
+      "Built to be treasured and passed down",
+    ],
+    specs: {
+      materials: "Assorted natural neem & beech wood with non-toxic, food-grade finishes",
+      safety:
+        "Smooth-sanded, no small detachable parts, lab-tested for lead and heavy metals",
+      ageRange: "Curated for the listed age group (adult supervision recommended)",
+    },
+  };
+}
 
