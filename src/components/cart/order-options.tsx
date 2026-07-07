@@ -2,13 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import {
-  Award,
-  Gift,
-  ShieldCheck,
-  StickyNote,
-  Truck,
-} from "lucide-react";
+import { Award, Gift, StickyNote, Truck } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const GIFT_MESSAGE_MAX = 200;
@@ -128,24 +122,19 @@ function CheckboxRow({
 }
 
 /**
- * Cart "Order Options" — delivery method, gift options, order notes,
- * reward points and Terms agreement. Frontend only: every value lives in local
- * React state, so it persists while the shopper stays on the Cart page. The
- * Terms checkbox is lifted to the parent (via props) so it can gate Checkout.
+ * Cart "Order Options" — delivery method, gift options, order notes and reward
+ * points. Frontend only: every value lives in local React state, so it persists
+ * while the shopper stays on the Cart page. (Terms agreement lives beside the
+ * Checkout button in the Order Summary.)
  */
 export function OrderOptions({
   isLoggedIn = false,
   rewardPoints = 0,
-  agreedToTerms,
-  onAgreedToTermsChange,
 }: {
   /** Mock auth flag — controls the reward-points message. */
   isLoggedIn?: boolean;
   /** Points shown when logged in. */
   rewardPoints?: number;
-  /** Terms agreement (owned by the cart so it can disable Checkout). */
-  agreedToTerms: boolean;
-  onAgreedToTermsChange: (value: boolean) => void;
 }) {
   const [delivery, setDelivery] = useState<"home" | "pickup">("home");
   const [isGift, setIsGift] = useState(false);
@@ -244,22 +233,6 @@ export function OrderOptions({
               </Link>
             </div>
           )}
-        </OptionSection>
-
-        <div className="h-px bg-cream-200" />
-
-        {/* 5. Terms & Conditions */}
-        <OptionSection icon={ShieldCheck} title="Terms & Conditions">
-          <CheckboxRow checked={agreedToTerms} onChange={onAgreedToTermsChange}>
-            I agree to the{" "}
-            <Link
-              href="/policy/terms"
-              className="font-medium text-neem-deep hover:underline"
-            >
-              Terms &amp; Conditions
-            </Link>
-            .
-          </CheckboxRow>
         </OptionSection>
       </div>
     </div>

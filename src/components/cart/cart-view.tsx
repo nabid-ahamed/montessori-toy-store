@@ -11,6 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import { ProductImage } from "@/components/product/product-image";
 import { OrderOptions } from "@/components/cart/order-options";
 import { CouponCode } from "@/components/cart/coupon-code";
+import { GiftCardThumb } from "@/components/cart/gift-card-thumb";
 import { useCart } from "@/lib/cart/cart-context";
 import { formatTk } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -163,6 +164,8 @@ export function CartView() {
   // Track DESELECTED slugs (default: everything selected). This model auto-keeps
   // new items selected and quietly drops removed ones — no syncing needed.
   const [deselected, setDeselected] = useState<Set<string>>(new Set());
+  // Applied coupon discount (in ৳), reported up from the CouponCode block.
+  const [discount, setDiscount] = useState(0);
   const [confirmAction, setConfirmAction] = useState<ConfirmAction | null>(null);
   const [processingAction, setProcessingAction] = useState(false);
   // Bumped on each delete click to play the trash-icon drop animation (purely
@@ -291,7 +294,9 @@ export function CartView() {
       : selectedSubtotal >= FREE_SHIPPING_THRESHOLD
         ? 0
         : FLAT_SHIPPING;
-  const total = selectedSubtotal + shipping;
+  // Cap the discount at the current subtotal (it may have shrunk since apply).
+  const effectiveDiscount = Math.min(discount, selectedSubtotal);
+  const total = Math.max(0, selectedSubtotal - effectiveDiscount) + shipping;
   const remaining = FREE_SHIPPING_THRESHOLD - selectedSubtotal;
 
   const canCheckout = agreedToTerms && selectedCount > 0;
@@ -386,13 +391,17 @@ export function CartView() {
               />
               <Link href={`/products/${product.slug}`} className="shrink-0">
                 <div className="size-24 overflow-hidden rounded-lg border border-cream-300 bg-frame sm:size-28">
-                  <ProductImage
-                    slug={product.slug}
-                    imageNum={1}
-                    label={product.imageLabelBn}
-                    fallbackTone={product.imageTones[0]}
-                    className="size-full text-xs"
-                  />
+                  {product.slug.startsWith("gift-card-") ? (
+                    <GiftCardThumb amount={product.price} className="size-full" />
+                  ) : (
+                    <ProductImage
+                      slug={product.slug}
+                      imageNum={1}
+                      label={product.imageLabelBn}
+                      fallbackTone={product.imageTones[0]}
+                      className="size-full text-xs"
+                    />
+                  )}
                 </div>
               </Link>
 
@@ -435,18 +444,11 @@ export function CartView() {
           </ul>
           </div>
 
-          <OrderOptions
-            isLoggedIn={isLoggedIn}
-            rewardPoints={rewardPoints}
-            agreedToTerms={agreedToTerms}
-            onAgreedToTermsChange={setAgreedToTerms}
-          />
+          <OrderOptions isLoggedIn={isLoggedIn} rewardPoints={rewardPoints} />
         </div>
 
-        {/* coupon code + order summary */}
-        <aside className="space-y-6 lg:col-span-1">
-          <CouponCode />
-
+        {/* order summary */}
+        <aside className="lg:col-span-1">
           <div className="rounded-xl border border-cream-300 bg-card p-5 lg:sticky lg:top-[124px]">
             <h2 className="font-display text-lg font-bold text-ink">
               Order Summary
@@ -461,6 +463,14 @@ export function CartView() {
                 <dt className="text-ink-muted">Subtotal</dt>
                 <dd className="font-medium text-ink">{formatTk(selectedSubtotal)}</dd>
               </div>
+              {effectiveDiscount > 0 ? (
+                <div className="flex justify-between">
+                  <dt className="text-neem-deep">Discount</dt>
+                  <dd className="font-medium text-neem-deep">
+                    −{formatTk(effectiveDiscount)}
+                  </dd>
+                </div>
+              ) : null}
               <div className="flex justify-between">
                 <dt className="text-ink-muted">Shipping</dt>
                 <dd className="font-medium text-ink">
@@ -478,12 +488,25 @@ export function CartView() {
 
             <Separator className="my-4" />
 
+            <CouponCode
+              subtotal={selectedSubtotal}
+              onDiscountChange={setDiscount}
+            />
+
+            <Separator className="my-4" />
+
             <div className="flex items-center justify-between">
               <span className="font-semibold text-ink">Total</span>
               <span className="font-display text-xl font-bold text-ink">
                 {formatTk(total)}
               </span>
             </div>
+
+            {effectiveDiscount > 0 ? (
+              <p className="mt-3 text-center text-sm font-medium text-neem-deep">
+                🎉 You saved {formatTk(effectiveDiscount)}
+              </p>
+            ) : null}
 
             {canCheckout ? (
               <Button asChild className="mt-5 w-full" size="lg">
@@ -498,13 +521,33 @@ export function CartView() {
                 <ArrowRight className="size-4" />
               </Button>
             )}
-            <p className="mt-2 text-center text-xs text-ink-soft">
-              {selectedCount === 0
-                ? "Select at least one item to check out."
-                : !agreedToTerms
-                  ? "Agree to the Terms & Conditions to continue."
-                  : "You'll review your order on the next step."}
-            </p>
+
+            {/* Terms agreement — gates Checkout, sits right beneath it. */}
+            <label className="mt-3 flex cursor-pointer items-start gap-2.5 pl-6">
+              <input
+                type="checkbox"
+                checked={agreedToTerms}
+                onChange={(e) => setAgreedToTerms(e.target.checked)}
+                aria-label="Agree to the Terms & Conditions"
+                className="mt-0.5 size-4 flex-none accent-neem"
+              />
+              <span className="text-xs text-ink-muted">
+                {agreedToTerms ? "I agree to the" : "Agree to the"}{" "}
+                <Link
+                  href="/policy/terms"
+                  className="font-medium text-neem-deep hover:underline"
+                >
+                  Terms &amp; Conditions
+                </Link>
+                {agreedToTerms ? "." : " to continue."}
+              </span>
+            </label>
+
+            {selectedCount === 0 ? (
+              <p className="mt-2 text-center text-xs text-ink-soft">
+                Select at least one item to check out.
+              </p>
+            ) : null}
           </div>
         </aside>
       </div>
