@@ -20,6 +20,7 @@ export const blogPosts: BlogPost[] = [
     readMins: 4,
     coverTone: "neem-soft",
     coverLabel: "Neem Wood",
+    featured: true,
     body: [
       {
         type: "p",

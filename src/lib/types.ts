@@ -227,4 +227,9 @@ export type BlogPost = {
   coverTone: Tone; // PlaceholderImage tone
   coverLabel: string; // PlaceholderImage label
   body: BlogBlock[];
+  /** Pins this post to the journal's FeaturedPost slot. */
+  featured?: boolean;
+  /** Optional real cover photo; when set, BlogCard renders it via next/image
+   *  instead of the illustrated SVG fallback. Swappable per post from a CMS. */
+  coverImage?: string;
 };
