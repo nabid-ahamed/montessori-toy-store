@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { AllProductsView } from "@/components/collection/all-products-view";
 import { AgeCollectionView } from "@/components/collection/age-collection-view";
 import { CategoryCollectionView } from "@/components/collection/category-collection-view";
@@ -86,6 +87,12 @@ export default async function Page({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
+
+  // "Stacking & Sorting" + "Shape Sorters & Puzzles" merged into one category —
+  // keep the old URLs working by redirecting to the unified collection.
+  if (slug === "stacking" || slug === "puzzles") {
+    redirect("/collections/stacking-sorting-puzzles");
+  }
 
   if (slug === "all") {
     return <AllProductsView />;

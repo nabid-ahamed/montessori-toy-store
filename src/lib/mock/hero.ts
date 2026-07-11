@@ -17,7 +17,7 @@ export const heroSlides: HeroSlide[] = [
     titleBn: "Stacking & sorting toys",
     subtitleBn: "Builds hand–eye coordination — Montessori inspired.",
     ctaBn: "Shop now",
-    href: "/collections/stacking",
+    href: "/collections/stacking-sorting-puzzles",
     tone: "mustard",
     image: "/images/hero2.webp",
   },

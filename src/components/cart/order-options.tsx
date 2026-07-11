@@ -2,14 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Award, Gift, StickyNote, Truck } from "lucide-react";
+import { Award, Truck } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-const GIFT_MESSAGE_MAX = 200;
-
-// Shared field styling so textareas match the app's Input component.
-const fieldClass =
-  "w-full rounded-lg border border-cream-300 bg-paper px-3 py-2 text-sm text-ink outline-none transition-colors placeholder:text-ink-soft focus-visible:border-neem focus-visible:ring-2 focus-visible:ring-neem/25";
 
 /** A titled block inside the Order Options card (icon + heading + content). */
 function OptionSection({
@@ -98,34 +92,11 @@ function RadioRow({
   );
 }
 
-/** Reusable checkbox row backed by a native checkbox input. */
-function CheckboxRow({
-  checked,
-  onChange,
-  children,
-}: {
-  checked: boolean;
-  onChange: (checked: boolean) => void;
-  children: React.ReactNode;
-}) {
-  return (
-    <label className="flex cursor-pointer items-start gap-3">
-      <input
-        type="checkbox"
-        checked={checked}
-        onChange={(e) => onChange(e.target.checked)}
-        className="mt-0.5 size-4 flex-none accent-neem"
-      />
-      <span className="text-sm text-ink">{children}</span>
-    </label>
-  );
-}
-
 /**
- * Cart "Order Options" — delivery method, gift options, order notes and reward
- * points. Frontend only: every value lives in local React state, so it persists
- * while the shopper stays on the Cart page. (Terms agreement lives beside the
- * Checkout button in the Order Summary.)
+ * Cart "Order Options" — delivery method and reward points. Frontend only:
+ * every value lives in local React state, so it persists while the shopper
+ * stays on the Cart page. (Order notes live on the checkout page; gift wrapping
+ * lives in the Order Summary; Terms agreement lives beside the Checkout button.)
  */
 export function OrderOptions({
   isLoggedIn = false,
@@ -137,9 +108,6 @@ export function OrderOptions({
   rewardPoints?: number;
 }) {
   const [delivery, setDelivery] = useState<"home" | "pickup">("home");
-  const [isGift, setIsGift] = useState(false);
-  const [giftMessage, setGiftMessage] = useState("");
-  const [notes, setNotes] = useState("");
 
   return (
     <div className="rounded-xl border border-cream-300 bg-card p-5 sm:p-6">
@@ -172,46 +140,7 @@ export function OrderOptions({
 
         <div className="h-px bg-cream-200" />
 
-        {/* 2. Gift options */}
-        <OptionSection icon={Gift} title="Gift Options">
-          <CheckboxRow checked={isGift} onChange={setIsGift}>
-            This is a gift
-          </CheckboxRow>
-          {isGift ? (
-            <div className="mt-3">
-              <textarea
-                value={giftMessage}
-                onChange={(e) =>
-                  setGiftMessage(e.target.value.slice(0, GIFT_MESSAGE_MAX))
-                }
-                maxLength={GIFT_MESSAGE_MAX}
-                rows={3}
-                placeholder="Write a short gift message…"
-                className={fieldClass}
-              />
-              <p className="mt-1 text-right text-xs text-ink-soft">
-                {giftMessage.length}/{GIFT_MESSAGE_MAX}
-              </p>
-            </div>
-          ) : null}
-        </OptionSection>
-
-        <div className="h-px bg-cream-200" />
-
-        {/* 3. Order notes */}
-        <OptionSection icon={StickyNote} title="Order Notes" description="Optional">
-          <textarea
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-            rows={3}
-            placeholder="Add delivery instructions or any special requests."
-            className={fieldClass}
-          />
-        </OptionSection>
-
-        <div className="h-px bg-cream-200" />
-
-        {/* 4. Reward points */}
+        {/* 2. Reward points */}
         <OptionSection icon={Award} title="Reward Points">
           {isLoggedIn ? (
             <div className="flex items-center justify-between rounded-lg border border-neem/20 bg-neem/5 p-3">

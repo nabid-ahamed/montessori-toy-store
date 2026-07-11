@@ -13,31 +13,35 @@ import { BRAND_NAME, BRAND_DESCRIPTION } from "@/lib/config";
 import { cn } from "@/lib/utils";
 
 // ── Scalloped top trim ──────────────────────────────────────────────────────
-// A row of coloured half-circle "domes" hanging from the footer's top edge,
-// inset with side padding and stretched (flex-1) to fill the width evenly. Two
-// breakpoint variants keep the dome proportions pleasant.
-const SCALLOP_COLORS = [
-  "bg-[#9385d4]", // purple
-  "bg-[#86d07f]", // green
-  "bg-[#ec6a8d]", // pink
-  "bg-[#6fa3e0]", // blue
-];
+// A row of coloured half-circle "domes" hanging from the footer's top edge.
+// Rendered as a REPEATING radial-gradient background (one downward semicircle
+// per colour, tiling every 4 domes) rather than a fixed count of elements — so
+// the trim stays edge-to-edge at ANY width, including when zoomed far out where
+// a finite dome count used to stop short and leave a gap on the right.
+const SCALLOP_COLORS = ["#9385d4", "#86d07f", "#ec6a8d", "#6fa3e0"]; // purple, green, pink, blue
+const DOME_W = 64; // dome width in px; radius = height = DOME_W / 2 → true semicircle
 
 function ScallopTop() {
+  const radius = DOME_W / 2;
+  // One gradient layer per colour, each drawing a downward semicircle centred in
+  // its slot; the layers share a tile the width of all four domes and repeat-x.
+  const backgroundImage = SCALLOP_COLORS.map(
+    (color, i) =>
+      `radial-gradient(circle ${radius}px at ${i * DOME_W + radius}px 0, ${color} ${
+        radius - 0.5
+      }px, transparent ${radius}px)`,
+  ).join(", ");
+
   return (
-    <div className="flex overflow-hidden" aria-hidden>
-      {Array.from({ length: 60 }).map((_, i) => (
-        <span
-          key={i}
-          className={cn(
-            // width = 2× height → a true semicircle dome; flush with the footer
-            // top, edge-to-edge, clipping at the right.
-            "h-8 w-16 shrink-0 rounded-b-full",
-            SCALLOP_COLORS[i % SCALLOP_COLORS.length],
-          )}
-        />
-      ))}
-    </div>
+    <div
+      aria-hidden
+      style={{
+        height: radius,
+        backgroundImage,
+        backgroundSize: `${SCALLOP_COLORS.length * DOME_W}px ${radius}px`,
+        backgroundRepeat: "repeat-x",
+      }}
+    />
   );
 }
 

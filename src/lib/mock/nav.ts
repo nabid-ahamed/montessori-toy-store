@@ -48,7 +48,7 @@ export const categoryGroups: NavGroup[] = [
   },
   {
     heading: "Puzzles & Sorting",
-    links: [catLink("stacking"), catLink("puzzles")],
+    links: [catLink("stacking-sorting-puzzles")],
   },
   {
     heading: "Developmental Aids",

@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { DeliverySummary } from "@/components/checkout/delivery-summary";
 import { GuestForm } from "@/components/checkout/guest-form";
+import { OrderNotes } from "@/components/checkout/order-notes";
 import { OrderSummary } from "@/components/checkout/order-summary";
 import { PaymentMethods } from "@/components/checkout/payment-methods";
 import { ShippingMethod } from "@/components/checkout/shipping-method";
@@ -39,6 +40,7 @@ export function CheckoutView() {
   const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [shipping, setShipping] = useState("standard");
   const [payment, setPayment] = useState("cod");
+  const [notes, setNotes] = useState("");
 
   if (!hydrated) {
     return <main className="mx-auto min-h-[50vh] w-full max-w-[80rem] flex-1 px-4 py-10" />;
@@ -146,6 +148,10 @@ export function CheckoutView() {
           </Section>
 
           <Section delay={0.1}>
+            <OrderNotes value={notes} onChange={setNotes} />
+          </Section>
+
+          <Section delay={0.15}>
             <PaymentMethods value={payment} onChange={setPayment} />
           </Section>
         </div>

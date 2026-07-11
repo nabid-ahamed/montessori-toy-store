@@ -7,6 +7,37 @@ import { PlaceholderImage } from "@/components/placeholder-image";
 import { cn } from "@/lib/utils";
 import type { Review } from "@/lib/types";
 
+// Soft brand-tone backgrounds for the initial avatars. Picked deterministically
+// from the reviewer's name so the same person always gets the same colour.
+const avatarPalette = [
+  "bg-neem/15 text-neem-deep",
+  "bg-terracotta/20 text-terracotta",
+  "bg-mustard/30 text-ink",
+  "bg-dusty-blue/25 text-ink",
+  "bg-blush/40 text-ink",
+];
+
+/** Circular avatar generated from the first letter of the reviewer's name. */
+function InitialAvatar({ name }: { name: string }) {
+  const trimmed = name.trim();
+  const initial = (trimmed.charAt(0) || "?").toUpperCase();
+  // Sum the char codes so the colour is stable per name (not just first letter).
+  const hash = Array.from(trimmed).reduce((sum, c) => sum + c.charCodeAt(0), 0);
+  const tone = avatarPalette[hash % avatarPalette.length];
+
+  return (
+    <span
+      aria-hidden
+      className={cn(
+        "flex size-10 flex-none select-none items-center justify-center rounded-full font-display text-base font-bold",
+        tone,
+      )}
+    >
+      {initial}
+    </span>
+  );
+}
+
 function Stars({ rating, className }: { rating: number; className?: string }) {
   return (
     <div className={cn("flex items-center gap-0.5", className)} aria-label={`${rating} out of 5`}>
@@ -30,22 +61,29 @@ function ReviewCard({ review }: { review: Review }) {
 
   return (
     <article className="border-b border-cream-200 py-5 last:border-0">
-      <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-        <span className="font-semibold text-ink">{review.nameBn}</span>
-        {review.verifiedPurchase ? (
-          <span className="inline-flex items-center gap-1 text-xs font-medium text-neem-deep">
-            <BadgeCheck className="size-3.5" />
-            Verified purchase
-          </span>
-        ) : null}
-        <span className="text-xs text-ink-soft">{review.dateBn}</span>
-      </div>
+      <div className="flex gap-3">
+        <InitialAvatar name={review.nameBn} />
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+            <span className="font-semibold text-ink">{review.nameBn}</span>
+            {review.verifiedPurchase ? (
+              <span className="inline-flex items-center gap-1 text-xs font-medium text-neem-deep">
+                <BadgeCheck className="size-3.5" />
+                Verified purchase
+              </span>
+            ) : null}
+            <span className="text-xs text-ink-soft">{review.dateBn}</span>
+          </div>
 
-      <div className="mt-2 flex items-center gap-3">
-        <Stars rating={review.rating} />
-        {review.titleBn ? (
-          <span className="font-display text-sm font-bold text-ink">{review.titleBn}</span>
-        ) : null}
+          <div className="mt-1.5 flex items-center gap-3">
+            <Stars rating={review.rating} />
+            {review.titleBn ? (
+              <span className="font-display text-sm font-bold text-ink">
+                {review.titleBn}
+              </span>
+            ) : null}
+          </div>
+        </div>
       </div>
 
       <p className="mt-2 max-w-2xl text-sm leading-6 text-ink-muted">{review.bodyBn}</p>
@@ -92,19 +130,24 @@ function RatingBreakdown({ reviews }: { reviews: Review[] }) {
   const total = reviews.length || 1;
 
   return (
-    <div className="space-y-1.5">
-      {buckets.map((star, i) => (
-        <div key={star} className="flex items-center gap-2 text-xs text-ink-muted">
-          <span className="w-6 shrink-0 text-right">{star}★</span>
-          <div className="h-2 flex-1 overflow-hidden rounded-full bg-cream-200">
-            <div
-              className="h-full rounded-full bg-mustard"
-              style={{ width: `${(counts[i] / total) * 100}%` }}
-            />
+    <div className="w-full space-y-2">
+      {buckets.map((star, i) => {
+        const pct = (counts[i] / total) * 100;
+        return (
+          <div key={star} className="flex items-center gap-3 text-sm text-ink-muted">
+            <span className="w-3 shrink-0 text-right font-medium tabular-nums">
+              {star}
+            </span>
+            <div className="h-3 flex-1 overflow-hidden rounded-full bg-cream-200">
+              <div
+                className="h-full rounded-full bg-neem transition-[width] duration-500 ease-out"
+                // A tiny min keeps a rounded nub visible for small (non-zero) counts.
+                style={{ width: counts[i] === 0 ? 0 : `max(0.75rem, ${pct}%)` }}
+              />
+            </div>
           </div>
-          <span className="w-6 shrink-0 text-right tabular-nums">{counts[i]}</span>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }

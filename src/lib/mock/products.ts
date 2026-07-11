@@ -32,7 +32,7 @@ export const products: Product[] = [
     ageTierSlug: "1-2y",
     badge: "Best Seller",
     imageTones: ["neem-soft", "cream"],
-    categorySlug: "stacking",
+    categorySlug: "stacking-sorting-puzzles",
     imageLabelBn: "Stacking Ring",
     variants: neemTeak,
   },
@@ -45,7 +45,7 @@ export const products: Product[] = [
     reviewCount: 76,
     ageTierSlug: "1-2y",
     imageTones: ["terracotta", "cream"],
-    categorySlug: "puzzles",
+    categorySlug: "stacking-sorting-puzzles",
     imageLabelBn: "Shape Sorter",
   },
   {
@@ -137,7 +137,7 @@ export const products: Product[] = [
     reviewCount: 103,
     ageTierSlug: "2-3y-plus",
     imageTones: ["terracotta", "cream"],
-    categorySlug: "puzzles",
+    categorySlug: "stacking-sorting-puzzles",
     imageLabelBn: "Animal Puzzle",
   },
   {
@@ -177,7 +177,7 @@ export const products: Product[] = [
     reviewCount: 64,
     ageTierSlug: "2-3y-plus",
     imageTones: ["blush", "cream"],
-    categorySlug: "stacking",
+    categorySlug: "stacking-sorting-puzzles",
     imageLabelBn: "Lacing Beads",
   },
   {
@@ -218,7 +218,7 @@ export const products: Product[] = [
     ageTierSlug: "6-12m",
     badge: "Best Seller",
     imageTones: ["dusty-blue", "cream"],
-    categorySlug: "stacking",
+    categorySlug: "stacking-sorting-puzzles",
     imageLabelBn: "Nesting Cups",
   },
   {

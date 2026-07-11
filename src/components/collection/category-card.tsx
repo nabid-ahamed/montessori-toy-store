@@ -10,7 +10,6 @@ import {
   Car,
   GraduationCap,
   Layers,
-  Puzzle,
   Shapes,
   type LucideIcon,
 } from "lucide-react";
@@ -36,10 +35,9 @@ const toneWash: Record<Tone, string> = {
 const categoryIcon: Record<string, LucideIcon> = {
   teethers: Baby,
   rattles: Bell,
-  stacking: Layers,
+  "stacking-sorting-puzzles": Layers,
   blocks: Blocks,
   "push-pull": Bike,
-  puzzles: Puzzle,
   montessori: GraduationCap,
   "ride-on": Car,
 };

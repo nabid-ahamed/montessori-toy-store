@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import Link from "next/link";
 import { Dialog } from "radix-ui";
-import { Minus, Plus, ShoppingBag, ArrowRight, Loader2 } from "lucide-react";
+import { Minus, Plus, ShoppingBag, ArrowRight, Loader2, Gift, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { AnimatedTrashIcon } from "@/components/ui/animated-trash-icon";
@@ -12,12 +12,14 @@ import { ProductImage } from "@/components/product/product-image";
 import { OrderOptions } from "@/components/cart/order-options";
 import { CouponCode } from "@/components/cart/coupon-code";
 import { GiftCardThumb } from "@/components/cart/gift-card-thumb";
+import { GiftWrapDialog } from "@/components/cart/gift-wrap-dialog";
 import { useCart } from "@/lib/cart/cart-context";
 import { formatTk } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
 const FREE_SHIPPING_THRESHOLD = 2000;
 const FLAT_SHIPPING = 60;
+const GIFT_WRAP_CHARGE = 50;
 const ACTION_TOAST_DURATION = 8000;
 const CART_ACTION_DELAY_MS = 180;
 
@@ -166,6 +168,11 @@ export function CartView() {
   const [deselected, setDeselected] = useState<Set<string>>(new Set());
   // Applied coupon discount (in ৳), reported up from the CouponCode block.
   const [discount, setDiscount] = useState(0);
+  // Optional gift-wrapping add-on (a flat charge added to the total), plus the
+  // personal gift-card message and the modal's open state.
+  const [giftWrap, setGiftWrap] = useState(false);
+  const [giftMessage, setGiftMessage] = useState("");
+  const [giftDialogOpen, setGiftDialogOpen] = useState(false);
   const [confirmAction, setConfirmAction] = useState<ConfirmAction | null>(null);
   const [processingAction, setProcessingAction] = useState(false);
   // Bumped on each delete click to play the trash-icon drop animation (purely
@@ -296,7 +303,10 @@ export function CartView() {
         : FLAT_SHIPPING;
   // Cap the discount at the current subtotal (it may have shrunk since apply).
   const effectiveDiscount = Math.min(discount, selectedSubtotal);
-  const total = Math.max(0, selectedSubtotal - effectiveDiscount) + shipping;
+  // Gift wrapping only charges when there's something to wrap.
+  const giftWrapCharge = giftWrap && selectedCount > 0 ? GIFT_WRAP_CHARGE : 0;
+  const total =
+    Math.max(0, selectedSubtotal - effectiveDiscount) + shipping + giftWrapCharge;
   const remaining = FREE_SHIPPING_THRESHOLD - selectedSubtotal;
 
   const canCheckout = agreedToTerms && selectedCount > 0;
@@ -477,6 +487,12 @@ export function CartView() {
                   {shipping === 0 ? "Free" : formatTk(shipping)}
                 </dd>
               </div>
+              {giftWrapCharge > 0 ? (
+                <div className="flex justify-between">
+                  <dt className="text-ink-muted">Gift wrapping</dt>
+                  <dd className="font-medium text-ink">{formatTk(giftWrapCharge)}</dd>
+                </div>
+              ) : null}
             </dl>
 
             {remaining > 0 && selectedSubtotal > 0 ? (
@@ -488,10 +504,75 @@ export function CartView() {
 
             <Separator className="my-4" />
 
-            <CouponCode
-              subtotal={selectedSubtotal}
-              onDiscountChange={setDiscount}
-            />
+            {/* gift wrapping add-on — opens a modal; shows a preview once saved */}
+            {giftWrap ? (
+              <div className="rounded-lg border border-neem/30 bg-neem/5 p-3">
+                <div className="flex items-center justify-between gap-2">
+                  <p className="text-sm font-semibold text-ink">
+                    🎁 Gift Wrapping Added
+                  </p>
+                  <span className="text-sm font-semibold text-neem-deep">
+                    +{formatTk(GIFT_WRAP_CHARGE)}
+                  </span>
+                </div>
+                {giftMessage ? (
+                  <p className="mt-1.5 text-sm text-ink-muted">
+                    Message:{" "}
+                    <span className="italic text-ink">
+                      &ldquo;{giftMessage}&rdquo;
+                    </span>
+                  </p>
+                ) : null}
+                <div className="mt-2.5 flex items-center gap-4">
+                  <button
+                    type="button"
+                    onClick={() => setGiftDialogOpen(true)}
+                    className="inline-flex items-center gap-1 text-sm font-medium text-neem-deep hover:underline"
+                  >
+                    <Pencil className="size-3.5" />
+                    Edit
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setGiftWrap(false);
+                      setGiftMessage("");
+                    }}
+                    className="inline-flex items-center gap-1 text-sm font-medium text-ink-muted transition-colors hover:text-danger"
+                  >
+                    <Trash2 className="size-3.5" />
+                    Remove
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setGiftDialogOpen(true)}
+                className="flex w-full items-start gap-2.5 rounded-lg border border-cream-300 bg-paper p-3 text-left transition-colors hover:border-neem hover:bg-neem/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neem/25"
+              >
+                <Gift className="mt-0.5 size-4 flex-none text-neem-deep" />
+                <span className="flex-1 text-sm text-ink">
+                  <span className="font-medium">
+                    Add gift wrapping{" "}
+                    <span className="font-semibold text-neem-deep">
+                      (+{formatTk(GIFT_WRAP_CHARGE)})
+                    </span>
+                  </span>
+                  <span className="mt-0.5 block text-xs text-ink-soft">
+                    Wrapped in premium recycled paper with a ribbon.
+                  </span>
+                </span>
+                <Plus className="mt-0.5 size-4 flex-none text-ink-soft" />
+              </button>
+            )}
+
+            <div className="mt-4">
+              <CouponCode
+                subtotal={selectedSubtotal}
+                onDiscountChange={setDiscount}
+              />
+            </div>
 
             <Separator className="my-4" />
 
@@ -560,6 +641,17 @@ export function CartView() {
           if (!open) setConfirmAction(null);
         }}
         onConfirm={confirmDestructiveAction}
+      />
+
+      <GiftWrapDialog
+        open={giftDialogOpen}
+        initialMessage={giftMessage}
+        onOpenChange={setGiftDialogOpen}
+        onSave={(message) => {
+          setGiftMessage(message);
+          setGiftWrap(true);
+          setGiftDialogOpen(false);
+        }}
       />
     </main>
   );
