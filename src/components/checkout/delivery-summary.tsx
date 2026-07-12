@@ -1,18 +1,54 @@
 import { Mail, MapPin, Pencil, Phone, PhoneCall, User } from "lucide-react";
 import { mockCustomer } from "@/lib/mock/checkout";
+import type { Address } from "@/lib/types";
 
 /**
  * Logged-in delivery summary. Shows the customer's saved details instead of a
- * form, with a UI-only "Edit" button. Reads from mock customer data for now.
+ * form, with a UI-only "Edit" button. When an `address` was chosen in the
+ * address modal it takes precedence; otherwise it falls back to mock customer
+ * data.
  */
-export function DeliverySummary({ onEdit }: { onEdit?: () => void }) {
-  const rows = [
-    { icon: User, label: "Name", value: mockCustomer.name },
-    { icon: Phone, label: "Primary Mobile Number", value: mockCustomer.primaryPhone },
-    { icon: PhoneCall, label: "Alternative Mobile Number", value: mockCustomer.altPhone },
-    { icon: Mail, label: "Email", value: mockCustomer.email },
-    { icon: MapPin, label: "Delivery Address", value: mockCustomer.address },
-  ];
+export function DeliverySummary({
+  address,
+  onEdit,
+}: {
+  address?: Address | null;
+  onEdit?: () => void;
+}) {
+  const rows = address
+    ? [
+        { icon: User, label: "Name", value: address.fullName },
+        { icon: Phone, label: "Mobile Number", value: address.phone },
+        ...(address.altPhone
+          ? [
+              {
+                icon: PhoneCall,
+                label: "Alternative Mobile Number",
+                value: address.altPhone,
+              },
+            ]
+          : []),
+        {
+          icon: MapPin,
+          label: "Delivery Address",
+          value: [
+            address.addressLine,
+            address.area,
+            address.district,
+            address.division,
+            address.landmark,
+          ]
+            .filter(Boolean)
+            .join(", "),
+        },
+      ]
+    : [
+        { icon: User, label: "Name", value: mockCustomer.name },
+        { icon: Phone, label: "Primary Mobile Number", value: mockCustomer.primaryPhone },
+        { icon: PhoneCall, label: "Alternative Mobile Number", value: mockCustomer.altPhone },
+        { icon: Mail, label: "Email", value: mockCustomer.email },
+        { icon: MapPin, label: "Delivery Address", value: mockCustomer.address },
+      ];
 
   return (
     <div className="rounded-2xl border border-cream-300 bg-card p-5 shadow-sm sm:p-6">

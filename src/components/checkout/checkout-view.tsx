@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, ShoppingBag } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
@@ -13,8 +13,13 @@ import { OrderSummary } from "@/components/checkout/order-summary";
 import { PaymentMethods } from "@/components/checkout/payment-methods";
 import { ShippingMethod } from "@/components/checkout/shipping-method";
 import { useCart } from "@/lib/cart/cart-context";
+import { useCheckout } from "@/lib/checkout/checkout-context";
 import { shippingOptions } from "@/lib/mock/checkout";
-import { cn } from "@/lib/utils";
+import { zoneForDistrict } from "@/lib/shipping";
+
+// Orders at/above this (BDT) ship free, regardless of the chosen method —
+// mirrors the cart's free-shipping threshold.
+const FREE_SHIPPING_THRESHOLD = 2000;
 
 function Section({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
   return (
@@ -35,12 +40,25 @@ function Section({ children, delay = 0 }: { children: React.ReactNode; delay?: n
  */
 export function CheckoutView() {
   const { items, subtotal, hydrated } = useCart();
+  // Delivery address chosen in the cart's address modal (drives the summary +
+  // the delivery zone label). The actual delivery charge is driven by the
+  // shipping-method selector below.
+  const { address } = useCheckout();
 
   // Mock auth state — replace with the real session later.
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const isLoggedIn = true;
   const [shipping, setShipping] = useState("standard");
   const [payment, setPayment] = useState("cod");
   const [notes, setNotes] = useState("");
+
+  // Free shipping unlocks at the threshold. Keep the selection valid: auto-apply
+  // free once it unlocks (matches the cart), and never leave "free" selected on
+  // an order that no longer qualifies.
+  const freeUnlocked = subtotal >= FREE_SHIPPING_THRESHOLD;
+  useEffect(() => {
+    if (freeUnlocked) setShipping("free");
+    else setShipping((s) => (s === "free" ? "standard" : s));
+  }, [freeUnlocked]);
 
   if (!hydrated) {
     return <main className="mx-auto min-h-[50vh] w-full max-w-[80rem] flex-1 px-4 py-10" />;
@@ -70,8 +88,14 @@ export function CheckoutView() {
     );
   }
 
-  const deliveryOption = shippingOptions.find((o) => o.id === shipping) ?? shippingOptions[0];
+  // Guard the delivery charge: "free" only counts when the order qualifies,
+  // otherwise fall back to Standard (covers the render before the effect syncs).
+  const effectiveShippingId =
+    shipping === "free" && !freeUnlocked ? "standard" : shipping;
+  const deliveryOption =
+    shippingOptions.find((o) => o.id === effectiveShippingId) ?? shippingOptions[0];
   const delivery = deliveryOption.price;
+  const deliveryZoneLabel = address ? zoneForDistrict(address.district).label : null;
   // Mock promotional discount so the summary shows the line (UI only).
   const discount = Math.round(subtotal * 0.1);
   const total = Math.max(0, subtotal - discount + delivery);
@@ -97,31 +121,6 @@ export function CheckoutView() {
               : "Enter your details to continue."}
           </p>
         </div>
-
-        {/* preview toggle — demo only, remove once real auth is connected */}
-        <div className="inline-flex items-center gap-2">
-          <span className="text-xs font-medium text-ink-soft">Preview:</span>
-          <div className="inline-flex rounded-full border border-cream-300 bg-card p-1 text-sm">
-            {[
-              { key: true, label: "Logged in" },
-              { key: false, label: "Guest" },
-            ].map((opt) => (
-              <button
-                key={opt.label}
-                type="button"
-                onClick={() => setIsLoggedIn(opt.key)}
-                className={cn(
-                  "rounded-full px-3 py-1.5 font-medium transition-colors",
-                  isLoggedIn === opt.key
-                    ? "bg-neem text-paper"
-                    : "text-ink-muted hover:text-ink",
-                )}
-              >
-                {opt.label}
-              </button>
-            ))}
-          </div>
-        </div>
       </header>
 
       <div className="mt-8 grid gap-6 lg:grid-cols-3 lg:gap-8">
@@ -136,7 +135,10 @@ export function CheckoutView() {
               transition={{ duration: 0.28, ease: "easeOut" }}
             >
               {isLoggedIn ? (
-                <DeliverySummary onEdit={() => toast.info("Editing is UI-only for now.")} />
+                <DeliverySummary
+                  address={address}
+                  onEdit={() => toast.info("Editing is UI-only for now.")}
+                />
               ) : (
                 <GuestForm />
               )}
@@ -144,7 +146,12 @@ export function CheckoutView() {
           </AnimatePresence>
 
           <Section delay={0.05}>
-            <ShippingMethod value={shipping} onChange={setShipping} />
+            <ShippingMethod
+              value={effectiveShippingId}
+              onChange={setShipping}
+              subtotal={subtotal}
+              freeShippingThreshold={FREE_SHIPPING_THRESHOLD}
+            />
           </Section>
 
           <Section delay={0.1}>
@@ -180,6 +187,7 @@ export function CheckoutView() {
                 items={items}
                 subtotal={subtotal}
                 delivery={delivery}
+                deliveryZoneLabel={deliveryZoneLabel}
                 discount={discount}
                 total={total}
                 ctaLabel={ctaLabel}

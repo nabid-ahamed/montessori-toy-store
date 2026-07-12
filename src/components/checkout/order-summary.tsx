@@ -15,6 +15,7 @@ export function OrderSummary({
   items,
   subtotal,
   delivery,
+  deliveryZoneLabel,
   discount,
   total,
   ctaLabel,
@@ -23,6 +24,8 @@ export function OrderSummary({
   items: CartItem[];
   subtotal: number;
   delivery: number;
+  /** Zone name for the chosen address (e.g. "Inside Dhaka"), if any. */
+  deliveryZoneLabel?: string | null;
   discount: number;
   total: number;
   ctaLabel: string;
@@ -68,7 +71,9 @@ export function OrderSummary({
           <dd className="font-medium text-ink">{formatTk(subtotal)}</dd>
         </div>
         <div className="flex justify-between">
-          <dt className="text-ink-muted">Delivery charge</dt>
+          <dt className="text-ink-muted">
+            {deliveryZoneLabel ? `Delivery (${deliveryZoneLabel})` : "Delivery charge"}
+          </dt>
           <dd className="font-medium text-ink">
             {delivery === 0 ? "Free" : formatTk(delivery)}
           </dd>

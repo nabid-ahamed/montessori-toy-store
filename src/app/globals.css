@@ -407,3 +407,33 @@
   outline-offset: 2px;
   border-radius: 4px;
 }
+
+/* ============================================================
+   Address modal — same journal palette + type, scoped so it can
+   render (via portal) on the store's cart/checkout pages while
+   still reading in the reference tokens. The class sits directly
+   on Dialog.Content (portals escape the DOM tree), so its
+   descendants inherit the re-tinted primitives and fonts.
+   ============================================================ */
+.address-modal {
+  --paper: #f6f2e9;
+  --cream-50: #f6f2e9;
+  --cream-100: #efe9db;
+  --cream-200: #e7dfce;
+  --cream-300: #d9ccb1;
+  --card: #fbf9f3;
+  --ink: #26241c;
+  --ink-muted: #5a554a;
+  --ink-soft: #837c6d;
+  --neem: #34513a;
+  --neem-deep: #2a3f2e;
+  --neem-soft: #6e8a6a;
+  --honey: #b9863e;
+
+  font-family: var(--font-hanken), ui-sans-serif, system-ui, sans-serif;
+}
+
+.address-modal .font-display {
+  font-family: var(--font-fraunces), ui-serif, Georgia, "Times New Roman", serif;
+  font-optical-sizing: auto;
+}

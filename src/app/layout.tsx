@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Bricolage_Grotesque, Inter, Poppins } from "next/font/google";
+import { Bricolage_Grotesque, Fraunces, Hanken_Grotesk, Inter, Poppins } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
@@ -9,6 +9,7 @@ import { MobileBottomBar } from "@/components/layout/mobile-bottom-bar";
 import { WhatsAppButton } from "@/components/layout/whatsapp-button";
 import { DeferredIslands } from "@/components/layout/deferred-islands";
 import { CartProvider } from "@/lib/cart/cart-context";
+import { CheckoutProvider } from "@/lib/checkout/checkout-context";
 import { WishlistProvider } from "@/lib/wishlist/wishlist-context";
 import { Toaster } from "@/components/ui/sonner";
 
@@ -37,6 +38,22 @@ const poppins = Poppins({
   preload: false,
 });
 
+// Address-modal typefaces (journal reference look). Only surface inside the
+// modal, so skip preloading — they load on demand and swap in via display:swap.
+const fraunces = Fraunces({
+  variable: "--font-fraunces",
+  subsets: ["latin"],
+  display: "swap",
+  preload: false,
+});
+
+const hanken = Hanken_Grotesk({
+  variable: "--font-hanken",
+  subsets: ["latin"],
+  display: "swap",
+  preload: false,
+});
+
 export const metadata: Metadata = {
   title: {
     default: "Montessori Wooden Toys",
@@ -54,7 +71,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${bricolage.variable} ${inter.variable} ${poppins.variable} h-full antialiased`}
+      className={`${bricolage.variable} ${inter.variable} ${poppins.variable} ${fraunces.variable} ${hanken.variable} h-full antialiased`}
     >
       <body
         suppressHydrationWarning
@@ -62,17 +79,19 @@ export default function RootLayout({
       >
         <SiteBackground />
         <CartProvider>
-          <WishlistProvider>
-            <Header />
-            <div className="flex flex-1 flex-col">{children}</div>
-            <FooterGate>
-              <Footer />
-            </FooterGate>
-            <MobileBottomBar />
-            <WhatsAppButton />
-            <DeferredIslands />
-            <Toaster />
-          </WishlistProvider>
+          <CheckoutProvider>
+            <WishlistProvider>
+              <Header />
+              <div className="flex flex-1 flex-col">{children}</div>
+              <FooterGate>
+                <Footer />
+              </FooterGate>
+              <MobileBottomBar />
+              <WhatsAppButton />
+              <DeferredIslands />
+              <Toaster />
+            </WishlistProvider>
+          </CheckoutProvider>
         </CartProvider>
       </body>
     </html>

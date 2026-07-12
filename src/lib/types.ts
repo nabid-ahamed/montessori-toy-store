@@ -58,6 +58,22 @@ export type Product = {
   variants?: Variant[];
 };
 
+/** A delivery address (mock — decoupled so a real address API drops in later).
+ *  BD-shaped: division → district → area, with a phone validated as 11 digits
+ *  starting "01". */
+export type Address = {
+  id: string;
+  fullName: string;
+  phone: string; // "01XXXXXXXXX" (11 digits)
+  altPhone?: string; // optional secondary contact number
+  division: string;
+  district: string;
+  area: string; // area / thana
+  addressLine: string;
+  landmark?: string;
+  isDefault: boolean;
+};
+
 /** Technical / spec table shown in the Details tab. */
 export type ProductSpecs = {
   materials?: string;

@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Dialog } from "radix-ui";
 import { Minus, Plus, ShoppingBag, ArrowRight, Loader2, Gift, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
@@ -13,7 +14,10 @@ import { OrderOptions } from "@/components/cart/order-options";
 import { CouponCode } from "@/components/cart/coupon-code";
 import { GiftCardThumb } from "@/components/cart/gift-card-thumb";
 import { GiftWrapDialog } from "@/components/cart/gift-wrap-dialog";
+import { AddressModal } from "@/components/checkout/address-modal";
 import { useCart } from "@/lib/cart/cart-context";
+import { useCheckout } from "@/lib/checkout/checkout-context";
+import { mockSavedAddresses } from "@/lib/mock-addresses";
 import { formatTk } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
@@ -161,8 +165,16 @@ function QtyStepper({
 
 export function CartView() {
   const { items, hydrated, addItem, setQty, removeItem, clear } = useCart();
+  const { setDeliveryAddress } = useCheckout();
+  const router = useRouter();
   // Terms agreement lives here so it can gate the Checkout button below.
   const [agreedToTerms, setAgreedToTerms] = useState(false);
+  // Address-selection modal, opened by "Proceed to Checkout".
+  const [addressModalOpen, setAddressModalOpen] = useState(false);
+  // Demo-only: preview the address modal as a logged-in customer (saved
+  // addresses) or a guest. Drives ONLY the modal's audience (not the reward
+  // block). Remove with real auth.
+  const [previewLoggedIn, setPreviewLoggedIn] = useState(true);
   // Track DESELECTED slugs (default: everything selected). This model auto-keeps
   // new items selected and quietly drops removed ones — no syncing needed.
   const [deselected, setDeselected] = useState<Set<string>>(new Set());
@@ -308,6 +320,13 @@ export function CartView() {
   const total =
     Math.max(0, selectedSubtotal - effectiveDiscount) + shipping + giftWrapCharge;
   const remaining = FREE_SHIPPING_THRESHOLD - selectedSubtotal;
+  // Everything except shipping — the address modal adds a zone-based delivery
+  // fee on top of this, replacing the cart's flat shipping estimate.
+  const preDeliveryTotal =
+    Math.max(0, selectedSubtotal - effectiveDiscount) + giftWrapCharge;
+
+  // Demo preview → modal props (logged in shows saved addresses; guest shows the form).
+  const previewAddresses = previewLoggedIn ? mockSavedAddresses : [];
 
   const canCheckout = agreedToTerms && selectedCount > 0;
   const confirmItemCount =
@@ -589,19 +608,43 @@ export function CartView() {
               </p>
             ) : null}
 
-            {canCheckout ? (
-              <Button asChild className="mt-5 w-full" size="lg">
-                <Link href="/checkout">
-                  Checkout ({selectedCount})
-                  <ArrowRight className="size-4" />
-                </Link>
-              </Button>
-            ) : (
-              <Button type="button" className="mt-5 w-full" size="lg" disabled>
-                Checkout
-                <ArrowRight className="size-4" />
-              </Button>
-            )}
+            {/* demo-only preview switch — remove once real auth is connected */}
+            <div className="mt-5 flex items-center justify-center gap-2">
+              <span className="text-xs font-medium text-ink-soft">Preview:</span>
+              <div className="inline-flex rounded-full border border-cream-300 bg-card p-1 text-sm">
+                {[
+                  { key: true, label: "Logged in" },
+                  { key: false, label: "Guest" },
+                ].map((opt) => (
+                  <button
+                    key={opt.label}
+                    type="button"
+                    onClick={() => setPreviewLoggedIn(opt.key)}
+                    className={cn(
+                      "rounded-full px-3 py-1.5 font-medium transition-colors",
+                      previewLoggedIn === opt.key
+                        ? "bg-neem text-paper"
+                        : "text-ink-muted hover:text-ink",
+                    )}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <Button
+              type="button"
+              className="mt-3 w-full"
+              size="lg"
+              disabled={!canCheckout}
+              onClick={() => setAddressModalOpen(true)}
+            >
+              {canCheckout
+                ? `Proceed to Checkout (${selectedCount})`
+                : "Proceed to Checkout"}
+              <ArrowRight className="size-4" />
+            </Button>
 
             {/* Terms agreement — gates Checkout, sits right beneath it. */}
             <label className="mt-3 flex cursor-pointer items-start gap-2.5 pl-6">
@@ -651,6 +694,19 @@ export function CartView() {
           setGiftMessage(message);
           setGiftWrap(true);
           setGiftDialogOpen(false);
+        }}
+      />
+
+      <AddressModal
+        open={addressModalOpen}
+        onOpenChange={setAddressModalOpen}
+        isLoggedIn={previewLoggedIn}
+        savedAddresses={previewAddresses}
+        subtotal={preDeliveryTotal}
+        onConfirm={(address) => {
+          setDeliveryAddress(address);
+          setAddressModalOpen(false);
+          router.push("/checkout");
         }}
       />
     </main>
