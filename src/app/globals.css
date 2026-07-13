@@ -437,3 +437,13 @@
   font-family: var(--font-fraunces), ui-serif, Georgia, "Times New Roman", serif;
   font-optical-sizing: auto;
 }
+
+/* ============================================================
+   Branded preloader. On repeat visits within a session the inline
+   guard script (rendered by <Preloader>) adds `.preloader-skip`
+   before first paint, so the overlay is hidden immediately and the
+   React effect then unmounts it — no flash, no hydration mismatch.
+   ============================================================ */
+html.preloader-skip #site-preloader {
+  display: none !important;
+}

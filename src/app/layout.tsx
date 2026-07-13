@@ -12,6 +12,7 @@ import { CartProvider } from "@/lib/cart/cart-context";
 import { CheckoutProvider } from "@/lib/checkout/checkout-context";
 import { WishlistProvider } from "@/lib/wishlist/wishlist-context";
 import { HomeResetProvider, HomeResetBoundary } from "@/components/layout/home-reset";
+import { Preloader } from "@/components/Preloader";
 import { Toaster } from "@/components/ui/sonner";
 
 // Display / headings
@@ -72,12 +73,14 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${bricolage.variable} ${inter.variable} ${poppins.variable} ${fraunces.variable} ${hanken.variable} h-full antialiased`}
     >
       <body
         suppressHydrationWarning
         className="flex min-h-full flex-col overflow-x-clip bg-paper pb-[calc(3.5rem+env(safe-area-inset-bottom))] font-sans text-foreground md:pb-0"
       >
+        <Preloader />
         <SiteBackground />
         <CartProvider>
           <CheckoutProvider>
