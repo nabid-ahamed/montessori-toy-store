@@ -1,5 +1,13 @@
 import type { BlogBlock } from "@/lib/types";
 
+/** Stable anchor id for a section heading (used by the table of contents). */
+export const headingId = (text: string): string =>
+  text
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-");
+
 /** Render a post body (typed blocks) as readable prose. No markdown library. */
 export function BlogBody({ blocks }: { blocks: BlogBlock[] }) {
   return (
@@ -9,7 +17,8 @@ export function BlogBody({ blocks }: { blocks: BlogBlock[] }) {
           return (
             <h2
               key={i}
-              className="font-display text-xl font-bold tracking-tight text-ink sm:text-2xl"
+              id={headingId(block.text)}
+              className="scroll-mt-32 font-display text-xl font-bold tracking-tight text-ink sm:text-2xl"
             >
               {block.text}
             </h2>

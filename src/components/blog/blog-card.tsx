@@ -1,35 +1,61 @@
 import Link from "next/link";
-import { PlaceholderImage } from "@/components/placeholder-image";
+import { ArrowRight } from "lucide-react";
+import { PostCover } from "@/components/blog/journal/cover-art";
 import { categoryName } from "@/lib/mock/blog";
 import { formatDate } from "@/lib/format";
 import type { BlogPost } from "@/lib/types";
 
-/** Post card used by both the hub grid and the related-posts section. */
+/**
+ * Post card for the blog grid and related-posts sections: 16:9 cover (real
+ * photo when the post has one), category badge, clamped title + excerpt,
+ * author / date / read-time meta and a "Read more" link. Lifts subtly on hover.
+ */
 export function BlogCard({ post }: { post: BlogPost }) {
+  const href = `/blog/${post.slug}`;
+
   return (
-    <article className="group flex flex-col overflow-hidden rounded-2xl border border-cream-300 bg-card transition-shadow hover:shadow-md">
-      <Link href={`/blog/${post.slug}`} className="block">
-        <PlaceholderImage
-          tone={post.coverTone}
-          label={post.coverLabel}
-          className="aspect-[16/9] w-full"
-        />
-      </Link>
-      <div className="flex flex-1 flex-col p-5">
-        <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-neem-deep">
+    <article className="group flex flex-col overflow-hidden rounded-2xl border border-cream-300 bg-card transition-all duration-300 hover:-translate-y-1 hover:border-neem-soft hover:shadow-lg hover:shadow-neem/10 motion-reduce:transition-none motion-reduce:hover:translate-y-0">
+      <Link href={href} className="relative block aspect-[16/9] overflow-hidden bg-frame">
+        <div className="absolute inset-0 transition-transform duration-500 ease-out group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100">
+          <PostCover
+            post={post}
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          />
+        </div>
+        <span className="absolute left-3 top-3 rounded-full bg-paper/90 px-3 py-1 text-[11px] font-semibold text-neem-deep backdrop-blur-sm">
           {categoryName(post.category)}
         </span>
-        <h3 className="mt-2 font-display text-lg font-bold leading-snug text-ink">
-          <Link href={`/blog/${post.slug}`} className="hover:text-neem-deep">
+      </Link>
+
+      <div className="flex flex-1 flex-col p-5">
+        <h3 className="font-display text-lg font-bold leading-snug text-ink">
+          <Link
+            href={href}
+            className="line-clamp-2 transition-colors hover:text-neem-deep"
+          >
             {post.title}
           </Link>
         </h3>
-        <p className="mt-2 line-clamp-2 text-sm text-ink-muted">
+        <p className="mt-2 line-clamp-2 text-sm leading-6 text-ink-muted">
           {post.excerpt}
         </p>
-        <p className="mt-4 text-xs text-ink-soft">
-          {formatDate(post.dateISO)} · {post.readMins} min read
-        </p>
+
+        <div className="mt-auto pt-4">
+          <p className="text-xs text-ink-soft">
+            <span className="font-medium text-ink-muted">{post.author}</span>
+            {" · "}
+            {formatDate(post.dateISO)}
+            {" · "}
+            {post.readMins} min read
+          </p>
+          <Link
+            href={href}
+            className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-neem-deep"
+          >
+            Read more
+            <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-1 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" />
+          </Link>
+        </div>
       </div>
     </article>
   );

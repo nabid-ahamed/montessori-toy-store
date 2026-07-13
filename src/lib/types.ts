@@ -241,6 +241,8 @@ export type BlogPost = {
   category: string; // BlogCategory.slug
   dateISO: string; // "2026-05-12"
   readMins: number;
+  /** Byline shown on cards and the article header. */
+  author: string;
   coverTone: Tone; // PlaceholderImage tone
   coverLabel: string; // PlaceholderImage label
   body: BlogBlock[];

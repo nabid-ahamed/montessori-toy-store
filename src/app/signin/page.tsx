@@ -3,7 +3,18 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowRight, Eye, EyeOff, Lock, UserPlus, X } from "lucide-react";
+import {
+  ArrowRight,
+  Check,
+  Eye,
+  EyeOff,
+  Loader2,
+  Lock,
+  RefreshCw,
+  ShieldCheck,
+  UserPlus,
+  X,
+} from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { toast } from "sonner";
 import { BRAND_NAME } from "@/lib/config";
@@ -53,6 +64,11 @@ export default function SignInPage() {
   const [showSignUp, setShowSignUp] = useState(false);
   const [acceptedSignUpTerms, setAcceptedSignUpTerms] = useState(false);
 
+  // Human-verification (CAPTCHA) step — UI only, shown after "Create account".
+  const [showVerify, setShowVerify] = useState(false);
+  const [captchaChecked, setCaptchaChecked] = useState(false);
+  const [captchaVerifying, setCaptchaVerifying] = useState(false);
+
   // Step 1 → open the password popup once an identifier is entered.
   const handleIdentifierSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -74,6 +90,41 @@ export default function SignInPage() {
     setAcceptedSignUpTerms(false);
   };
 
+  const closeVerify = () => {
+    setShowVerify(false);
+    setCaptchaChecked(false);
+    setCaptchaVerifying(false);
+  };
+
+  // Sign-up submit → don't create the account yet; open the verification modal.
+  const handleCreateAccount = () => {
+    if (!acceptedSignUpTerms) {
+      toast.error("Please accept the Terms and Conditions to continue.");
+      return;
+    }
+    setShowVerify(true);
+  };
+
+  // Placeholder reCAPTCHA: simulate the "checking…" spinner, then mark it done.
+  const runCaptcha = () => {
+    if (captchaChecked || captchaVerifying) return;
+    setCaptchaVerifying(true);
+    window.setTimeout(() => {
+      setCaptchaVerifying(false);
+      setCaptchaChecked(true);
+    }, 800);
+  };
+
+  // Verify → UI-only "account created" success. No backend / real CAPTCHA.
+  const handleVerify = () => {
+    if (!captchaChecked) return;
+    closeVerify();
+    closeSignUpModal();
+    toast.success("Account created", {
+      description: "Verification successful — welcome aboard!",
+    });
+  };
+
   // Step 2 → placeholder auth. Real authentication is not wired up yet, so we
   // simulate a round-trip for the loading state, then bounce the user home.
   const handlePasswordSubmit = (event: React.FormEvent) => {
@@ -93,15 +144,20 @@ export default function SignInPage() {
 
   // Close the popup on Escape.
   useEffect(() => {
-    if (!showPassword && !showSignUp) return;
+    if (!showPassword && !showSignUp && !showVerify) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== "Escape") return;
+      // Close the topmost layer first (verify sits above the sign-up modal).
+      if (showVerify) {
+        closeVerify();
+        return;
+      }
       if (showSignUp) closeSignUpModal();
       if (showPassword) closePasswordPopup();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [showPassword, showSignUp]);
+  }, [showPassword, showSignUp, showVerify]);
 
   return (
     <main className="flex min-h-screen flex-col bg-paper px-4">
@@ -178,9 +234,9 @@ export default function SignInPage() {
                 type="submit"
                 disabled={loading}
                 aria-label="Continue"
-                className="m-1.5 flex w-10 items-center justify-center rounded-md bg-neem text-paper transition hover:bg-neem-deep disabled:opacity-60"
+                className="group/arrow m-1.5 flex w-10 items-center justify-center rounded-md bg-neem text-paper transition-all duration-200 ease-out hover:scale-[1.04] hover:bg-neem-deep active:scale-[0.97] disabled:pointer-events-none disabled:opacity-60"
               >
-                <ArrowRight className="size-5" />
+                <ArrowRight className="size-5 transition-transform duration-200 ease-out group-hover/arrow:translate-x-1" />
               </button>
             </div>
 
@@ -366,7 +422,7 @@ export default function SignInPage() {
                 noValidate
                 onSubmit={(event) => {
                   event.preventDefault();
-                  toast.info("Account creation is UI-only for now.");
+                  handleCreateAccount();
                 }}
                 className="space-y-3.5"
               >
@@ -441,7 +497,7 @@ export default function SignInPage() {
               <button
                 type="button"
                 disabled={!acceptedSignUpTerms}
-                onClick={() => toast.info("Account creation is UI-only for now.")}
+                onClick={handleCreateAccount}
                 className="mt-4 flex h-12 w-full items-center justify-center rounded-lg bg-neem text-base font-semibold text-paper transition hover:bg-neem-deep disabled:pointer-events-none disabled:opacity-50"
               >
                 Create account
@@ -457,6 +513,100 @@ export default function SignInPage() {
                   Sign in
                 </button>
               </p>
+            </motion.div>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
+
+      {/* human verification (CAPTCHA) modal — UI only, no real reCAPTCHA */}
+      <AnimatePresence>
+        {showVerify ? (
+          <motion.div
+            key="verify-backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={closeVerify}
+            className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 px-4 backdrop-blur-sm"
+          >
+            <motion.div
+              role="dialog"
+              aria-modal="true"
+              aria-label="Verify you're human"
+              onClick={(e) => e.stopPropagation()}
+              initial={{ opacity: 0, scale: 0.94, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.96, y: 8 }}
+              transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
+              className="relative w-full max-w-sm rounded-2xl border border-cream-300 bg-paper p-6 text-center shadow-[0_30px_80px_-30px_rgba(15,23,42,0.28)] sm:p-7"
+            >
+              <button
+                type="button"
+                onClick={closeVerify}
+                aria-label="Close"
+                className="absolute right-4 top-4 flex size-9 items-center justify-center rounded-full text-ink-soft transition-colors hover:bg-cream-100 hover:text-ink"
+              >
+                <X className="size-5" />
+              </button>
+
+              <span className="mx-auto flex size-12 items-center justify-center rounded-full bg-neem/10 text-neem-deep">
+                <ShieldCheck className="size-6" />
+              </span>
+              <h2 className="mt-4 font-display text-xl font-bold text-ink">
+                Verify you&apos;re human
+              </h2>
+              <p className="mx-auto mt-1.5 max-w-xs text-sm leading-6 text-ink-muted">
+                Complete the check below to confirm you&apos;re not a robot before we
+                create your account.
+              </p>
+
+              {/* Google reCAPTCHA-style placeholder (non-functional) */}
+              <div className="mt-5 flex justify-center">
+                <div className="flex w-full max-w-[304px] items-center gap-3 rounded-[3px] border border-[#d3d3d3] bg-[#f9f9f9] px-3 py-3 shadow-sm">
+                  <button
+                    type="button"
+                    role="checkbox"
+                    aria-checked={captchaChecked}
+                    aria-label="I'm not a robot"
+                    onClick={runCaptcha}
+                    className="flex size-7 flex-none items-center justify-center rounded-[2px] border-2 border-[#c1c1c1] bg-white"
+                  >
+                    {captchaVerifying ? (
+                      <Loader2 className="size-5 animate-spin text-[#4285F4]" />
+                    ) : captchaChecked ? (
+                      <Check className="size-6 text-[#1e9e50]" strokeWidth={3} />
+                    ) : null}
+                  </button>
+                  <span className="text-[15px] leading-none text-[#3c4043]">
+                    I&apos;m not a robot
+                  </span>
+                  <div className="ml-auto flex flex-col items-center gap-0.5 text-[#9aa0a6]">
+                    <RefreshCw className="size-7 text-[#1c3aa9]" strokeWidth={2.2} />
+                    <span className="text-[10px] font-medium leading-none text-[#5f6368]">
+                      reCAPTCHA
+                    </span>
+                    <span className="text-[8px] leading-none">Privacy · Terms</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-6 flex gap-3">
+                <button
+                  type="button"
+                  onClick={closeVerify}
+                  className="flex h-11 flex-1 items-center justify-center rounded-lg border border-cream-300 bg-paper text-sm font-semibold text-ink transition hover:bg-cream-100"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  disabled={!captchaChecked}
+                  onClick={handleVerify}
+                  className="flex h-11 flex-1 items-center justify-center rounded-lg bg-neem text-sm font-semibold text-paper transition hover:bg-neem-deep disabled:pointer-events-none disabled:opacity-50"
+                >
+                  Verify
+                </button>
+              </div>
             </motion.div>
           </motion.div>
         ) : null}
