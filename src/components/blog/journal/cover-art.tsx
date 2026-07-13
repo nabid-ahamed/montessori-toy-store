@@ -61,15 +61,22 @@ export function CoverArt({
  * Post cover: renders a real `next/image` when the post has `coverImage`,
  * otherwise the illustrated `CoverArt` fallback. Structured so a CMS can drop
  * in a photo per post with no card changes.
+ *
+ * `next/image` handles the heavy lifting: responsive `srcset` from `sizes`,
+ * AVIF/WebP negotiation, and lazy loading by default. Pass `priority` only for
+ * an above-the-fold cover (e.g. the blog's featured story) to load it eagerly;
+ * every other cover stays lazy.
  */
 export function PostCover({
   post,
   sizes,
   className,
+  priority = false,
 }: {
   post: BlogPost;
   sizes?: string;
   className?: string;
+  priority?: boolean;
 }) {
   if (post.coverImage) {
     return (
@@ -78,6 +85,7 @@ export function PostCover({
         alt=""
         fill
         sizes={sizes}
+        priority={priority}
         className={cn("object-cover", className)}
       />
     );

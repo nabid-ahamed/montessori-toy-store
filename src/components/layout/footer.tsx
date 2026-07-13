@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Globe, Send } from "lucide-react";
+import { FooterLink } from "@/components/layout/footer-link";
 import {
   footerShop,
   footerCustomerCare,
@@ -171,9 +172,9 @@ function FooterColumn({ title, links }: { title: string; links: NavLink[] }) {
       <ul className="mt-4 space-y-2.5 text-sm">
         {links.map((l) => (
           <li key={l.labelBn}>
-            <Link href={l.href} className="text-ink-muted hover:text-ink">
+            <FooterLink href={l.href} className="text-ink-muted hover:text-ink">
               {l.labelBn}
-            </Link>
+            </FooterLink>
           </li>
         ))}
       </ul>
@@ -191,12 +192,12 @@ export function Footer() {
         <div className="grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-3 lg:grid-cols-12">
           {/* Brand block — logo, description, newsletter, follow us */}
           <div className="col-span-2 sm:col-span-3 lg:col-span-4">
-            <Link
+            <FooterLink
               href="/"
               className="font-[family-name:var(--font-poppins)] text-2xl font-bold tracking-tight text-ink"
             >
               {BRAND_NAME}
-            </Link>
+            </FooterLink>
             <p className="mt-3 max-w-sm text-sm text-ink-muted">
               {BRAND_DESCRIPTION}
             </p>
@@ -278,16 +279,16 @@ export function Footer() {
               © 2026 All Rights Reserved. {BRAND_NAME}
             </p>
             <nav aria-label="Legal" className="flex items-center gap-3">
-              <Link href="/policy/terms" className="text-ink-muted hover:text-ink">
+              <FooterLink href="/policy/terms" className="text-ink-muted hover:text-ink">
                 Terms &amp; Conditions
-              </Link>
+              </FooterLink>
               <span aria-hidden className="h-4 w-px bg-ink/15" />
-              <Link
+              <FooterLink
                 href="/policy/privacy"
                 className="text-ink-muted hover:text-ink"
               >
                 Privacy policy
-              </Link>
+              </FooterLink>
             </nav>
           </div>
         </div>

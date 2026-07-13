@@ -32,7 +32,11 @@ export function FeaturedSection({
             className="relative block aspect-[16/9] overflow-hidden bg-frame"
           >
             <div className="absolute inset-0 transition-transform duration-500 ease-out group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100">
-              <PostCover post={featured} sizes="(max-width: 1024px) 100vw, 60vw" />
+              <PostCover
+                post={featured}
+                sizes="(max-width: 1024px) 100vw, 60vw"
+                priority
+              />
             </div>
             <span className="absolute left-4 top-4 rounded-full bg-paper/90 px-3 py-1 text-[11px] font-semibold text-neem-deep backdrop-blur-sm">
               {categoryName(featured.category)}

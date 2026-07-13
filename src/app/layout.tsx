@@ -11,6 +11,7 @@ import { DeferredIslands } from "@/components/layout/deferred-islands";
 import { CartProvider } from "@/lib/cart/cart-context";
 import { CheckoutProvider } from "@/lib/checkout/checkout-context";
 import { WishlistProvider } from "@/lib/wishlist/wishlist-context";
+import { HomeResetProvider, HomeResetBoundary } from "@/components/layout/home-reset";
 import { Toaster } from "@/components/ui/sonner";
 
 // Display / headings
@@ -81,15 +82,19 @@ export default function RootLayout({
         <CartProvider>
           <CheckoutProvider>
             <WishlistProvider>
-              <Header />
-              <div className="flex flex-1 flex-col">{children}</div>
-              <FooterGate>
-                <Footer />
-              </FooterGate>
-              <MobileBottomBar />
-              <WhatsAppButton />
-              <DeferredIslands />
-              <Toaster />
+              <HomeResetProvider>
+                <Header />
+                <div className="flex flex-1 flex-col">
+                  <HomeResetBoundary>{children}</HomeResetBoundary>
+                </div>
+                <FooterGate>
+                  <Footer />
+                </FooterGate>
+                <MobileBottomBar />
+                <WhatsAppButton />
+                <DeferredIslands />
+                <Toaster />
+              </HomeResetProvider>
             </WishlistProvider>
           </CheckoutProvider>
         </CartProvider>

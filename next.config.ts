@@ -13,6 +13,12 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ["lucide-react", "radix-ui"],
   },
+  // Serve modern formats from the built-in image optimizer: AVIF first (best
+  // compression), then WebP, falling back to the source for older browsers.
+  // Purely smaller bytes on the wire — no visual/layout change.
+  images: {
+    formats: ["image/avif", "image/webp"],
+  },
 };
 
 export default nextConfig;

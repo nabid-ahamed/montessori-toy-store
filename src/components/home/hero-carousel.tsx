@@ -105,7 +105,7 @@ export function HeroCarousel() {
           "Shop Now" is the primary CTA (points at the current slide's target);
           "Explore by Age" is the secondary CTA (frosted outline) that smoothly
           scrolls to the Shop by Age section. On narrow screens the pair stacks. */}
-      <div className="pointer-events-none absolute inset-0 z-10 flex items-end justify-end pb-14 pr-6 sm:pb-16 sm:pr-16 lg:pr-24">
+      <div className="pointer-events-none absolute inset-0 z-10 flex items-end justify-end pb-7 pr-6 sm:pb-10 sm:pr-10 lg:pr-16">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -124,7 +124,7 @@ export function HeroCarousel() {
             <div className="absolute inset-x-3 -bottom-2 h-3 rounded-full bg-ink/15 blur-xl" />
             <Link
               href="/collections/by-age"
-              className="group relative inline-flex w-60 items-center justify-center overflow-hidden whitespace-nowrap rounded-full border border-white/60 bg-paper/80 px-7 py-3.5 text-xs font-semibold uppercase tracking-[0.1em] text-neem-deep shadow-[0_10px_28px_rgba(31,41,20,0.14)] backdrop-blur-md transition-colors duration-300 ease-out hover:border-neem hover:bg-paper sm:w-64 sm:px-8 sm:py-4 sm:text-sm"
+              className="group relative inline-flex w-40 items-center justify-center overflow-hidden whitespace-nowrap rounded-full border border-white/60 bg-paper/80 px-4 py-3 text-xs font-semibold uppercase tracking-[0.1em] text-neem-deep shadow-[0_10px_28px_rgba(31,41,20,0.14)] backdrop-blur-md transition-colors duration-300 ease-out hover:border-neem hover:bg-paper sm:w-64 sm:px-8 sm:py-4 sm:text-sm"
             >
               <motion.span
                 className="absolute inset-y-0 -left-1/3 w-1/3 -skew-x-12 bg-[linear-gradient(110deg,transparent_0%,rgba(255,255,255,0.85)_50%,transparent_100%)] blur-[2px]"
@@ -153,7 +153,7 @@ export function HeroCarousel() {
             <div className="absolute inset-x-3 -bottom-2 h-3 rounded-full bg-neem/25 blur-xl" />
             <Link
               href={heroSlides[selected]?.href ?? "/collections/all"}
-              className="group relative inline-flex w-60 items-center justify-center overflow-hidden whitespace-nowrap rounded-full border border-white/20 bg-[linear-gradient(135deg,#8fb466_0%,#5f7e3d_100%)] px-7 py-3.5 text-xs font-semibold uppercase tracking-[0.1em] text-paper shadow-[0_14px_34px_rgba(83,117,57,0.24)] transition-all duration-300 ease-out hover:bg-[linear-gradient(135deg,#9cc56f_0%,#6d8f45_100%)] sm:w-64 sm:px-8 sm:py-4 sm:text-sm"
+              className="group relative inline-flex w-40 items-center justify-center overflow-hidden whitespace-nowrap rounded-full border border-white/20 bg-[linear-gradient(135deg,#8fb466_0%,#5f7e3d_100%)] px-4 py-3 text-xs font-semibold uppercase tracking-[0.1em] text-paper shadow-[0_14px_34px_rgba(83,117,57,0.24)] transition-all duration-300 ease-out hover:bg-[linear-gradient(135deg,#9cc56f_0%,#6d8f45_100%)] sm:w-64 sm:px-8 sm:py-4 sm:text-sm"
             >
               <motion.span
                 className="absolute inset-0 rounded-full bg-[linear-gradient(110deg,transparent_0%,rgba(255,255,255,0.35)_45%,transparent_100%)]"

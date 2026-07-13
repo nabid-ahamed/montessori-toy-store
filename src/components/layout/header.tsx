@@ -40,6 +40,7 @@ import { BRAND_NAME } from "@/lib/config";
 import { isBareRoute } from "@/lib/routes";
 import { CartBadge } from "@/components/cart/cart-badge";
 import { WishlistBadge } from "@/components/product/wishlist-badge";
+import { useHomeReset } from "@/components/layout/home-reset";
 import { cn } from "@/lib/utils";
 
 // Shared style for every top-level drawer item (accordion triggers + direct
@@ -439,7 +440,15 @@ export function Header() {
   // Active nav item is derived from the current route, so it always tracks the
   // page you're on (logo → Home included) and is never stuck on a past item.
   const pathname = usePathname();
+  const { triggerHomeReset } = useHomeReset();
   const close = () => setOpen(false);
+
+  // Brand logo: always go Home. If already on Home, scroll to top (via navClick)
+  // AND reset every section to its defaults by remounting the page content.
+  const onBrandClick = (e: ReactMouseEvent<HTMLElement>) => {
+    navClick(e, "/", pathname, close);
+    if (pathname === "/") triggerHomeReset();
+  };
 
   // Collapsed-state search affordance: the centre search bar is hidden once the
   // header condenses, so the search icon scrolls back to the top (which expands
@@ -506,7 +515,7 @@ export function Header() {
         <div className="flex items-center">
           <Link
             href="/"
-            onClick={(e) => navClick(e, "/", pathname, close)}
+            onClick={onBrandClick}
             className="font-display text-2xl font-bold tracking-tight text-ink sm:text-3xl"
           >
             {BRAND_NAME}
