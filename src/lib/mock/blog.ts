@@ -89,6 +89,7 @@ export const blogPosts: BlogPost[] = [
     readMins: 8,
     coverTone: "mustard",
     coverLabel: "First Year",
+    coverImage: "/images/blog/montessori-first-year-cover-20260713.png",
     author: "Farhan Ahmed",
     body: [
       {
@@ -150,6 +151,7 @@ export const blogPosts: BlogPost[] = [
     readMins: 7,
     coverTone: "dusty-blue",
     coverLabel: "By Age",
+    coverImage: "/images/blog/choosing-toys-by-age-cover-20260713.png",
     author: "Tasnim Akter",
     body: [
       {
@@ -211,6 +213,7 @@ export const blogPosts: BlogPost[] = [
     readMins: 6,
     coverTone: "terracotta",
     coverLabel: "Open Play",
+    coverImage: "/images/blog/open-ended-play-cover-20260713.png",
     author: "Nabila Chowdhury",
     body: [
       {
@@ -265,6 +268,7 @@ export const blogPosts: BlogPost[] = [
     readMins: 7,
     coverTone: "neem",
     coverLabel: "Non-Toxic",
+    coverImage: "/images/blog/non-toxic-toys-cover-20260713.png",
     author: "Rafiul Hasan",
     body: [
       {
@@ -320,6 +324,7 @@ export const blogPosts: BlogPost[] = [
     readMins: 8,
     coverTone: "blush",
     coverLabel: "Screen-Free",
+    coverImage: "/images/blog/screen-free-play-ideas-cover-20260713.png",
     author: "Tasnim Akter",
     body: [
       {
@@ -375,6 +380,7 @@ export const blogPosts: BlogPost[] = [
     readMins: 7,
     coverTone: "wood",
     coverLabel: "Play Corner",
+    coverImage: "/images/blog/montessori-play-corner-cover-v2.png",
     author: "Farhan Ahmed",
     body: [
       {
