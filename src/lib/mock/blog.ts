@@ -20,7 +20,7 @@ export const blogPosts: BlogPost[] = [
     readMins: 7,
     coverTone: "neem-soft",
     coverLabel: "Neem Wood",
-    coverImage: "/images/blog/neem-wood-safe-for-teething.jpg",
+    coverImage: "/images/blog/neem-wood-safe-for-teething.png",
     author: "Nabila Chowdhury",
     featured: true,
     body: [
