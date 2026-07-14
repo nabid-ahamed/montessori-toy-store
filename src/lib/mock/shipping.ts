@@ -135,7 +135,7 @@ export const shippingSections: ShippingSection[] = [
 
 /** Placeholder help contact used by the FAQ chips and the closing CTA. */
 export const shippingHelp = {
-  email: "hello@databrandix.com",
+  email: "hello@toytuni.com",
   whatsapp: "+880 1234-567890",
   whatsappHref: "https://wa.me/8801234567890",
 };

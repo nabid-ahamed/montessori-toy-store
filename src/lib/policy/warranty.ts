@@ -108,6 +108,6 @@ export const warrantyPolicy: PolicyContent = {
     title: "Need to make a claim?",
     text: "Our team will help you sort out any warranty issue quickly.",
     primary: { label: "Contact us", href: "/contact" },
-    secondary: { label: "Email support", href: "mailto:hello@databrandix.com" },
+    secondary: { label: "Email support", href: "mailto:hello@toytuni.com" },
   },
 };

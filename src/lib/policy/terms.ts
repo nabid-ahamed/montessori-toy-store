@@ -133,6 +133,6 @@ export const termsPolicy: PolicyContent = {
     title: "Need a clarification?",
     text: "If anything here is unclear, our team is glad to help.",
     primary: { label: "Contact us", href: "/contact" },
-    secondary: { label: "Email support", href: "mailto:hello@databrandix.com" },
+    secondary: { label: "Email support", href: "mailto:hello@toytuni.com" },
   },
 };

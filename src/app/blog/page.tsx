@@ -3,6 +3,7 @@ import { BlogView } from "@/components/blog/blog-view";
 
 export const metadata: Metadata = {
   title: "Blog — Parenting & Learning",
+  alternates: { canonical: "/blog" },
   description:
     "Play ideas, safety notes and Montessori know-how for raising curious, screen-free little ones.",
 };

@@ -3,7 +3,8 @@ import { Button } from "@/components/ui/button";
 import { BRAND_NAME } from "@/lib/config";
 
 export const metadata: Metadata = {
-  title: `Style Guide — ${BRAND_NAME}`,
+  title: "Style Guide",
+  robots: { index: false, follow: false },
 };
 
 type Swatch = {

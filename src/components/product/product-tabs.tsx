@@ -84,6 +84,9 @@ export function ProductTabs({ detail }: { detail: ProductDetail }) {
       defaultValue="description"
       className={cn("mx-auto gap-6", showVideo ? "max-w-5xl" : "max-w-3xl")}
     >
+      {/* Section-level h2 so the tab-panel h3s (Features, Benefits, …) don't skip
+          a level under the product title h1. Visually hidden — layout unchanged. */}
+      <h2 className="sr-only">Product details</h2>
       <TabsList className="flex h-auto w-full flex-wrap justify-center gap-2 bg-transparent p-0 group-data-horizontal/tabs:h-auto">
         <TabsTrigger value="description" className={pillClass}>
           Description

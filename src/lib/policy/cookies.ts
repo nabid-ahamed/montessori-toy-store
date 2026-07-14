@@ -90,6 +90,6 @@ export const cookiesPolicy: PolicyContent = {
     title: "Questions about cookies?",
     text: "We're happy to explain how cookies keep the store running.",
     primary: { label: "Contact us", href: "/contact" },
-    secondary: { label: "Email support", href: "mailto:hello@databrandix.com" },
+    secondary: { label: "Email support", href: "mailto:hello@toytuni.com" },
   },
 };

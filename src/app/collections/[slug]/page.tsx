@@ -11,7 +11,6 @@ import { BestSellersView } from "@/components/collection/best-sellers/best-selle
 import { NeemWoodView } from "@/components/collection/neem-wood-view";
 import { ageTierBySlug } from "@/lib/mock/age-tiers";
 import { categoryBySlug } from "@/lib/mock/categories";
-import { BRAND_NAME } from "@/lib/config";
 
 export async function generateMetadata({
   params,
@@ -19,43 +18,50 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
+  const alternates = { canonical: `/collections/${slug}` };
   if (slug === "all") {
     return {
-      title: `All Products — ${BRAND_NAME}`,
+      title: "All Products",
+      alternates,
       description: "Browse every handmade, non-toxic wooden toy in our store.",
     };
   }
   if (slug === "by-age") {
     return {
-      title: `Shop by Age — ${BRAND_NAME}`,
+      title: "Shop by Age",
+      alternates,
       description:
         "Browse handmade, non-toxic wooden Montessori toys by your child's age and developmental stage.",
     };
   }
   if (slug === "by-category") {
     return {
-      title: `Shop by Category — ${BRAND_NAME}`,
+      title: "Shop by Category",
+      alternates,
       description:
         "Browse handmade, non-toxic wooden Montessori toys by play type — teethers, stackers, blocks, ride-ons and more.",
     };
   }
   if (slug === "new-arrivals") {
     return {
-      title: `New Arrivals — ${BRAND_NAME}`,
+      title: "New Arrivals",
+      alternates,
       description:
         "The latest handmade, non-toxic wooden Montessori toys — freshly added to the store.",
     };
   }
   if (slug === "best-sellers") {
     return {
-      title: `Best Sellers — ${BRAND_NAME}`,
+      title: "Best Sellers",
+      alternates,
       description:
         "Our most-loved Montessori toys, chosen by thousands of families to inspire learning through play.",
     };
   }
   if (slug === "neem-wood") {
     return {
-      title: `Neem Wood Collection — ${BRAND_NAME}`,
+      title: "Neem Wood Collection",
+      alternates,
       description:
         "Toys carved from naturally durable, antibacterial neem wood — safe for little hands and gentle on the planet.",
     };
@@ -63,7 +69,8 @@ export async function generateMetadata({
   const tier = ageTierBySlug(slug);
   if (tier) {
     return {
-      title: `${tier.labelBn} — ${BRAND_NAME}`,
+      title: tier.labelBn,
+      alternates,
       description: `Handmade, non-toxic wooden toys for ${tier.labelBn}. ${
         tier.taglineBn ?? ""
       }`.trim(),
@@ -72,13 +79,14 @@ export async function generateMetadata({
   const category = categoryBySlug(slug);
   if (category) {
     return {
-      title: `${category.nameBn} — ${BRAND_NAME}`,
+      title: category.nameBn,
+      alternates,
       description: `Handmade, non-toxic ${category.nameBn} toys. ${
         category.taglineBn ?? ""
       }`.trim(),
     };
   }
-  return { title: `Collection: ${slug} — ${BRAND_NAME}` };
+  return { title: `Collection: ${slug}` };
 }
 
 export default async function Page({

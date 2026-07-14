@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Bricolage_Grotesque, Inter } from "next/font/google";
 import "./globals.css";
+import { BRAND_NAME, SITE_URL } from "@/lib/config";
+import { SiteJsonLd } from "@/components/seo/site-json-ld";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { FooterGate } from "@/components/layout/footer-gate";
@@ -29,13 +31,35 @@ const inter = Inter({
   display: "swap",
 });
 
+const SITE_DESCRIPTION =
+  "Bangladesh-made, neem-wood, non-toxic, handmade Montessori toys for children ages 0–3.";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: "Montessori Wooden Toys",
-    template: "%s | Montessori Wooden Toys",
+    // Pages export SHORT titles (e.g. "Checkout"); the template adds the brand
+    // once. The default is used for pages that set no title of their own.
+    default: `${BRAND_NAME} — Montessori Wooden Toys for Ages 0–3`,
+    template: `%s | ${BRAND_NAME}`,
   },
-  description:
-    "Bangladesh-made, neem-wood, non-toxic, handmade children's toys for ages 0–3.",
+  description: SITE_DESCRIPTION,
+  applicationName: BRAND_NAME,
+  openGraph: {
+    type: "website",
+    siteName: BRAND_NAME,
+    title: `${BRAND_NAME} — Montessori Wooden Toys`,
+    description: SITE_DESCRIPTION,
+    images: [
+      { url: "/og-default.png", width: 1200, height: 630, alt: `${BRAND_NAME} — handmade neem-wood Montessori toys` },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${BRAND_NAME} — Montessori Wooden Toys`,
+    description: SITE_DESCRIPTION,
+    images: ["/og-default.png"],
+  },
+  robots: { index: true, follow: true },
 };
 
 export default function RootLayout({
@@ -53,6 +77,7 @@ export default function RootLayout({
         suppressHydrationWarning
         className="flex min-h-full flex-col overflow-x-clip bg-paper pb-[calc(3.5rem+env(safe-area-inset-bottom))] font-sans text-foreground md:pb-0"
       >
+        <SiteJsonLd />
         <Preloader />
         <SiteBackground />
         <CartProvider>

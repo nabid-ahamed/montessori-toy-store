@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { HeroCarousel } from "@/components/home/hero-carousel";
 import { TrustStrip } from "@/components/home/trust-strip";
 import { FeaturedProductHero } from "@/components/home/featured-product-hero";
@@ -7,9 +8,24 @@ import { Testimonials } from "@/components/home/testimonials";
 import { RecentlyViewed } from "@/components/product/recently-viewed";
 import { AboutTeaser } from "@/components/home/about-teaser";
 
+export const metadata: Metadata = {
+  // Absolute title: the home page carries the full brand line itself rather than
+  // the "%s | Toytuni" template.
+  title: {
+    absolute: "Toytuni — Handmade Neem-Wood Montessori Toys | Ages 0–3",
+  },
+  alternates: { canonical: "/" },
+};
+
 export default function Home() {
   return (
     <>
+      {/* Page-level h1 for SEO/accessibility. The hero is image-led (its copy is
+          baked into the banners), so the h1 is visually hidden but present in the
+          document outline. */}
+      <h1 className="sr-only">
+        Toytuni — Handmade Neem-Wood Montessori Toys for Ages 0–3
+      </h1>
       {/* hero (full-bleed) */}
       <HeroCarousel />
 

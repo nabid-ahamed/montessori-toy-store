@@ -116,6 +116,6 @@ export const bulkSteps: BulkStep[] = [
 /** Placeholder bulk-desk contact shown beside the inquiry form. */
 export const bulkContact = {
   phone: "+880 1234-567890",
-  email: "wholesale@databrandix.com",
+  email: "wholesale@toytuni.com",
   hoursBn: "Sat – Thu, 10 AM – 6 PM",
 };

@@ -23,7 +23,7 @@ export const contactInfo: ContactDetail[] = [
     id: "email",
     icon: "mail",
     label: "Email",
-    lines: ["hello@databrandix.com", "support@databrandix.com"],
+    lines: ["hello@toytuni.com", "support@toytuni.com"],
   },
   {
     id: "hours",
@@ -56,6 +56,6 @@ export const contactTrust: ContactFeature[] = [
     id: "loved",
     icon: "heart",
     label: "Loved by Parents",
-    desc: "Join 300,000+ families who trust Databrandix.",
+    desc: "Join 300,000+ families who trust Toytuni.",
   },
 ];

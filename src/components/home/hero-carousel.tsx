@@ -86,7 +86,7 @@ export function HeroCarousel() {
               >
                 <HeroImage
                   src={s.image}
-                  alt=""
+                  alt={s.titleBn}
                   priority={i === 0}
                   imageClassName="animate-kenburns"
                 />

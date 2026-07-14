@@ -141,6 +141,6 @@ export const privacyPolicy: PolicyContent = {
     title: "Questions about your privacy?",
     text: "We're happy to explain how we handle your data or help with a request.",
     primary: { label: "Contact us", href: "/contact" },
-    secondary: { label: "Email support", href: "mailto:hello@databrandix.com" },
+    secondary: { label: "Email support", href: "mailto:hello@toytuni.com" },
   },
 };

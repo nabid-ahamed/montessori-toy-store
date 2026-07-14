@@ -136,6 +136,6 @@ export const bulkOrdersPolicy: PolicyContent = {
     title: "Ready to order in bulk?",
     text: "Tell us what you need and we'll put together a wholesale quote.",
     primary: { label: "Request a quote", href: "/bulk" },
-    secondary: { label: "Email us", href: "mailto:hello@databrandix.com" },
+    secondary: { label: "Email us", href: "mailto:hello@toytuni.com" },
   },
 };

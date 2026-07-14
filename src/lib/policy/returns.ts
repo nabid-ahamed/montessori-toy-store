@@ -193,6 +193,6 @@ export const returnsPolicy: PolicyContent = {
     title: "Still have questions?",
     text: "Our support team is happy to help with returns, refunds, and exchanges.",
     primary: { label: "Contact us", href: "/contact" },
-    secondary: { label: "Email support", href: "mailto:hello@databrandix.com" },
+    secondary: { label: "Email support", href: "mailto:hello@toytuni.com" },
   },
 };

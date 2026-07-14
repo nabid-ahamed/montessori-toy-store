@@ -86,7 +86,7 @@ export function FaqView() {
                 Contact us
               </Link>
               <a
-                href="mailto:hello@databrandix.com"
+                href="mailto:hello@toytuni.com"
                 className="inline-flex h-11 items-center justify-center gap-2 rounded-md border border-cream-300 bg-paper px-6 text-sm font-bold text-ink transition-colors hover:border-neem"
               >
                 <Mail className="size-4 text-neem" aria-hidden />

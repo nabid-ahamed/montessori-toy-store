@@ -3,7 +3,9 @@ import { notFound } from "next/navigation";
 import { ProductDetailsView } from "@/components/product/product-details-view";
 import { RecentlyViewed } from "@/components/product/recently-viewed";
 import { RecentlyViewedTracker } from "@/components/product/recently-viewed-tracker";
-import { BRAND_NAME } from "@/lib/config";
+import { BRAND_NAME, SITE_URL } from "@/lib/config";
+import { JsonLd } from "@/components/seo/json-ld";
+import { productImagePath } from "@/lib/product-og";
 import { ageTierBySlug } from "@/lib/mock/age-tiers";
 import { categoryBySlug } from "@/lib/mock/categories";
 import { productBySlug, productDetailBySlug, products, relatedProducts } from "@/lib/mock/products";
@@ -25,14 +27,27 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const product = productBySlug(slug);
 
   if (!product) {
-    return {
-      title: `Product not found | ${BRAND_NAME}`,
-    };
+    return { title: "Product not found" };
   }
 
+  const description =
+    productDetailBySlug(slug)?.description ??
+    `${product.titleBn} — handmade, non-toxic neem-wood Montessori toy from ${BRAND_NAME}.`;
+  const img = productImagePath(slug);
+
   return {
-    title: `${product.titleBn} | ${BRAND_NAME}`,
-    description: productDetailBySlug(slug)?.description,
+    title: product.titleBn,
+    description,
+    alternates: { canonical: `/products/${slug}` },
+    openGraph: {
+      type: "website",
+      siteName: BRAND_NAME,
+      url: `/products/${slug}`,
+      title: product.titleBn,
+      description,
+      // Fall back to the branded default so every share has a valid image.
+      images: [{ url: img ?? "/og-default.png", alt: product.titleBn }],
+    },
   };
 }
 
@@ -54,8 +69,54 @@ export default async function Page({
     notFound();
   }
 
+  const category = categoryBySlug(product.categorySlug);
+  const img = productImagePath(product.slug);
+  const productLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.titleBn,
+    description: detail.description,
+    image: [`${SITE_URL}${img ?? "/og-default.png"}`],
+    sku: product.sku,
+    brand: { "@type": "Brand", name: BRAND_NAME },
+    offers: {
+      "@type": "Offer",
+      price: product.price,
+      priceCurrency: "BDT",
+      availability: "https://schema.org/InStock",
+      url: `${SITE_URL}/products/${product.slug}`,
+    },
+    ...(product.reviewCount > 0
+      ? {
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: product.rating,
+            reviewCount: product.reviewCount,
+          },
+        }
+      : {}),
+  };
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: `${SITE_URL}/` },
+      { "@type": "ListItem", position: 2, name: "Shop", item: `${SITE_URL}/collections/all` },
+      ...(category
+        ? [{ "@type": "ListItem", position: 3, name: category.nameBn, item: `${SITE_URL}${category.href}` }]
+        : []),
+      {
+        "@type": "ListItem",
+        position: category ? 4 : 3,
+        name: product.titleBn,
+        item: `${SITE_URL}/products/${product.slug}`,
+      },
+    ],
+  };
+
   return (
     <>
+      <JsonLd data={[productLd, breadcrumbLd]} />
       {/* record this product in the browser's recently-viewed history */}
       <RecentlyViewedTracker slug={product.slug} />
       <ProductDetailsView

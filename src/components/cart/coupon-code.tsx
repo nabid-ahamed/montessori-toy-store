@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
 type Coupon = { label: string; discount: (subtotal: number) => number };
 
 const DEMO_COUPONS: Record<string, Coupon> = {
-  DATABRANDIX: { label: "৳150 off", discount: () => 150 },
+  TOYTUNI: { label: "৳150 off", discount: () => 150 },
   WELCOME: { label: "৳100 off", discount: () => 100 },
   TOY10: { label: "10% off", discount: (s) => Math.round(s * 0.1) },
   NEEM15: { label: "15% off", discount: (s) => Math.round(s * 0.15) },

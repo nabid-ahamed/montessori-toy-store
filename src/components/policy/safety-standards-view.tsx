@@ -72,6 +72,9 @@ export function SafetyStandardsView() {
       {/* ===== hero removed — to be updated later ===== */}
       <section className="mx-auto w-full max-w-[80rem] px-4 pt-6 sm:px-6 lg:px-8">
         <Breadcrumb items={[{ label: "Home", href: "/" }, { label: "Safety Standards" }]} />
+        {/* Page h1 (the editorial hero was removed); visually hidden so the
+            layout is unchanged while the document keeps a top-level heading. */}
+        <h1 className="sr-only">Safety Standards — Non-Toxic, Child-Safe Wooden Toys</h1>
       </section>
 
       {/* ===== 2. our safety promise ===== */}
