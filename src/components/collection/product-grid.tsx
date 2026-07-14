@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ProductCard } from "@/components/product/product-card";
 import { ProductListItem } from "@/components/product/product-list-item";
 import { Button } from "@/components/ui/button";
@@ -24,6 +24,7 @@ import {
   type Filters,
   type SortKey,
 } from "@/lib/collection";
+import { getPlpState, setPlpState } from "@/lib/plp-state";
 import type { Product } from "@/lib/types";
 
 const DEFAULT_PAGE_SIZE = 24; // products shown before the first "Load more"
@@ -37,18 +38,36 @@ const DEFAULT_PAGE_SIZE = 24; // products shown before the first "Load more"
 export function ProductGrid({
   products,
   hideAgeFilter = false,
+  persistKey,
 }: {
   products: Product[];
   /** scoped pages (e.g. an age tier) hide the redundant Age facet. */
   hideAgeFilter?: boolean;
+  /**
+   * Stable id for this collection (e.g. "all", "category:blocks"). When set, the
+   * grid remembers and restores its sort/filters/view/pagination across
+   * client-side navigation. Omit to opt out of persistence.
+   */
+  persistKey?: string;
 }) {
   const priceMax = priceCeiling(products);
-  const [sort, setSort] = useState<SortKey>("featured");
-  const [filters, setFilters] = useState<Filters>(() => emptyFilters(products));
-  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
-  const [view, setView] = useState<ViewMode>("grid");
-  const [visibleCount, setVisibleCount] = useState(DEFAULT_PAGE_SIZE);
+  const saved = persistKey ? getPlpState(persistKey) : undefined;
+  const [sort, setSort] = useState<SortKey>(saved?.sort ?? "featured");
+  const [filters, setFilters] = useState<Filters>(
+    () => saved?.filters ?? emptyFilters(products),
+  );
+  const [pageSize, setPageSize] = useState(saved?.pageSize ?? DEFAULT_PAGE_SIZE);
+  const [view, setView] = useState<ViewMode>(saved?.view ?? "grid");
+  const [visibleCount, setVisibleCount] = useState(
+    saved?.visibleCount ?? DEFAULT_PAGE_SIZE,
+  );
   const [sheetOpen, setSheetOpen] = useState(false);
+
+  // Remember this collection's state so returning to it restores the view.
+  useEffect(() => {
+    if (!persistKey) return;
+    setPlpState(persistKey, { sort, filters, pageSize, view, visibleCount });
+  }, [persistKey, sort, filters, pageSize, view, visibleCount]);
 
   // Any filter change restarts pagination so the user isn't stranded mid-list.
   const updateFilters = (next: Filters) => {

@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { ProductImage } from "@/components/product/product-image";
+import { GiftCardThumb } from "@/components/cart/gift-card-thumb";
 import { products } from "@/lib/mock/products";
 import { giftKits, giftCards } from "@/lib/mock/gifts";
 import { categories } from "@/lib/mock/categories";
@@ -572,13 +573,17 @@ export function SmartSearch({
                                 )}
                               >
                                 <div className="relative size-12 flex-none overflow-hidden rounded-xl bg-frame">
-                                  <ProductImage
-                                    slug={p.slug}
-                                    imageNum={1}
-                                    label={p.imageLabelBn}
-                                    fallbackTone={p.imageTones[0]}
-                                    className="size-full"
-                                  />
+                                  {p.slug.startsWith("gift-card-") ? (
+                                    <GiftCardThumb amount={p.price} className="size-full" />
+                                  ) : (
+                                    <ProductImage
+                                      slug={p.slug}
+                                      imageNum={1}
+                                      label={p.imageLabelBn}
+                                      fallbackTone={p.imageTones[0]}
+                                      className="size-full"
+                                    />
+                                  )}
                                 </div>
                                 <div className="min-w-0 flex-1">
                                   <p className="truncate text-sm font-medium text-ink">

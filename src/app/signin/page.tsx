@@ -303,7 +303,7 @@ export default function SignInPage() {
                 Enter your password
               </h2>
               <p className="mt-1 text-sm text-ink-muted">
-                Signing in as <span className="font-semibold text-ink">{email}</span>
+                Signing in as <span className="font-semibold text-ink break-all">{email}</span>
               </p>
 
               <form onSubmit={handlePasswordSubmit} noValidate className="mt-5">

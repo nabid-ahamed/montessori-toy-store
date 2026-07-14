@@ -367,8 +367,8 @@
    THE NEEM JOURNAL — scoped blog palette + typography.
    Everything is contained under `.journal`: it re-tints the
    brand primitives (so the normal bg-paper / text-ink / text-neem
-   utilities render in the journal palette) and swaps in Fraunces
-   (display) + Hanken Grotesk (body). The rest of the store is
+   utilities render in the journal palette). Type uses the store's
+   Bricolage (display) + Inter (body). The rest of the store is
    untouched.
    ============================================================ */
 .journal {
@@ -388,14 +388,14 @@
   --honey: #b9863e;
 
   /* fonts (variables supplied by next/font on the wrapper element) */
-  font-family: var(--font-hanken), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   background-color: var(--paper);
   color: var(--ink);
 }
 
 /* headings + any opted-in element use the display serif */
 .journal .font-display {
-  font-family: var(--font-fraunces), ui-serif, Georgia, "Times New Roman", serif;
+  font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
   font-optical-sizing: auto;
 }
 
@@ -430,11 +430,11 @@
   --neem-soft: #6e8a6a;
   --honey: #b9863e;
 
-  font-family: var(--font-hanken), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 }
 
 .address-modal .font-display {
-  font-family: var(--font-fraunces), ui-serif, Georgia, "Times New Roman", serif;
+  font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
   font-optical-sizing: auto;
 }
 

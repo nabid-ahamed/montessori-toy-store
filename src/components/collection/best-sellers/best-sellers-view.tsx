@@ -82,7 +82,7 @@ export function BestSellersView() {
         <Breadcrumb
           items={[
             { label: "Home", href: "/" },
-            { label: "Collections", href: "/collections/all" },
+            { label: "Shop", href: "/collections/all" },
             { label: "Best Sellers" },
           ]}
         />

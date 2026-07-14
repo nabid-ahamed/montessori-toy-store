@@ -120,12 +120,17 @@ export default async function Page({
 
   const tier = ageTierBySlug(slug);
   if (tier) {
-    return <AgeCollectionView tier={tier} />;
+    // key on the slug so navigating age→age (same component type) remounts the
+    // grid and resets its filters, instead of carrying the previous tier's
+    // filters/price-ceiling over. Filters still persist within a single tier.
+    return <AgeCollectionView key={tier.slug} tier={tier} />;
   }
 
   const category = categoryBySlug(slug);
   if (category) {
-    return <CategoryCollectionView category={category} />;
+    // key on the slug so navigating category→category (same component type)
+    // remounts the grid and resets its filters. See note above.
+    return <CategoryCollectionView key={category.slug} category={category} />;
   }
 
   return <StubPage title={`Collection: ${slug}`} />;

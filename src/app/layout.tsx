@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Bricolage_Grotesque, Fraunces, Hanken_Grotesk, Inter, Poppins } from "next/font/google";
+import { Bricolage_Grotesque, Inter } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
@@ -29,33 +29,6 @@ const inter = Inter({
   display: "swap",
 });
 
-// Accent — used selectively (e.g. footer "Follow us"). It only appears below the
-// fold, so skip preloading it: that frees Slow-4G bandwidth for the LCP hero
-// image (Poppins still loads on demand and swaps in via `display: swap`).
-const poppins = Poppins({
-  variable: "--font-poppins",
-  weight: ["400", "600", "700"],
-  subsets: ["latin"],
-  display: "swap",
-  preload: false,
-});
-
-// Address-modal typefaces (journal reference look). Only surface inside the
-// modal, so skip preloading — they load on demand and swap in via display:swap.
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
-  subsets: ["latin"],
-  display: "swap",
-  preload: false,
-});
-
-const hanken = Hanken_Grotesk({
-  variable: "--font-hanken",
-  subsets: ["latin"],
-  display: "swap",
-  preload: false,
-});
-
 export const metadata: Metadata = {
   title: {
     default: "Montessori Wooden Toys",
@@ -74,7 +47,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${bricolage.variable} ${inter.variable} ${poppins.variable} ${fraunces.variable} ${hanken.variable} h-full antialiased`}
+      className={`${bricolage.variable} ${inter.variable} h-full antialiased`}
     >
       <body
         suppressHydrationWarning

@@ -35,7 +35,7 @@ export function CategoryCollectionView({ category }: { category: Category }) {
       </header>
 
       <div className="mt-8">
-        <ProductGrid products={scoped} />
+        <ProductGrid products={scoped} persistKey={`category:${category.slug}`} />
       </div>
     </main>
   );

@@ -33,7 +33,7 @@ export function GiftView() {
           Gift Kits &amp; Bundles
         </h2>
         <div className="mt-6">
-          <ProductGrid products={giftKits} />
+          <ProductGrid products={giftKits} persistKey="gift" />
         </div>
       </section>
     </main>

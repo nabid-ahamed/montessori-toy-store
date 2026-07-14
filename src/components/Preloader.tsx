@@ -168,10 +168,10 @@ export function Preloader() {
               ))}
             </svg>
 
-            {/* wordmark — Fraunces, fades up beneath the sprig */}
+            {/* wordmark — display font, fades up beneath the sprig */}
             <motion.p
               className="text-2xl font-semibold tracking-tight"
-              style={{ fontFamily: "var(--font-fraunces)", color: INK }}
+              style={{ fontFamily: "var(--font-display)", color: INK }}
               {...(reduced
                 ? {}
                 : {

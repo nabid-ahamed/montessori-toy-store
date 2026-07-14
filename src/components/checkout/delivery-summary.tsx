@@ -83,7 +83,7 @@ export function DeliverySummary({
               <dt className="text-xs font-medium uppercase tracking-wide text-ink-soft">
                 {row.label}
               </dt>
-              <dd className="mt-0.5 text-sm font-medium text-ink">{row.value}</dd>
+              <dd className="mt-0.5 break-words text-sm font-medium text-ink">{row.value}</dd>
             </div>
           </div>
         ))}

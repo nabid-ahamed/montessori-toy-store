@@ -5,9 +5,9 @@ import {
   bestSellers,
   newLaunches,
   deals,
-  giftPicks,
   neemWood,
 } from "@/lib/mock/products";
+import { giftKits } from "@/lib/mock/gifts";
 import type { Product } from "@/lib/types";
 
 type Tab = { value: string; label: string; href: string; items: Product[] };
@@ -16,7 +16,7 @@ const tabs: Tab[] = [
   { value: "best", label: "Best Sellers", href: "/collections/best-sellers", items: bestSellers },
   { value: "new", label: "New Arrivals", href: "/collections/new-arrivals", items: newLaunches },
   { value: "deals", label: "Offers", href: "/collections/deals", items: deals },
-  { value: "gift", label: "Gifts", href: "/collections/gifts", items: giftPicks },
+  { value: "gift", label: "Gifts", href: "/gift", items: giftKits },
   { value: "all", label: "All Products", href: "/collections/all", items: products },
   { value: "neem", label: "Neem Wood", href: "/collections/neem-wood", items: neemWood },
 ];

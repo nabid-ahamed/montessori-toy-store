@@ -34,7 +34,7 @@ export function AgeCollectionView({ tier }: { tier: AgeTier }) {
       </header>
 
       <div className="mt-8">
-        <ProductGrid products={scoped} hideAgeFilter />
+        <ProductGrid products={scoped} hideAgeFilter persistKey={`age:${tier.slug}`} />
       </div>
     </main>
   );

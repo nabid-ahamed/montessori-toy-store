@@ -11,7 +11,7 @@ const nextConfig: NextConfig = {
   // primitives it actually uses (cuts "unused JavaScript" / bundle size). No
   // runtime or visual change — purely which modules get bundled.
   experimental: {
-    optimizePackageImports: ["lucide-react", "radix-ui"],
+    optimizePackageImports: ["lucide-react", "radix-ui", "motion"],
   },
   // Serve modern formats from the built-in image optimizer: AVIF first (best
   // compression), then WebP, falling back to the source for older browsers.

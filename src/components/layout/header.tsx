@@ -41,6 +41,7 @@ import { isBareRoute } from "@/lib/routes";
 import { CartBadge } from "@/components/cart/cart-badge";
 import { WishlistBadge } from "@/components/product/wishlist-badge";
 import { useHomeReset } from "@/components/layout/home-reset";
+import { clearPlpState } from "@/lib/plp-state";
 import { cn } from "@/lib/utils";
 
 // Shared style for every top-level drawer item (accordion triggers + direct
@@ -443,9 +444,12 @@ export function Header() {
   const { triggerHomeReset } = useHomeReset();
   const close = () => setOpen(false);
 
-  // Brand logo: always go Home. If already on Home, scroll to top (via navClick)
-  // AND reset every section to its defaults by remounting the page content.
+  // Brand logo: always go Home and "reset all". Forget every collection's
+  // remembered filters/sort/view so listings start fresh next visit, and — if
+  // already on Home — scroll to top (via navClick) and remount the page content
+  // to return every section to its defaults.
   const onBrandClick = (e: ReactMouseEvent<HTMLElement>) => {
+    clearPlpState();
     navClick(e, "/", pathname, close);
     if (pathname === "/") triggerHomeReset();
   };

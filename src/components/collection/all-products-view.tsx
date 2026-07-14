@@ -19,7 +19,7 @@ export function AllProductsView() {
       </header>
 
       <div className="mt-8">
-        <ProductGrid products={products} />
+        <ProductGrid products={products} persistKey="all" />
       </div>
     </main>
   );

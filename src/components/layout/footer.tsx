@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { Globe, Send } from "lucide-react";
+import { Globe } from "lucide-react";
 import { FooterLink } from "@/components/layout/footer-link";
+import { FooterNewsletter } from "@/components/layout/footer-newsletter";
 import {
   footerShop,
   footerCustomerCare,
@@ -168,7 +169,7 @@ function Payments() {
 function FooterColumn({ title, links }: { title: string; links: NavLink[] }) {
   return (
     <nav aria-label={title}>
-      <h3 className="font-[family-name:var(--font-poppins)] text-base font-bold text-ink">{title}</h3>
+      <h3 className="font-display text-base font-bold text-ink">{title}</h3>
       <ul className="mt-4 space-y-2.5 text-sm">
         {links.map((l) => (
           <li key={l.labelBn}>
@@ -184,7 +185,7 @@ function FooterColumn({ title, links }: { title: string; links: NavLink[] }) {
 
 export function Footer() {
   return (
-    <footer className="bg-cream-200 font-[family-name:var(--font-poppins)] text-ink">
+    <footer className="bg-cream-200 text-ink">
       <ScallopTop />
 
       {/* Main footer — one unified container, flat columns (no cards) */}
@@ -194,7 +195,7 @@ export function Footer() {
           <div className="col-span-2 sm:col-span-3 lg:col-span-4">
             <FooterLink
               href="/"
-              className="font-[family-name:var(--font-poppins)] text-2xl font-bold tracking-tight text-ink"
+              className="font-display text-2xl font-bold tracking-tight text-ink"
             >
               {BRAND_NAME}
             </FooterLink>
@@ -204,7 +205,7 @@ export function Footer() {
 
             {/* follow us */}
             <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-3">
-              <h3 className="font-[family-name:var(--font-poppins)] text-base font-bold leading-[20.8px] tracking-[0.6px] text-ink">
+              <h3 className="font-display text-base font-bold leading-[20.8px] tracking-[0.6px] text-ink">
                 Follow us
               </h3>
               <div className="flex items-center gap-2">
@@ -230,23 +231,7 @@ export function Footer() {
                 Get early access to new toys, offers, and parenting tips.
               </p>
             </div>
-            <div className="mt-3 flex max-w-sm items-center gap-2 rounded-full border border-cream-300 bg-paper p-1.5 pl-4">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                aria-label="Email address"
-                className="flex-1 bg-transparent text-sm text-ink outline-none placeholder:text-ink-soft"
-              />
-              <span className="h-6 w-px shrink-0 bg-cream-300" aria-hidden />
-              <button
-                type="button"
-                aria-label="Subscribe"
-                className="group flex size-9 shrink-0 items-center justify-center rounded-full bg-neem text-paper transition-colors hover:bg-neem-deep"
-              >
-                {/* Paper-plane rotates to the right on hover. */}
-                <Send className="size-4 transition-transform duration-300 ease-out group-hover:rotate-45" />
-              </button>
-            </div>
+            <FooterNewsletter />
           </div>
 
           {/* Link columns — share the row with the brand block */}

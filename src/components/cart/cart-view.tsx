@@ -13,13 +13,21 @@ import { ProductImage } from "@/components/product/product-image";
 import { OrderOptions } from "@/components/cart/order-options";
 import { CouponCode } from "@/components/cart/coupon-code";
 import { GiftCardThumb } from "@/components/cart/gift-card-thumb";
+import dynamic from "next/dynamic";
 import { GiftWrapDialog } from "@/components/cart/gift-wrap-dialog";
-import { AddressModal } from "@/components/checkout/address-modal";
 import { useCart } from "@/lib/cart/cart-context";
 import { useCheckout } from "@/lib/checkout/checkout-context";
 import { mockSavedAddresses } from "@/lib/mock-addresses";
 import { formatTk } from "@/lib/format";
 import { cn } from "@/lib/utils";
+
+// Interaction-gated: only mounts after "Proceed to Checkout", so keep its
+// (fairly heavy) code — form, shipping logic, radix Dialog — out of the cart's
+// initial bundle and fetch it on demand. Client-only, never SEO-relevant.
+const AddressModal = dynamic(
+  () => import("@/components/checkout/address-modal").then((m) => m.AddressModal),
+  { ssr: false },
+);
 
 const FREE_SHIPPING_THRESHOLD = 2000;
 const FLAT_SHIPPING = 80;

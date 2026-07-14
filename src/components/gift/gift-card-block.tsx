@@ -2,12 +2,18 @@
 
 import { useEffect, useState } from "react";
 import { Check, Gift } from "lucide-react";
+import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/button";
-import { CartAddedPopup } from "@/components/cart/cart-added-popup";
 import { useCart } from "@/lib/cart/cart-context";
 import { giftCardAmounts } from "@/lib/mock/gifts";
 import { formatTk } from "@/lib/format";
 import { cn } from "@/lib/utils";
+
+// Only renders after a gift-card add, so defer its framer-motion + portal code.
+const CartAddedPopup = dynamic(
+  () => import("@/components/cart/cart-added-popup").then((m) => m.CartAddedPopup),
+  { ssr: false },
+);
 
 /**
  * Gift card block: pick a preset amount, add the matching denomination product

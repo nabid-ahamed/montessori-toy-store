@@ -57,7 +57,7 @@ const faqs: FaqEntry[] = [
 const config: CollectionPageConfig = {
   breadcrumb: [
     { label: "Home", href: "/" },
-    { label: "Collections", href: "/collections/all" },
+    { label: "Shop", href: "/collections/all" },
     { label: "Neem Wood" },
   ],
   hero: {

@@ -108,7 +108,7 @@ export function GiftCardDetailsView({ amount }: { amount: number }) {
       <div className="mx-auto w-full max-w-6xl px-4 pt-4 sm:px-6 lg:max-w-[90rem] lg:px-8">
         <Breadcrumb
           items={crumbs(
-            { label: "Gift", href: "/gift" },
+            { label: "Gifts", href: "/gift" },
             { label: `Gift Card — ${formatTk(amount)}` },
           )}
         />

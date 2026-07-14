@@ -13,13 +13,23 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import dynamic from "next/dynamic";
 import { BestSellerCard } from "@/components/collection/best-sellers/best-seller-card";
-import { QuickViewDialog } from "@/components/collection/best-sellers/quick-view-dialog";
 import { bestSellerProducts } from "@/lib/mock/best-sellers";
 import { ageTiers } from "@/lib/mock/age-tiers";
 import { categories } from "@/lib/mock/categories";
 import { formatTk } from "@/lib/format";
 import type { Product } from "@/lib/types";
+
+// Opens only when a card's "Quick view" is clicked — keep its framer-motion
+// dialog out of the grid's initial bundle.
+const QuickViewDialog = dynamic(
+  () =>
+    import("@/components/collection/best-sellers/quick-view-dialog").then(
+      (m) => m.QuickViewDialog,
+    ),
+  { ssr: false },
+);
 
 const SORTS = [
   { value: "best", label: "Best Selling" },

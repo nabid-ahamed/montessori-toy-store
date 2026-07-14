@@ -19,8 +19,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Breadcrumb } from "@/components/breadcrumb";
 import { crumbs } from "@/lib/breadcrumbs";
+import dynamic from "next/dynamic";
 import { AgeInsight } from "@/components/product/age-insight";
-import { CartAddedPopup } from "@/components/cart/cart-added-popup";
 import { ProductGallery } from "@/components/product/product-gallery";
 import { ProductTabs } from "@/components/product/product-tabs";
 import { ProductReviews } from "@/components/product/product-reviews";
@@ -32,6 +32,12 @@ import { expertInsightsHref } from "@/lib/routes";
 import { certifications } from "@/lib/mock/trust";
 import { cn } from "@/lib/utils";
 import type { AgeTier, Category, Product, ProductDetail } from "@/lib/types";
+
+// Shown only after an add-to-cart click — defer its framer-motion + portal code.
+const CartAddedPopup = dynamic(
+  () => import("@/components/cart/cart-added-popup").then((m) => m.CartAddedPopup),
+  { ssr: false },
+);
 
 const certIcon = {
   "shield-check": ShieldCheck,

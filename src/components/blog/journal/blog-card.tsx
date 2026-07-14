@@ -34,14 +34,14 @@ export function BlogCard({ post }: { post: BlogPost }) {
       </div>
 
       <div className="flex flex-1 flex-col p-5">
-        <h3 className="font-display text-xl font-semibold leading-snug text-ink transition-colors duration-200 group-hover:text-neem-deep">
+        <h3 className="line-clamp-2 font-display text-xl font-semibold leading-snug text-ink transition-colors duration-200 group-hover:text-neem-deep">
           {post.title}
         </h3>
         <p className="mt-2 line-clamp-2 text-sm leading-6 text-ink-muted">
           {post.excerpt}
         </p>
 
-        <div className="mt-4 flex items-center gap-2 border-t border-cream-200 pt-3 text-xs text-ink-soft">
+        <div className="mt-auto flex items-center gap-2 border-t border-cream-200 pt-3 text-xs text-ink-soft">
           <time dateTime={post.dateISO}>{formatDate(post.dateISO)}</time>
           <span aria-hidden>·</span>
           <span>{post.readMins} min read</span>

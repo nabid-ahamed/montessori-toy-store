@@ -3,10 +3,17 @@
 import { useEffect, useState } from "react";
 import { Check, ShoppingCart } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
+import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/button";
-import { CartAddedPopup } from "@/components/cart/cart-added-popup";
 import { useCart } from "@/lib/cart/cart-context";
 import { cn } from "@/lib/utils";
+
+// Only renders after an add-to-cart click, so its portal + particle animation
+// code is fetched on demand instead of shipping with every product card.
+const CartAddedPopup = dynamic(
+  () => import("@/components/cart/cart-added-popup").then((m) => m.CartAddedPopup),
+  { ssr: false },
+);
 
 /**
  * Adds a product to the cart from a product card. State is derived from cart

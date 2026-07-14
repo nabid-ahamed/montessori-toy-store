@@ -96,11 +96,14 @@ export function CartAddedPopup({
           </div>
 
           <div className="grid w-full gap-3 sm:grid-cols-2">
-            <Link href="/cart" onClick={onClose} className="inline-flex">
-              <Button className="w-full bg-neem text-paper hover:bg-neem-deep focus-visible:ring-neem/40">
+            <Button
+              asChild
+              className="w-full bg-neem text-paper hover:bg-neem-deep focus-visible:ring-neem/40"
+            >
+              <Link href="/cart" onClick={onClose}>
                 View Cart
-              </Button>
-            </Link>
+              </Link>
+            </Button>
             <Button
               variant="outline"
               className="w-full border-slate-300 text-slate-700 hover:bg-slate-100 focus-visible:ring-slate-300"

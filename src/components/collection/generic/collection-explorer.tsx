@@ -13,12 +13,22 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import dynamic from "next/dynamic";
 import { CollectionCard } from "@/components/collection/generic/collection-card";
-import { CollectionQuickView } from "@/components/collection/generic/collection-quick-view";
 import { ageTiers } from "@/lib/mock/age-tiers";
 import { categories } from "@/lib/mock/categories";
 import { formatTk } from "@/lib/format";
 import type { Product } from "@/lib/types";
+
+// Opens only when a card's "Quick view" is clicked — keep its framer-motion
+// dialog out of the collection view's initial bundle.
+const CollectionQuickView = dynamic(
+  () =>
+    import("@/components/collection/generic/collection-quick-view").then(
+      (m) => m.CollectionQuickView,
+    ),
+  { ssr: false },
+);
 
 const SORTS = [
   { value: "best", label: "Best Selling" },

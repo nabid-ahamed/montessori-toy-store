@@ -24,6 +24,7 @@ import {
   Trees,
   type LucideIcon,
 } from "lucide-react";
+import { Breadcrumb } from "@/components/breadcrumb";
 import { FaqAccordion } from "@/components/faq/faq-accordion";
 import { Reveal } from "@/components/policy/reveal";
 import {
@@ -69,6 +70,9 @@ export function SafetyStandardsView() {
   return (
     <main className="flex-1 bg-cream-50">
       {/* ===== hero removed — to be updated later ===== */}
+      <section className="mx-auto w-full max-w-[80rem] px-4 pt-6 sm:px-6 lg:px-8">
+        <Breadcrumb items={[{ label: "Home", href: "/" }, { label: "Safety Standards" }]} />
+      </section>
 
       {/* ===== 2. our safety promise ===== */}
       <section className="mx-auto grid w-full max-w-[80rem] gap-10 px-4 pt-14 pb-16 sm:px-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-16 lg:px-8 lg:pt-20 lg:pb-24">

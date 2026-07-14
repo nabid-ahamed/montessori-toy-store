@@ -159,7 +159,7 @@ export function ShopByAge() {
             <Link
               key={t.slug}
               href={t.href}
-              className="group flex flex-col overflow-hidden rounded-xl border border-cream-300 bg-card transition-all hover:-translate-y-0.5 hover:shadow-md"
+              className="group flex h-full flex-col overflow-hidden rounded-xl border border-cream-300 bg-card transition-all hover:-translate-y-0.5 hover:shadow-md"
             >
               <AgeTierImage
                 slug={t.slug}
@@ -176,7 +176,7 @@ export function ShopByAge() {
                     {t.taglineBn}
                   </p>
                 ) : null}
-                <div className="mt-3 flex items-center justify-between">
+                <div className="mt-auto flex items-center justify-between pt-3">
                   <span className="text-xs text-ink-soft">
                     {count} {count === 1 ? "toy" : "toys"}
                   </span>
