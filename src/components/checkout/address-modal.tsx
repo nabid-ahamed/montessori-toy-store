@@ -126,7 +126,7 @@ export function AddressModal({
               </Dialog.Description>
             </div>
             <Dialog.Close
-              className="-mr-1.5 -mt-1 flex size-9 flex-none items-center justify-center rounded-full text-ink-soft transition-colors hover:bg-cream-200 hover:text-ink"
+              className="-mr-1.5 -mt-1 flex size-10 flex-none items-center justify-center rounded-full text-ink-soft transition-colors hover:bg-cream-200 hover:text-ink"
               aria-label="Close"
             >
               <X className="size-4.5" />

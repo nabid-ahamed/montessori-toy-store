@@ -65,7 +65,7 @@ export function ActiveFilters({
             type="button"
             onClick={c.onRemove}
             aria-label={`Remove ${c.label}`}
-            className="rounded-full p-0.5 text-ink-soft hover:bg-cream-300 hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-neem"
+            className="rounded-full p-1.5 text-ink-soft hover:bg-cream-300 hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-neem"
           >
             <X className="size-3.5" />
           </button>

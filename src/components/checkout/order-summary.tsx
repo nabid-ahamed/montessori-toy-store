@@ -70,11 +70,11 @@ export function OrderSummary({
           <dt className="text-ink-muted">Subtotal</dt>
           <dd className="font-medium text-ink">{formatTk(subtotal)}</dd>
         </div>
-        <div className="flex justify-between">
-          <dt className="text-ink-muted">
+        <div className="flex justify-between gap-2">
+          <dt className="min-w-0 text-ink-muted">
             {deliveryZoneLabel ? `Delivery (${deliveryZoneLabel})` : "Delivery charge"}
           </dt>
-          <dd className="font-medium text-ink">
+          <dd className="flex-none whitespace-nowrap font-medium text-ink">
             {delivery === 0 ? "Free" : formatTk(delivery)}
           </dd>
         </div>

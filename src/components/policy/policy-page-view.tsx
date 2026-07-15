@@ -112,7 +112,7 @@ export function PolicyPageView({ content }: { content: PolicyContent }) {
                     <span className="flex size-9 flex-none items-center justify-center rounded-full bg-neem/10 text-neem">
                       <Icon className="size-4" aria-hidden />
                     </span>
-                    <span className="text-sm font-semibold text-ink">{t.label}</span>
+                    <span className="min-w-0 break-words text-sm font-semibold text-ink">{t.label}</span>
                   </div>
                 );
               })}

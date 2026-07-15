@@ -228,8 +228,8 @@ export function AboutView() {
         </Reveal>
         <Reveal>
           <div className="relative mt-10">
-            <div className="absolute inset-x-[12%] top-6 hidden h-0.5 bg-cream-300 sm:block" aria-hidden />
-            <ol className="relative grid grid-cols-1 gap-8 sm:grid-cols-4">
+            <div className="absolute inset-x-[12%] top-6 hidden h-0.5 bg-cream-300 lg:block" aria-hidden />
+            <ol className="relative grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
               {aboutJourney.map((m) => (
                 <li key={m.year} className="flex flex-col items-center text-center">
                   <span className="relative z-10 flex size-12 items-center justify-center rounded-full bg-neem font-display text-sm font-bold text-paper ring-4 ring-paper">
@@ -269,7 +269,7 @@ export function AboutView() {
         <Reveal>
           <SectionHead eyebrow="Loved by families" title="What parents say" />
         </Reveal>
-        <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {aboutTestimonials.map((t, i) => (
             <Reveal key={t.id} delay={Math.min(i * 0.06, 0.2)} className="h-full">
               <figure className="flex h-full flex-col rounded-3xl border border-cream-200 bg-paper p-6 shadow-sm">

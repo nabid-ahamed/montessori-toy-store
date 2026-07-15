@@ -54,7 +54,7 @@ export function FooterNewsletter() {
         onChange={(e) => setEmail(e.target.value)}
         placeholder="Enter your email"
         aria-label="Email address"
-        className="flex-1 bg-transparent text-sm text-ink outline-none placeholder:text-ink-soft"
+        className="min-w-0 flex-1 bg-transparent text-sm text-ink outline-none placeholder:text-ink-soft"
       />
       <span className="h-6 w-px shrink-0 bg-cream-300" aria-hidden />
       <button

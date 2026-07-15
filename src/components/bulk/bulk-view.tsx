@@ -177,27 +177,27 @@ export function BulkView() {
                 <span className="flex size-11 flex-none items-center justify-center rounded-full bg-neem/10 text-neem">
                   <Phone className="size-5" aria-hidden />
                 </span>
-                <div>
+                <div className="min-w-0">
                   <dt className="font-bold text-ink">Phone</dt>
-                  <dd className="mt-0.5 text-sm text-ink-muted">{bulkContact.phone}</dd>
+                  <dd className="mt-0.5 break-words text-sm text-ink-muted">{bulkContact.phone}</dd>
                 </div>
               </div>
               <div className="flex items-start gap-4 border-t border-cream-200/70 pt-5">
                 <span className="flex size-11 flex-none items-center justify-center rounded-full bg-neem/10 text-neem">
                   <Mail className="size-5" aria-hidden />
                 </span>
-                <div>
+                <div className="min-w-0">
                   <dt className="font-bold text-ink">Email</dt>
-                  <dd className="mt-0.5 text-sm text-ink-muted">{bulkContact.email}</dd>
+                  <dd className="mt-0.5 break-all text-sm text-ink-muted">{bulkContact.email}</dd>
                 </div>
               </div>
               <div className="flex items-start gap-4 border-t border-cream-200/70 pt-5">
                 <span className="flex size-11 flex-none items-center justify-center rounded-full bg-neem/10 text-neem">
                   <Clock className="size-5" aria-hidden />
                 </span>
-                <div>
+                <div className="min-w-0">
                   <dt className="font-bold text-ink">Hours</dt>
-                  <dd className="mt-0.5 text-sm text-ink-muted">{bulkContact.hoursBn}</dd>
+                  <dd className="mt-0.5 break-words text-sm text-ink-muted">{bulkContact.hoursBn}</dd>
                 </div>
               </div>
             </dl>

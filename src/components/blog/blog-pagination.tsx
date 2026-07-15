@@ -20,7 +20,7 @@ export function BlogPagination({
     "flex size-10 items-center justify-center rounded-full border text-sm font-medium transition-colors disabled:pointer-events-none disabled:opacity-40";
 
   return (
-    <nav aria-label="Blog pages" className="flex items-center justify-center gap-2">
+    <nav aria-label="Blog pages" className="flex flex-wrap items-center justify-center gap-2">
       <button
         type="button"
         aria-label="Previous page"

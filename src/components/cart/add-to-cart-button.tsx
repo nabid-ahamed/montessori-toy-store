@@ -61,7 +61,7 @@ export function AddToCartButton({
         disabled={inCart}
         aria-label={inCart ? "Added to cart" : "Add to cart"}
         className={cn(
-          "group relative h-9 min-w-[118px] justify-center gap-2 overflow-hidden px-3 text-[0.8rem] font-semibold transition-colors duration-300",
+          "group relative h-10 min-w-[118px] justify-center gap-2 overflow-hidden px-3 text-[0.8rem] font-semibold transition-colors duration-300 sm:h-9",
           !inCart && "hover:text-ink",
           inCart && "bg-neem-deep disabled:opacity-100",
           className,

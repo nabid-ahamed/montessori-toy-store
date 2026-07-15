@@ -511,7 +511,7 @@ export function Header() {
           // driven off `collapsed`, all the same 200ms ease-out. The row is a
           // full-width block throughout, so the search (mx-auto) and icons
           // (ml-auto) fade IN PLACE and never snap sideways.
-          collapsed ? "h-11 lg:h-16" : "h-13 lg:h-24",
+          collapsed ? "h-11 md:h-14 lg:h-16" : "h-13 md:h-20 lg:h-24",
         )}
       >
         {/* left: brand — always goes Home; if already Home it scrolls to top
@@ -520,7 +520,7 @@ export function Header() {
           <Link
             href="/"
             onClick={onBrandClick}
-            className="font-display text-3xl font-bold tracking-tight text-ink sm:text-3xl"
+            className="font-display text-3xl font-bold tracking-tight text-ink sm:text-3xl md:text-[2.5rem]"
           >
             {BRAND_NAME}
           </Link>
@@ -532,7 +532,7 @@ export function Header() {
             "mx-auto hidden w-full min-w-0 transition-all duration-200 ease-out md:block",
             // Clip only while collapsing (width animates to 0); when expanded we
             // must NOT clip, or the absolute suggestions dropdown gets hidden.
-            collapsed ? "max-w-0 overflow-hidden opacity-0" : "max-w-md opacity-100",
+            collapsed ? "max-w-0 overflow-hidden opacity-0" : "max-w-sm opacity-100 lg:max-w-md",
           )}
         >
           <SmartSearch className="w-full" />
@@ -548,7 +548,7 @@ export function Header() {
           <Button
             variant="ghost"
             size="icon"
-            className="md:hidden"
+            className="size-10 md:hidden"
             aria-label={mobileSearch ? "Close search" : "Search"}
             aria-expanded={mobileSearch}
             onClick={() => setMobileSearch((v) => !v)}
@@ -563,7 +563,7 @@ export function Header() {
             variant="ghost"
             size="icon"
             aria-label="Cart"
-            className="relative hidden md:inline-flex lg:hidden"
+            className="relative hidden size-10 md:inline-flex lg:hidden"
           >
             <Link href="/cart">
               <ShoppingCart className="size-6" />
@@ -594,6 +594,7 @@ export function Header() {
               variant="ghost"
               size="icon"
               aria-label="Wishlist"
+              className="size-10 lg:size-8"
             >
               <Link href="/wishlist" className="relative">
                 <Heart className="size-6" />
@@ -632,7 +633,7 @@ export function Header() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="lg:hidden"
+                className="size-10 lg:hidden"
                 aria-label="Open menu"
               >
                 <Menu className="size-6" />

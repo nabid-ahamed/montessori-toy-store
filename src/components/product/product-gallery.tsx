@@ -148,7 +148,7 @@ export function ProductGallery({
                   go(-1);
                 }}
                 aria-label="Previous image"
-                className="absolute left-2 top-1/2 flex size-10 -translate-y-1/2 items-center justify-center rounded-full bg-paper/90 text-ink shadow-sm transition hover:bg-paper hover:text-neem-deep"
+                className="absolute left-2 top-1/2 flex size-11 -translate-y-1/2 items-center justify-center rounded-full bg-paper/90 text-ink shadow-sm transition hover:bg-paper hover:text-neem-deep"
               >
                 <ChevronLeft className="size-5" />
               </button>
@@ -159,7 +159,7 @@ export function ProductGallery({
                   go(1);
                 }}
                 aria-label="Next image"
-                className="absolute right-2 top-1/2 flex size-10 -translate-y-1/2 items-center justify-center rounded-full bg-paper/90 text-ink shadow-sm transition hover:bg-paper hover:text-neem-deep"
+                className="absolute right-2 top-1/2 flex size-11 -translate-y-1/2 items-center justify-center rounded-full bg-paper/90 text-ink shadow-sm transition hover:bg-paper hover:text-neem-deep"
               >
                 <ChevronRight className="size-5" />
               </button>

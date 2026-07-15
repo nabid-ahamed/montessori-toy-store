@@ -99,9 +99,9 @@ export function ContactView() {
                     <span className="flex size-11 flex-none items-center justify-center rounded-full bg-neem/10 text-neem">
                       <Icon className="size-5" />
                     </span>
-                    <div>
+                    <div className="min-w-0">
                       <dt className="font-bold text-ink">{item.label}</dt>
-                      <dd className="mt-0.5 space-y-0.5 text-sm text-ink-muted">
+                      <dd className="mt-0.5 space-y-0.5 break-words text-sm text-ink-muted">
                         {item.lines.map((line) => (
                           <p key={line}>{line}</p>
                         ))}
@@ -133,7 +133,7 @@ export function ContactView() {
                 type="email"
                 placeholder="Enter your email"
                 aria-label="Email address"
-                className="flex-1 bg-transparent text-sm text-ink outline-none placeholder:text-ink-soft"
+                className="min-w-0 flex-1 bg-transparent text-sm text-ink outline-none placeholder:text-ink-soft"
               />
               <span className="h-6 w-px shrink-0 bg-cream-300" aria-hidden />
               <button

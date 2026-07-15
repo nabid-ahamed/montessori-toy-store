@@ -180,7 +180,7 @@ export function CollectionToolbar({
               aria-label={label}
               aria-pressed={view === value}
               className={cn(
-                "flex size-9 items-center justify-center rounded-lg border transition-colors",
+                "flex size-10 items-center justify-center rounded-lg border transition-colors sm:size-9",
                 view === value
                   ? "border-neem bg-neem/10 text-neem-deep"
                   : "border-cream-300 text-ink-soft hover:border-neem-soft hover:text-ink",

@@ -41,7 +41,7 @@ export function FaqAccordion({
           >
             <AccordionPrimitive.Header>
               <AccordionPrimitive.Trigger className="group/faq flex w-full items-center justify-between gap-4 px-5 py-4 text-left outline-none focus-visible:ring-2 focus-visible:ring-neem/40">
-                <span className="text-[15px] font-semibold text-ink sm:text-base">
+                <span className="min-w-0 break-words text-[15px] font-semibold text-ink sm:text-base">
                   {item.question}
                 </span>
                 <ChevronDown

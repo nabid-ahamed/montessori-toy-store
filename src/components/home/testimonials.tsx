@@ -37,7 +37,7 @@ export function Testimonials() {
         <h2 className="font-display text-2xl font-bold tracking-tight text-ink sm:text-3xl">
           Parents’ Love & Recommendations
         </h2>
-        <div className="mt-2 flex items-center justify-center gap-2 text-sm text-ink-muted">
+        <div className="mt-2 flex flex-wrap items-center justify-center gap-2 text-sm text-ink-muted">
           <span className="font-display text-lg font-bold text-ink">4.4</span>
           <Stars rating={4.4} />
           <span>· 4.4 out of 5 · 9,478 reviews</span>

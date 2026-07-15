@@ -34,7 +34,7 @@ export function WishlistButton({
       aria-pressed={active}
       aria-label={active ? "Remove from wishlist" : "Add to wishlist"}
       className={cn(
-        "flex size-10 items-center justify-center rounded-full bg-paper/90 text-ink-soft shadow-sm backdrop-blur-sm transition-colors hover:text-terracotta focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neem",
+        "flex size-11 items-center justify-center rounded-full bg-paper/90 text-ink-soft shadow-sm backdrop-blur-sm transition-colors hover:text-terracotta focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neem sm:size-10",
         className,
       )}
     >

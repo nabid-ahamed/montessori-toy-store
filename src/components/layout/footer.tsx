@@ -214,7 +214,7 @@ export function Footer() {
                     key={s.label}
                     href={s.href}
                     aria-label={s.label}
-                    className="flex size-9 items-center justify-center rounded-full bg-ink/5 text-ink-muted transition-all duration-500 ease-out hover:-translate-y-1 hover:scale-110 hover:bg-neem hover:text-paper hover:shadow-md hover:shadow-neem/25 active:scale-95"
+                    className="flex size-10 items-center justify-center rounded-full bg-ink/5 text-ink-muted transition-all duration-500 ease-out hover:-translate-y-1 hover:scale-110 hover:bg-neem hover:text-paper hover:shadow-md hover:shadow-neem/25 active:scale-95 sm:size-9"
                   >
                     <SocialIcon icon={s.icon} />
                   </Link>

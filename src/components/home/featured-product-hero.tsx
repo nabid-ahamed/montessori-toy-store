@@ -79,7 +79,7 @@ export function FeaturedProductHero() {
             <div className="mt-7">
               <Link
                 href={href}
-                className="group relative inline-flex h-[3.25rem] items-center justify-center gap-2.5 overflow-hidden rounded-full bg-gradient-to-b from-neem to-neem-deep px-8 text-sm font-bold tracking-wide text-paper shadow-lg shadow-neem/30 ring-1 ring-inset ring-paper/15 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-xl hover:shadow-neem/40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neem"
+                className="group relative inline-flex h-[3.25rem] items-center justify-center gap-2.5 overflow-hidden rounded-full bg-gradient-to-b from-neem to-neem-deep px-6 text-xs font-bold tracking-wide text-paper shadow-lg shadow-neem/30 ring-1 ring-inset ring-paper/15 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-xl hover:shadow-neem/40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neem sm:px-8 sm:text-sm"
               >
                 {/* diagonal shine sweep on hover */}
                 <span

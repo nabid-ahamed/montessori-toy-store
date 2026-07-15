@@ -152,7 +152,7 @@ function QtyStepper({
         type="button"
         onClick={onDec}
         aria-label="Decrease quantity"
-        className="flex size-8 items-center justify-center text-ink-muted hover:text-ink"
+        className="flex size-9 items-center justify-center text-ink-muted hover:text-ink"
       >
         <Minus className="size-3.5" />
       </button>
@@ -163,7 +163,7 @@ function QtyStepper({
         type="button"
         onClick={onInc}
         aria-label="Increase quantity"
-        className="flex size-8 items-center justify-center text-ink-muted hover:text-ink"
+        className="flex size-9 items-center justify-center text-ink-muted hover:text-ink"
       >
         <Plus className="size-3.5" />
       </button>
@@ -442,11 +442,11 @@ export function CartView() {
                 </div>
               </Link>
 
-              <div className="flex flex-1 flex-col">
+              <div className="flex min-w-0 flex-1 flex-col">
                 <div className="flex items-start gap-3">
                   <Link
                     href={`/products/${product.slug}`}
-                    className="font-medium text-ink hover:text-neem-deep"
+                    className="min-w-0 break-words font-medium text-ink hover:text-neem-deep"
                   >
                     {product.titleBn}
                   </Link>
@@ -456,7 +456,7 @@ export function CartView() {
                   {formatTk(product.price)} each
                 </span>
 
-                <div className="mt-auto flex items-center justify-between pt-3">
+                <div className="mt-auto flex flex-wrap items-center justify-between gap-x-3 gap-y-1.5 pt-3">
                   <QtyStepper
                     qty={qty}
                     onDec={() => setQty(product.slug, qty - 1)}

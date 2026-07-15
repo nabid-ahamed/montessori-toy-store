@@ -25,7 +25,7 @@ const calloutStyles: Record<
 function Block({ block, sectionId }: { block: PolicyBlock; sectionId: string }) {
   switch (block.type) {
     case "paragraph":
-      return <p className="text-[15px] leading-relaxed text-ink-muted">{block.text}</p>;
+      return <p className="break-words text-[15px] leading-relaxed text-ink-muted">{block.text}</p>;
 
     case "list":
       return (
@@ -36,7 +36,7 @@ function Block({ block, sectionId }: { block: PolicyBlock; sectionId: string }) 
               className="flex items-start gap-3 text-[15px] leading-relaxed text-ink-muted"
             >
               <span className="mt-2 size-1.5 flex-none rounded-full bg-neem" aria-hidden />
-              <span>{it}</span>
+              <span className="min-w-0 break-words">{it}</span>
             </li>
           ))}
         </ul>

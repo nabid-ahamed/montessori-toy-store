@@ -40,7 +40,7 @@ export function HeroCarousel() {
       {/* CONTENT — absolute overlay at every size, vertically centred over the
           image (which sits in flow underneath: the tall 4:3 crop on mobile, the
           76vh wide box on desktop). */}
-      <div className="absolute inset-0 z-10 flex items-start px-4 pt-5 sm:px-6 lg:items-center lg:pt-0">
+      <div className="absolute inset-0 z-10 flex items-start px-4 pt-5 sm:px-6 lg:items-center lg:px-0 lg:pt-0">
           <motion.div
             className="mx-auto w-full max-w-6xl lg:max-w-[90rem] lg:-translate-y-8 lg:px-8"
             variants={stagger}
@@ -57,10 +57,10 @@ export function HeroCarousel() {
                 with Play
               </motion.h2>
 
-              <motion.div className="mt-4 flex items-center gap-3" aria-hidden variants={rise}>
-                <span className="h-px w-16 bg-[#c9a877] sm:w-20" />
+              <motion.div className="mt-1.5 flex items-center gap-3 sm:mt-3" aria-hidden variants={rise}>
+                <span className="h-px w-9 bg-[#c9a877] sm:w-12 lg:w-28" />
                 <Heart className="size-4 fill-[#c9a877] text-[#c9a877]" />
-                <span className="h-px w-16 bg-[#c9a877] sm:w-20" />
+                <span className="h-px w-9 bg-[#c9a877] sm:w-12 lg:w-28" />
               </motion.div>
 
               <motion.p
@@ -74,7 +74,7 @@ export function HeroCarousel() {
 
             {/* CTA cluster — enters as one item, then keeps its gentle float + shine. */}
             <motion.div
-              className="mt-16 flex flex-col items-start gap-2.5 lg:mt-20 lg:gap-3.5"
+              className="mt-20 flex flex-col items-start gap-2.5 md:gap-4 lg:mt-24 lg:gap-3.5"
               variants={rise}
             >
               {/* secondary — Explore by Age (frosted outline) */}
@@ -135,7 +135,11 @@ export function HeroCarousel() {
       </div>
 
       {/* DESKTOP image — the sized 76vh box the content overlays. Hidden below lg. */}
-      <div className="relative hidden w-full overflow-hidden lg:block lg:h-[76vh]">
+      {/* Height is capped at the image's own full-width height (~43vw = 100vw
+          ÷ 2.33) so a tall/portrait viewport (e.g. iPad Pro portrait, where
+          76vh ≈ 100vw) can't stretch the box past the photo's ratio and crop its
+          sides. Wide screens still get the tuned 76vh. */}
+      <div className="relative hidden w-full overflow-hidden lg:block lg:h-[min(76vh,43vw)]">
         <Image
           src="/images/hero/hero-v2.webp"
           alt="Handmade neem-wood Montessori stacking tower, shape sorter, pull-along duck and rattle on a linen tabletop"

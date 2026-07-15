@@ -42,7 +42,7 @@ export function TrustStrip() {
           return (
             <div
               key={s.id}
-              className="relative isolate flex min-h-14 items-center justify-center gap-3 overflow-visible px-6 py-2.5 sm:min-h-20 sm:px-0 sm:py-0"
+              className="relative isolate flex min-h-14 items-center justify-center overflow-visible px-6 py-2.5 sm:min-h-20 sm:px-0 sm:py-0"
             >
               <div
                 aria-hidden="true"
@@ -51,12 +51,18 @@ export function TrustStrip() {
                 <span className={`absolute ${accent.outer}`} />
                 <span className={`absolute ${accent.inner}`} />
               </div>
-              <Icon className="relative z-10 size-7 shrink-0 text-neem" />
-              <div className="relative z-10">
-                <p className="font-display text-lg font-bold leading-tight text-ink">
-                  {s.valueBn}
-                </p>
-                <p className="text-sm text-ink-muted">{s.labelBn}</p>
+              {/* Fixed-width row on mobile so every stat's icon + text line up at
+                  the same x. (Centring each row on its own content width staggers
+                  them, since the labels differ in length.) Natural width from sm
+                  up, where the stats sit in their own columns. */}
+              <div className="relative z-10 flex w-44 items-center gap-3 sm:w-auto">
+                <Icon className="size-7 shrink-0 text-neem" />
+                <div>
+                  <p className="font-display text-lg font-bold leading-tight text-ink">
+                    {s.valueBn}
+                  </p>
+                  <p className="text-sm text-ink-muted">{s.labelBn}</p>
+                </div>
               </div>
             </div>
           );

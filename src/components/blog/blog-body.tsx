@@ -37,7 +37,7 @@ export function BlogBody({ blocks }: { blocks: BlogBlock[] }) {
           );
         }
         return (
-          <p key={i} className="leading-relaxed text-ink-muted">
+          <p key={i} className="break-words leading-relaxed text-ink-muted">
             {block.text}
           </p>
         );

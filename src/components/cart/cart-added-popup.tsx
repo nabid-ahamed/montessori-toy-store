@@ -43,7 +43,7 @@ export function CartAddedPopup({
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.96 }}
           transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-          className="relative mx-4 flex max-w-md flex-col items-center gap-8 rounded-[1.75rem] border border-slate-200 bg-paper px-8 py-10 text-center shadow-[0_30px_80px_-30px_rgba(15,23,42,0.22)]"
+          className="relative mx-4 flex max-h-[calc(100dvh-2rem)] max-w-md flex-col items-center gap-6 overflow-y-auto rounded-[1.75rem] border border-slate-200 bg-paper px-8 py-8 text-center shadow-[0_30px_80px_-30px_rgba(15,23,42,0.22)] sm:gap-8 sm:py-10"
         >
           <div className="relative flex h-24 w-24 items-center justify-center rounded-full bg-neem/10 shadow-[0_18px_50px_-24px_rgba(15,23,42,0.18)]">
             <motion.div

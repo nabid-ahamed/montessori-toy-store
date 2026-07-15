@@ -36,10 +36,10 @@ function ContactChips() {
     <div className="mt-4 flex flex-wrap gap-3">
       <a
         href={`mailto:${shippingHelp.email}`}
-        className="inline-flex items-center gap-2 rounded-full border border-cream-300 bg-cream-50/60 px-4 py-2 text-sm font-semibold text-ink no-underline transition-colors hover:border-neem"
+        className="inline-flex max-w-full items-center gap-2 rounded-full border border-cream-300 bg-cream-50/60 px-4 py-2 text-sm font-semibold text-ink no-underline transition-colors hover:border-neem"
       >
-        <Mail className="size-4 text-neem" aria-hidden />
-        {shippingHelp.email}
+        <Mail className="size-4 flex-none text-neem" aria-hidden />
+        <span className="min-w-0 break-all">{shippingHelp.email}</span>
       </a>
       <a
         href={shippingHelp.whatsappHref}

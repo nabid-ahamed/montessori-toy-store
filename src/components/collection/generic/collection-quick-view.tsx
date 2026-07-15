@@ -72,13 +72,13 @@ export function CollectionQuickView({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.97, y: 8 }}
             transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
-            className="relative grid w-full max-w-3xl gap-6 overflow-hidden rounded-3xl border border-cream-200 bg-paper p-5 shadow-2xl sm:grid-cols-2 sm:p-6"
+            className="relative grid max-h-[calc(100dvh-2rem)] w-full max-w-3xl gap-6 overflow-y-auto overscroll-contain rounded-3xl border border-cream-200 bg-paper p-5 shadow-2xl sm:grid-cols-2 sm:p-6"
           >
             <button
               type="button"
               onClick={onClose}
               aria-label="Close quick view"
-              className="absolute right-4 top-4 z-10 flex size-8 items-center justify-center rounded-full bg-paper/90 text-ink-soft shadow-sm transition-colors hover:text-ink"
+              className="absolute right-4 top-4 z-10 flex size-10 items-center justify-center rounded-full bg-paper/90 text-ink-soft shadow-sm transition-colors hover:text-ink sm:size-9"
             >
               <X className="size-4" />
             </button>

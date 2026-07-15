@@ -275,7 +275,7 @@ export function CollectionExplorer({
         </div>
 
         {loading ? (
-          <div className="mt-6 grid grid-cols-1 gap-5 min-[420px]:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="mt-6 grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-3 xl:grid-cols-4">
             {Array.from({ length: 8 }).map((_, i) => (
               <CardSkeleton key={i} />
             ))}
@@ -296,7 +296,7 @@ export function CollectionExplorer({
             </Button>
           </div>
         ) : (
-          <div className="mt-6 grid grid-cols-1 gap-5 min-[420px]:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="mt-6 grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-3 xl:grid-cols-4">
             {results.map((product) => (
               <CollectionCard
                 key={product.slug}

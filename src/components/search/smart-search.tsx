@@ -469,7 +469,7 @@ export function SmartSearch({
                 inputRef.current?.focus();
               }}
               aria-label="Clear search"
-              className="flex size-7 items-center justify-center rounded-full text-ink-soft transition-colors hover:bg-cream-100 hover:text-ink"
+              className="flex size-8 items-center justify-center rounded-full text-ink-soft transition-colors hover:bg-cream-100 hover:text-ink"
             >
               <X className="size-4" />
             </button>
@@ -481,7 +481,7 @@ export function SmartSearch({
               aria-label={listening ? "Stop voice search" : "Search by voice"}
               aria-pressed={listening}
               className={cn(
-                "relative flex size-7 items-center justify-center rounded-full transition-colors",
+                "relative flex size-8 items-center justify-center rounded-full transition-colors",
                 listening
                   ? "bg-danger/10 text-danger"
                   : "text-ink-soft hover:bg-cream-100 hover:text-neem-deep",
