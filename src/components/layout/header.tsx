@@ -494,7 +494,7 @@ export function Header() {
 
   return (
     <header
-      className="sticky top-0 z-50 bg-paper pb-1.5 lg:pb-3"
+      className="sticky top-0 z-50 bg-paper lg:pb-3"
     >
       {/* Header content is a plain vertical stack: brand row, then the nav
           below it. On scroll-down the nav does NOT re-flow to a new row (a flex
@@ -511,7 +511,7 @@ export function Header() {
           // driven off `collapsed`, all the same 200ms ease-out. The row is a
           // full-width block throughout, so the search (mx-auto) and icons
           // (ml-auto) fade IN PLACE and never snap sideways.
-          collapsed ? "h-11 md:h-14 lg:h-16" : "h-13 md:h-20 lg:h-24",
+          collapsed ? "h-13 md:h-14 lg:h-16" : "h-16 md:h-20 lg:h-24",
         )}
       >
         {/* left: brand — always goes Home; if already Home it scrolls to top

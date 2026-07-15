@@ -158,9 +158,9 @@ export function HeroCarousel() {
           it, with a cream scrim on the left for legibility. */}
       <div className="relative lg:hidden">
         <Image
-          src="/images/hero/hero-mobile-sq.webp"
+          src="/images/hero/hero-mobile-43.webp"
           alt="Handmade neem-wood Montessori stacking tower, shape sorter, pull-along duck and rattle on a linen tabletop"
-          width={821}
+          width={1095}
           height={821}
           priority
           sizes="100vw"

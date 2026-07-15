@@ -33,9 +33,10 @@ export function TrustStrip() {
   return (
     <section className="overflow-hidden border-y border-cream-300 bg-cream-50">
       {/* Mobile: fill exactly the space between the header and the bottom nav —
-          the square hero is 100vw tall, the header ≈ 58px, the bottom nav ≈ 56px,
-          so the strip takes the remainder and its three stats split it evenly. */}
-      <div className="mx-auto grid min-h-[calc(100dvh-100vw-114px)] max-w-5xl grid-cols-1 grid-rows-3 divide-y divide-cream-300 py-2 sm:min-h-0 sm:grid-cols-3 sm:grid-rows-1 sm:divide-x sm:divide-y-0 sm:px-6 sm:py-6">
+          the 4:3 hero is 75vw tall (100vw ÷ 1.333), the header is 64px, the bottom
+          nav ≈ 56px, so the strip takes the remainder and its three stats split
+          it evenly. */}
+      <div className="mx-auto grid min-h-[calc(100dvh-75vw-120px)] max-w-5xl grid-cols-1 grid-rows-3 divide-y divide-cream-300 py-2 sm:min-h-0 sm:grid-cols-3 sm:grid-rows-1 sm:divide-x sm:divide-y-0 sm:px-6 sm:py-6">
         {trustStats.map((s) => {
           const Icon = icon[s.icon];
           const accent = accentById[s.id];
@@ -55,7 +56,7 @@ export function TrustStrip() {
                   the same x. (Centring each row on its own content width staggers
                   them, since the labels differ in length.) Natural width from sm
                   up, where the stats sit in their own columns. */}
-              <div className="relative z-10 flex w-44 items-center gap-3 sm:w-auto">
+              <div className="relative z-10 flex w-52 items-center gap-3 sm:w-auto">
                 <Icon className="size-7 shrink-0 text-neem" />
                 <div>
                   <p className="font-display text-lg font-bold leading-tight text-ink">
