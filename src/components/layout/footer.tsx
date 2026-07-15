@@ -234,12 +234,12 @@ export function Footer() {
             <FooterNewsletter />
           </div>
 
-          {/* Link columns. Below md they're a tight flex row so each column hugs
-              its own content instead of stretching to half the screen on wide
-              phones (which pushed the columns far apart). At md+ this wrapper is
-              `display: contents`, so the columns become direct children of the
-              12-col grid again and sit on the brand's row. */}
-          <div className="col-span-2 flex flex-wrap gap-x-12 gap-y-10 sm:col-span-3 md:contents">
+          {/* Link columns. 2-up on phones; from 480px (wide phones / Surface Duo)
+              all four fit side by side, so Support sits beside About instead of
+              wrapping to its own row. At md+ this wrapper is `display: contents`,
+              so the columns become direct children of the 12-col grid again and
+              sit on the brand's row. */}
+          <div className="col-span-2 grid grid-cols-2 gap-x-6 gap-y-10 min-[480px]:grid-cols-4 sm:col-span-3 md:contents">
             <div className="md:col-span-2">
               <FooterColumn title="Shop" links={footerShop} />
             </div>

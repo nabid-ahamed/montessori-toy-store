@@ -1,6 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState, type MouseEvent as ReactMouseEvent } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type FocusEvent as ReactFocusEvent,
+  type MouseEvent as ReactMouseEvent,
+} from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -438,6 +444,9 @@ export function Header() {
   // height change can never cross both thresholds -> no oscillation, just one
   // smooth condense.
   const [collapsed, setCollapsed] = useState(false);
+  // Tablet/desktop: the search icon reopens the collapsed bar IN PLACE (no jump
+  // back to the top), so you can search from wherever you've scrolled to.
+  const [searchOpen, setSearchOpen] = useState(false);
   // Active nav item is derived from the current route, so it always tracks the
   // page you're on (logo → Home included) and is never stuck on a past item.
   const pathname = usePathname();
@@ -454,17 +463,43 @@ export function Header() {
     if (pathname === "/") triggerHomeReset();
   };
 
-  // Collapsed-state search affordance: the centre search bar is hidden once the
-  // header condenses, so the search icon scrolls back to the top (which expands
-  // the header) and then focuses the revealed search input.
+  // Collapsed-state search affordance: the centre bar is hidden once the header
+  // condenses, so the search icon reopens it right where you are — the page does
+  // NOT jump back to the top — and drops the caret straight into the input.
+  const searchWrapRef = useRef<HTMLDivElement>(null);
+
   const revealSearch = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-    window.setTimeout(() => {
-      document
-        .querySelector<HTMLInputElement>('input[aria-label="Search"]')
+    setSearchOpen(true);
+    // Focus on the next frame, once the bar has rendered back open.
+    requestAnimationFrame(() => {
+      searchWrapRef.current
+        ?.querySelector<HTMLInputElement>('input[aria-label="Search"]')
         ?.focus({ preventScroll: true });
-    }, 400);
+    });
   };
+
+  // Clicking away from an EMPTY manually-opened bar folds it back to the icon —
+  // a half-open, unused search bar is just clutter. A typed query is kept (you
+  // may be reaching for a suggestion), and focus moving to anything inside the
+  // search (suggestions, clear, mic) doesn't count as leaving.
+  const onSearchBlur = (e: ReactFocusEvent<HTMLDivElement>) => {
+    if (!searchOpen) return;
+    const next = e.relatedTarget as Node | null;
+    if (next && searchWrapRef.current?.contains(next)) return;
+    const input = searchWrapRef.current?.querySelector<HTMLInputElement>(
+      'input[aria-label="Search"]',
+    );
+    if (!input?.value.trim()) setSearchOpen(false);
+  };
+
+  // Back near the top the bar is shown normally again, so drop the override.
+  useEffect(() => {
+    if (!collapsed) setSearchOpen(false);
+  }, [collapsed]);
+
+  // The bar hides only while the header is condensed AND the user hasn't asked
+  // for it — this drives both the bar and the icon that stands in for it.
+  const searchHidden = collapsed && !searchOpen;
 
   useEffect(() => {
     let ticking = false;
@@ -511,7 +546,7 @@ export function Header() {
           // driven off `collapsed`, all the same 200ms ease-out. The row is a
           // full-width block throughout, so the search (mx-auto) and icons
           // (ml-auto) fade IN PLACE and never snap sideways.
-          collapsed ? "h-13 md:h-14 lg:h-16" : "h-16 md:h-20 lg:h-24",
+          collapsed ? "h-13 md:h-16 lg:h-16" : "h-16 md:h-24 lg:h-24",
         )}
       >
         {/* left: brand — always goes Home; if already Home it scrolls to top
@@ -520,22 +555,41 @@ export function Header() {
           <Link
             href="/"
             onClick={onBrandClick}
-            className="font-display text-3xl font-bold tracking-tight text-ink sm:text-3xl md:text-[2.5rem]"
+            className="font-display text-3xl font-bold tracking-tight text-ink sm:text-3xl md:text-[2.75rem]"
           >
             {BRAND_NAME}
           </Link>
         </div>
 
-        {/* center: search (desktop) — width + opacity collapse on scroll-down */}
+        {/* center: search (tablet + desktop) — width + opacity collapse on
+            scroll-down. On tablet a search icon then takes the bar's place, in
+            the same centred spot; desktop surfaces that icon in the right-hand
+            cluster instead (so it never fights the nav for the centre). */}
         <div
-          className={cn(
-            "mx-auto hidden w-full min-w-0 transition-all duration-200 ease-out md:block",
-            // Clip only while collapsing (width animates to 0); when expanded we
-            // must NOT clip, or the absolute suggestions dropdown gets hidden.
-            collapsed ? "max-w-0 overflow-hidden opacity-0" : "max-w-sm opacity-100 lg:max-w-md",
-          )}
+          ref={searchWrapRef}
+          onBlur={onSearchBlur}
+          className="mx-auto hidden w-full min-w-0 items-center justify-center md:flex"
         >
-          <SmartSearch className="w-full" />
+          <div
+            className={cn(
+              "w-full min-w-0 transition-all duration-200 ease-out",
+              // Clip only while collapsing (width animates to 0); when expanded we
+              // must NOT clip, or the absolute suggestions dropdown gets hidden.
+              searchHidden ? "max-w-0 overflow-hidden opacity-0" : "max-w-sm opacity-100 lg:max-w-md",
+            )}
+          >
+            <SmartSearch className="w-full" />
+          </div>
+          {/* tablet-only: stands in for the collapsed bar, same centred spot */}
+          <Button
+            variant="ghost"
+            size="icon"
+            aria-label="Search"
+            onClick={revealSearch}
+            className={cn("hidden size-10 md:size-12", searchHidden && "md:inline-flex lg:hidden")}
+          >
+            <Search className="size-6 md:size-7" />
+          </Button>
         </div>
 
         {/* right: wishlist (all sizes) + cart (desktop) + hamburger (mobile).
@@ -563,10 +617,10 @@ export function Header() {
             variant="ghost"
             size="icon"
             aria-label="Cart"
-            className="relative hidden size-10 md:inline-flex lg:hidden"
+            className="relative hidden size-10 md:inline-flex md:size-12 lg:hidden"
           >
             <Link href="/cart">
-              <ShoppingCart className="size-6" />
+              <ShoppingCart className="size-6 md:size-7" />
               <CartBadge className="absolute -right-0.5 -top-0.5 size-4" />
             </Link>
           </Button>
@@ -575,15 +629,15 @@ export function Header() {
               rises into it, the icons remain beside the nav: brand (left), nav
               (centred), icons (right). Only the search collapses away. */}
           <div className="flex items-center gap-1 xl:gap-4">
-            {/* Search — desktop, shown only when collapsed (the centre search
-                bar is hidden then). Sits before the wishlist; clicking it
-                scrolls to the top to reveal + focus the full search bar. */}
+            {/* Search — desktop only, shown when collapsed (the centre search bar
+                is hidden then). Tablet shows its own icon in the bar's centred
+                spot above. Clicking scrolls to the top to reveal + focus the bar. */}
             <Button
               variant="ghost"
               size="icon"
               aria-label="Search"
               onClick={revealSearch}
-              className={cn("hidden", collapsed && "lg:inline-flex")}
+              className={cn("hidden", searchHidden && "lg:inline-flex")}
             >
               <Search className="size-6" />
             </Button>
@@ -594,10 +648,10 @@ export function Header() {
               variant="ghost"
               size="icon"
               aria-label="Wishlist"
-              className="size-10 lg:size-8"
+              className="size-10 md:size-12 lg:size-8"
             >
               <Link href="/wishlist" className="relative">
-                <Heart className="size-6" />
+                <Heart className="size-6 md:size-7 lg:size-6" />
                 <WishlistBadge className="absolute -right-0.5 -top-0.5 size-4" />
               </Link>
             </Button>

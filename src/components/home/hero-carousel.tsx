@@ -49,7 +49,7 @@ export function HeroCarousel() {
           >
             <motion.div className="max-w-xl lg:translate-y-7" variants={stagger}>
               <motion.h2
-                className="font-[family-name:var(--font-fraunces)] text-2xl font-bold leading-[1.05] tracking-tight text-neem-deep sm:text-5xl lg:text-6xl"
+                className="font-[family-name:var(--font-fraunces)] text-2xl font-bold leading-[1.05] tracking-tight text-neem-deep sm:text-4xl lg:text-6xl"
                 variants={rise}
               >
                 Learning Begins

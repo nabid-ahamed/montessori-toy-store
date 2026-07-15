@@ -171,8 +171,9 @@ export default function SignInPage() {
         </Link>
       </div>
 
-      {/* centered content column */}
-      <div className="flex flex-1 items-start justify-center pt-24">
+      {/* centered content column — sits a little lower on tablet, where the
+          taller viewport leaves the card looking top-heavy at pt-24 */}
+      <div className="flex flex-1 items-start justify-center pt-24 md:pt-40 lg:pt-24">
         <div className="w-full max-w-sm">
           <h1 className="font-sans text-2xl font-normal leading-[28.8px] tracking-normal text-black">
             Sign in
