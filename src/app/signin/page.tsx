@@ -160,7 +160,11 @@ export default function SignInPage() {
   }, [showPassword, showSignUp, showVerify]);
 
   return (
-    <main className="flex min-h-screen flex-col bg-paper px-4">
+    // Bare route: the mobile bottom bar isn't rendered here, but <body> still
+    // reserves 3.5rem for it. Subtract that (and dvh, so a phone's URL bar can't
+    // inflate it) or the page scrolls by exactly that dead strip. md+ has no
+    // body padding, so it's a plain full-height column there.
+    <main className="flex min-h-[calc(100dvh-3.5rem-env(safe-area-inset-bottom))] flex-col bg-paper px-4 md:min-h-dvh">
       {/* brand wordmark — name only, centered at top */}
       <div className="flex justify-center pt-8 pb-4">
         <Link
@@ -171,9 +175,12 @@ export default function SignInPage() {
         </Link>
       </div>
 
-      {/* centered content column — sits a little lower on tablet, where the
-          taller viewport leaves the card looking top-heavy at pt-24 */}
-      <div className="flex flex-1 items-start justify-center pt-24 md:pt-40 lg:pt-24">
+      {/* Content column. Centred in whatever height is left rather than pushed
+          down by a fixed padding: a fixed offset that looks right on a tall
+          tablet overflows a short desktop window, which is what made the page
+          scroll. Centring keeps the card comfortably low on tall screens and
+          still fits everything on short ones — one screen, no scrolling. */}
+      <div className="flex flex-1 items-center justify-center py-6">
         <div className="w-full max-w-sm">
           <h1 className="font-sans text-2xl font-normal leading-[28.8px] tracking-normal text-black">
             Sign in
